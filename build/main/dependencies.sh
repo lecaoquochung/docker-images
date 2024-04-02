@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update package index
-apt update
+# apt update
 
 # Set timezone (uncomment if needed)
 # echo "surpass-prompt surpass-prompt/geographic-area select Asia" | tee /home/qa/code/.circleci/os/linux/ubuntu/dependencies/surpass-selections

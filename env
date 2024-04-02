@@ -1,0 +1,3 @@
+NAME=docker-images
+TZ=Asia/Tokyo
+LC_ALL=en_US.UTF-8

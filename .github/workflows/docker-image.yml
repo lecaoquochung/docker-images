@@ -8,11 +8,29 @@ on:
 
 jobs:
 
-  build:
+  build-ubuntu-qa:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: ubuntu-qa
+      run: docker build . --file ./ubuntu/Dockerfile.qa --tag ubuntu-qa:$(date +%s)
+
+  build-ubuntu-latest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-lastest
+      run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+
+  build-ubuntu-noble:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-noble
+      run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)

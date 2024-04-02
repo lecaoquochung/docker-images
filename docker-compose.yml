@@ -1,16 +1,40 @@
 version: '3.9'
 
 services:
-  ubuntu:
+  ubuntu-qa:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./ubuntu/Dockerfile.qa
     working_dir: /home/qa/code
     volumes:
       - ".:/home/qa/code"
     entrypoint: ["sh", "-c", "sleep infinity"]
     env_file:
       - .env
+    environment:
+      - TZ=Asia/Tokyo
+      - LC_ALL=en_US.UTF-8
+  
+  ubuntu-latest:
+    build:
+      context: .
+      dockerfile: ./ubuntu/Dockerfile.latest
+    working_dir: /home/ubuntu/code
+    volumes:
+      - ".:/home/ubuntu/code"
+    entrypoint: ["sh", "-c", "sleep infinity"]
+    environment:
+      - TZ=Asia/Tokyo
+      - LC_ALL=en_US.UTF-8
+
+  ubuntu-noble:
+    build:
+      context: .
+      dockerfile: ./ubuntu/Dockerfile.noble
+    working_dir: /home/ubuntu/code
+    volumes:
+      - ".:/home/ubuntu/code"
+    entrypoint: ["sh", "-c", "sleep infinity"]
     environment:
       - TZ=Asia/Tokyo
       - LC_ALL=en_US.UTF-8
