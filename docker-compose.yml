@@ -1,5 +1,7 @@
 version: '3.9'
 
+# BUILDKIT_PROGRESS=plain docker compose build
+
 services:
   ubuntu-qa:
     build:
