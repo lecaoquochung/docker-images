@@ -200,9 +200,14 @@ RUN wget https://github.com/microsoft/playwright/archive/refs/tags/v1.44.0.tar.g
 #    Browsers will remain downloaded in `/home/qa/.cache/ms-playwright`.
 RUN mkdir -p /home/qa/.config && \
     chown -R qa:$(id -gn qa) /home/qa/.config
-RUN su qa -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && \
-    npm i /tmp/playwright.tar.gz" && \
-    rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
+
+# RUN su qa -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && \
+#     npm i /tmp/playwright.tar.gz" && \
+#     rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
+RUN mkdir -p /home/qa/.npm && \
+    chown -R qa:$(id -gn qa) /home/qa
+RUN su qa -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && npm i /tmp/playwright.tar.gz"
+RUN rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
 
 # 3. Symlink downloaded browsers for root user
 RUN mkdir /root/.cache/ && \
