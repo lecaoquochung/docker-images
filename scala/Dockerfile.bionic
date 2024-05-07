@@ -186,7 +186,7 @@ RUN mkdir -p /home/qa
 # RUN yarn add playwright
 
 # Create the pwuser (we internally create a symlink for the pwuser and the root user)
-RUN adduser qa
+RUN useradd -m qa -s /bin/bash
 
 # === BAKE BROWSERS INTO IMAGE ===
 
@@ -198,7 +198,8 @@ RUN wget https://github.com/microsoft/playwright/archive/refs/tags/v1.44.0.tar.g
 
 # 2. Install playwright and then delete the installation.
 #    Browsers will remain downloaded in `/home/qa/.cache/ms-playwright`.
-RUN sudo chown -R $USER:$(id -gn $USER) /home/qa/.config 
+RUN mkdir -p /home/qa/.config && \
+    chown -R qa:$(id -gn qa) /home/qa/.config
 RUN su qa -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && \
     npm i /tmp/playwright.tar.gz" && \
     rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
