@@ -58,9 +58,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # === INSTALL Node.js ===
 
-# Install node14
+# Install node
+# RUN apt-get update && apt-get install -y curl && \
+#     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+#     apt-get install -y nodejs
 RUN apt-get update && apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash -e && \
     apt-get install -y nodejs
 
 # Feature-parity with node.js base images.
