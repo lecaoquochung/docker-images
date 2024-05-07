@@ -210,8 +210,9 @@ RUN su qa -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && npm i /tmp/playwrigh
 RUN rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
 
 # 3. Symlink downloaded browsers for root user
-RUN mkdir /root/.cache/ && \
-    ln -s /home/qa/.cache/ms-playwright/ /root/.cache/ms-playwright
+RUN mkdir -p /root/.cache/ && \
+    [ ! -L /root/.cache/ms-playwright ] && ln -s /home/qa/.cache/ms-playwright/ /root/.cache/ms-playwright || true
+
 
 # Add user so we don't need --no-sandbox.
 RUN addgroup -S qa && adduser -S -g audio,video qa \
