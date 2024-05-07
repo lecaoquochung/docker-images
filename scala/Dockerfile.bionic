@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgtk-3-0 \
     libharfbuzz-icu0
 
+RUN apt-get update && apt-get install -y wget
+
 # Install gstreamer and plugins to support video playback in WebKit.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgstreamer-gl1.0-0 \
@@ -174,7 +176,9 @@ RUN adduser qa
 
 # 1. Add tip-of-tree Playwright package to install its browsers.
 #    The package should be built beforehand from tip-of-tree Playwright.
-COPY ./playwright.tar.gz /tmp/playwright.tar.gz
+# COPY ./playwright.tar.gz /tmp/playwright.tar.gz
+# Playwright fixed version
+RUN wget https://github.com/microsoft/playwright/archive/refs/tags/v1.44.0.tar.gz -O /tmp/playwright.tar.gz
 
 # 2. Install playwright and then delete the installation.
 #    Browsers will remain downloaded in `/home/qa/.cache/ms-playwright`.
