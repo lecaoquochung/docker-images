@@ -34,4 +34,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.php-fpm --tag ubuntu-noble:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.php-fpm --tag php-fpm:$(date +%s)
+
+  build-scala-bionic:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-bionic
+      run: docker build . --file ./scala/Dockerfile.bionic --tag scala-bionic:$(date +%s)
