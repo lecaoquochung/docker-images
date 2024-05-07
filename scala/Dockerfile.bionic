@@ -186,7 +186,15 @@ RUN mkdir -p /home/qa
 # RUN yarn add playwright
 
 # Create the pwuser (we internally create a symlink for the pwuser and the root user)
-RUN useradd -m qa -s /bin/bash
+# Add user so we don't need --no-sandbox.
+# Ensure group 'qa' exists and create user 'qa'
+RUN groupadd -f qa && \
+    useradd -m -g qa -G audio,video qa
+
+# Create necessary directories and set ownership
+RUN mkdir -p /home/qa/Downloads /app && \
+    chown -R qa:qa /home/qa && \
+    chown -R qa:qa /app
 
 # === BAKE BROWSERS INTO IMAGE ===
 
@@ -213,12 +221,6 @@ RUN rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
 RUN mkdir -p /root/.cache/ && \
     [ ! -L /root/.cache/ms-playwright ] && ln -s /home/qa/.cache/ms-playwright/ /root/.cache/ms-playwright || true
 
-
-# Add user so we don't need --no-sandbox.
-RUN addgroup -S qa && adduser -S -g audio,video qa \
-    && mkdir -p /home/qa/Downloads /app \
-    && chown -R qa:qa /home/qa \
-    && chown -R qa:qa /app
 
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"
