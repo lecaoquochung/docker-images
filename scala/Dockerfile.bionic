@@ -1,3 +1,5 @@
+# https://wiki.ubuntu.com/Releases
+# Ubuntu 18.04 LTS (Bionic Beaver)
 FROM ubuntu:bionic
 
 # === INSTALL BROWSER DEPENDENCIES ===
