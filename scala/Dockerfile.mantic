@@ -12,15 +12,18 @@ QA_PATH="/home/qa/code"
 
 # Update package index and install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv python3-pip \
+    git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
     postgresql-client default-jre default-jdk apt-transport-https ca-certificates \
     software-properties-common chromium-bsu chromium-browser xvfb python3-full
 
-# Install pip
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python3 get-pip.py --user && \
-    rm get-pip.py
-RUN pip3 install --upgrade pip
+# Create a virtual environment
+RUN python3 -m venv /venv
+
+# Activate the virtual environment
+ENV PATH="/venv/bin:$PATH"
+
+# Upgrade pip within the virtual environment
+RUN pip install --upgrade pip
 
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
@@ -60,7 +63,7 @@ RUN yarn install && \
     yarn global add junit-report-merger
 
 # Install trcli and Playwright
-RUN pip3 install --no-dependencies trcli && \
+RUN pip install --no-dependencies trcli && \
     npx playwright install
 
 # Version check and other commands
