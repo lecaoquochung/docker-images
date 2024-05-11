@@ -14,7 +14,8 @@ QA_PATH="/home/qa/code"
 RUN apt-get update && apt-get install -y \
     git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
     postgresql-client default-jre default-jdk apt-transport-https ca-certificates \
-    software-properties-common chromium-bsu chromium-browser xvfb python3-full
+    software-properties-common chromium-bsu chromium-browser xvfb python3-full \
+    make build-essential 
 
 # Create a virtual environment
 RUN python3 -m venv /venv
@@ -35,7 +36,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 RUN apt-get install -y nodejs npm && \
     npm install -g n
 
-RUN npm install -g npm@latest
+# RUN npm install -g npm@latest
+RUN n stable
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
