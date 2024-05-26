@@ -1,0 +1,31 @@
+# Use the official base image
+# https://hub.docker.com/r/jenkins/jenkins
+FROM jenkins/jenkins:latest
+
+# Verify dependencies
+RUN pwd;whoami;ls;
+RUN uname -a
+RUN cat /etc/os-release
+RUN cat /etc/*-release
+
+# Switch to root user
+USER root
+
+# Create the missing directory and set permissions
+RUN mkdir -p /var/lib/apt/lists/partial && \
+    chown -R _apt:root /var/lib/apt/lists && \
+    chmod -R 755 /var/lib/apt/lists
+
+# Update package lists and install required packages
+RUN apt-get update && \
+    apt-get install -y git curl iputils-ping telnet vim unzip
+
+# Switch back to the Jenkins user (if required for later stages)
+USER jenkins
+
+# Update package index and install dependencies
+# RUN sudo apt-get update && \
+    # sudo apt-get install -y git curl iputils-ping telnet vim unzip
+
+# Install mysql-client
+# RUN sudo apt-get install mysql-client
