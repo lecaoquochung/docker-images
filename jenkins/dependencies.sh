@@ -20,4 +20,4 @@ apt-get update && \
   apt-get install -y git curl iputils-ping telnet vim unzip
 
 # Install mysql-client
-apt-get install mysql-client
+apt-get install -y default-mysql-client
