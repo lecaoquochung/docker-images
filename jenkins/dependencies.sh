@@ -21,3 +21,7 @@ apt-get update && \
 
 # Install mysql-client
 apt-get install -y default-mysql-client
+
+EXPOSE map[8080/tcp:{}]
+EXPOSE map[50000/tcp:{}]
+ENTRYPOINT ["/usr/bin/tini" "--" "/usr/local/bin/jenkins.sh"]

@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.php-fpm --tag php-fpm:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
 
   build-scala-bionic:
     runs-on: ubuntu-latest

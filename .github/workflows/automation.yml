@@ -1,0 +1,29 @@
+# Latest version update
+name: Automation
+
+on:
+  workflow_dispatch:
+  schedule: # Run every day at 5:00 am JST
+    - cron: "0 20 * * *"
+
+jobs:
+  build-ubuntu-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-lastest
+      run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+
+  build-php-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: php-fpm
+      run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
+
+  build-jenkins-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: jenkins-latest
+      run: docker build . --file ./jenkins/Dockerfile.latest --tag jenkins-latest:$(date +%s)
