@@ -18,8 +18,6 @@ RUN ./dependencies.sh
 # Switch back to the Jenkins user (if required for later stages)
 USER jenkins
 
-# Version check
-# CMD ["./version.sh"]
 ENV LANG C.UTF-8
 ARG http_port=8080
 ARG agent_port=50000
@@ -36,4 +34,5 @@ EXPOSE ${http_port}
 # will be used by attached agents:
 EXPOSE ${agent_port}
 
-ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+# Version check
+CMD ["./version.sh"]
