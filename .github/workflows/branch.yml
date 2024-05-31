@@ -28,7 +28,7 @@ jobs:
     - name: ubuntu-noble
       run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)
 
-  build-php-fpm:
+  build-php-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
