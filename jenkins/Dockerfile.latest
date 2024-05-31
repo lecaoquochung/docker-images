@@ -1,4 +1,5 @@
 # Use the official base image
+# https://github.com/jenkinsci/docker/blob/master/alpine/hotspot/Dockerfile
 FROM jenkins/jenkins:latest
 
 # Switch to root user
