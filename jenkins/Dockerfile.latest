@@ -35,4 +35,4 @@ EXPOSE ${http_port}
 EXPOSE ${agent_port}
 
 # Version check
-CMD ["./version.sh"]
+RUN cat ./version.sh
