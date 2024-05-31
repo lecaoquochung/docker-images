@@ -1,4 +1,5 @@
 # Use the official base image
+# https://github.com/jenkinsci/docker/blob/master/alpine/hotspot/Dockerfile
 FROM jenkins/jenkins:latest
 
 # Switch to root user
@@ -18,4 +19,21 @@ RUN ./dependencies.sh
 USER jenkins
 
 # Version check
-CMD ["./version.sh"]
+# CMD ["./version.sh"]
+ENV LANG C.UTF-8
+ARG http_port=8080
+ARG agent_port=50000
+ARG JENKINS_HOME=/var/jenkins_home
+ARG REF=/usr/share/jenkins/ref
+
+ENV JENKINS_HOME $JENKINS_HOME
+ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
+ENV REF $REF
+
+# for main web interface:
+EXPOSE ${http_port}
+
+# will be used by attached agents:
+EXPOSE ${agent_port}
+
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
