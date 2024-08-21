@@ -1,5 +1,7 @@
+# Version check
+# https://www.php.net/
 # https://github.com/docker-library/php
-FROM php:8.3.2-fpm
+FROM php:8.4-rc-fpm-alpine
 
 # https://gist.github.com/lehungio/acc2bfc681349f678965a5d677168e88#file-dockerfile-L5
 # SHELL ["/bin/bash", "-l", "-euxo", "pipefail", "-c"]
