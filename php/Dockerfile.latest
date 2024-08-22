@@ -50,6 +50,7 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     build-essential \
     && pecl install memcached \
+    --with-libmemcached-dir=/usr \
     && docker-php-ext-enable memcached
 
 # install Composer
@@ -170,8 +171,6 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     netcat-openbsd
 
-
-
 # ENV
 # /usr/local/nvm/versions/node/v16.13.1/bin/node
 # /usr/local/nvm/versions/node/v16.13.1/lib/node_modules/
@@ -202,6 +201,10 @@ RUN mysql --version
 # 04. npm dependencies
 RUN npm install -g jest
 RUN jest --version
+
+# 05. Redis & memcached
+RUN ls /usr/include/libmemcached
+RUN ls /usr/lib/libmemcached.*
 
 # Disk usage
 RUN df -h
