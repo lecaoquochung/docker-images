@@ -78,8 +78,16 @@ RUN IPE_ICU_EN_ONLY=1 install-php-extensions \
     && { echo '#!/bin/sh'; echo 'if [ ! -d /usr/lib/oracle/*/client64 ]; then'; echo '    tar -xzf /usr/lib/oracle/pack.tar.gz -C / && rm /usr/lib/oracle/pack.tar.gz'; echo 'fi'; } > /usr/lib/oracle/setup.sh && chmod +x /usr/lib/oracle/setup.sh
 
 RUN apt-get update && apt-get install -y \
+    autoconf \
     libmemcached-dev \
     zlib1g-dev \
+    && cd /tmp \
+    && wget https://github.com/libmemcached/libmemcached/archive/1.0.18.tar.gz \
+    && tar -zxvf 1.0.18.tar.gz \
+    && cd libmemcached-1.0.18 \
+    && ./configure --prefix=/usr \
+    && make \
+    && make install \
     && pecl install memcached \
     && docker-php-ext-enable memcached
 
