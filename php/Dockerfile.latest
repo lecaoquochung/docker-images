@@ -201,9 +201,9 @@ RUN mysql --version
 RUN npm install -g jest
 RUN jest --version
 
-# 05. Redis & memcached
-RUN ls /usr/include/libmemcached
-RUN ls /usr/lib/libmemcached.*
+# TODO 05. Redis & memcached
+RUN ls /usr/include/
+RUN ls /usr/lib/
 
 # Disk usage
 RUN df -h
