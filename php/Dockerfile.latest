@@ -43,14 +43,14 @@ RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
-# memcached
-RUN apt-get install -y libmemcached libmemcached-dev
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    pkg-config \
-    build-essential \
-    && pecl install memcached --with-libmemcached-dir=/usr \
-    && docker-php-ext-enable memcached
+# TODO memcached
+# RUN apt-get update && apt-get install -y \
+#     libmemcached-dev \
+#     zlib1g-dev \
+#     pkg-config \
+#     build-essential \
+#     && pecl install memcached --with-libmemcached-dir=/usr \
+#     && docker-php-ext-enable memcached
 
 # install Composer
 RUN install-php-extensions @composer
