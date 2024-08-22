@@ -18,7 +18,7 @@ RUN apt-get update; \
 
 # https://stackoverflow.com/a/25908200
 RUN apt-get update && \
-      apt-get -y install sudo
+      apt-get -y install sudo wget
 
 # Replace shell with bash so we can source files
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
