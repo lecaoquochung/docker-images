@@ -28,7 +28,15 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # debconf: delaying package configuration, since apt-utils is not installed
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-RUN pecl install redis \
+# RUN pecl install redis \
+#     && pecl install xdebug \
+#     && docker-php-ext-enable redis xdebug
+
+# Ensure that all necessary PHP dependencies are installed before attempting to build the extensions
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    libz-dev \
+    && pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
