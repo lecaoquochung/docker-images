@@ -32,6 +32,8 @@ RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
+RUN apt-get install -y php-memcached
+
 # Deprecated libpng12-dev
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get update && apt-get install -y \
@@ -146,6 +148,8 @@ RUN apt-get update && apt-get install -y \
     vim \
     default-mysql-client \
     netcat-openbsd
+
+
 
 # ENV
 # /usr/local/nvm/versions/node/v16.13.1/bin/node
