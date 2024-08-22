@@ -44,7 +44,11 @@ RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
-RUN apt-get install -y php-memcached
+RUN apt-get update && apt-get install -y \
+    libmemcached-dev \
+    zlib1g-dev \
+    && pecl install memcached \
+    && docker-php-ext-enable memcached
 
 # Deprecated libpng12-dev
 RUN apt-get update && apt-get upgrade -y
