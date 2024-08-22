@@ -83,8 +83,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     pkg-config \
     build-essential \
-    && pecl install memcached \
-    --with-libmemcached-dir=/usr \
+    && pecl install memcached --with-libmemcached-dir=/usr \
     && docker-php-ext-enable memcached
 
 # install Composer
