@@ -43,19 +43,17 @@ RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
+# memcached
 RUN apt-get update && apt-get install -y \
-    autoconf \
     libmemcached-dev \
     zlib1g-dev \
-    && cd /tmp \
-    && wget https://github.com/libmemcached/libmemcached/archive/1.0.18.tar.gz \
-    && tar -zxvf 1.0.18.tar.gz \
-    && cd libmemcached-1.0.18 \
-    && ./configure --prefix=/usr \
-    && make \
-    && make install \
+    pkg-config \
+    build-essential \
     && pecl install memcached \
     && docker-php-ext-enable memcached
+
+# install Composer
+RUN install-php-extensions @composer
 
 # Deprecated libpng12-dev
 RUN apt-get update && apt-get upgrade -y
