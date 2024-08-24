@@ -1,3 +1,5 @@
+# Version check
+# https://www.php.net/
 # https://github.com/docker-library/php
 FROM php:8.3.7-fpm
 
@@ -16,7 +18,7 @@ RUN apt-get update; \
 
 # https://stackoverflow.com/a/25908200
 RUN apt-get update && \
-      apt-get -y install sudo
+      apt-get -y install sudo wget
 
 # Replace shell with bash so we can source files
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
@@ -26,9 +28,67 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # debconf: delaying package configuration, since apt-utils is not installed
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-RUN pecl install redis \
-    && pecl install xdebug \
-    && docker-php-ext-enable redis xdebug
+# install basic system tools
+RUN (seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{}) \
+    && apt-get -y update \
+    && apt-get -y upgrade \
+    && apt-get -y install bash git make unzip gnupg ca-certificates apt-utils apt-transport-https netcat-traditional \
+    && apt-get purge -y --auto-remove && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && git config --system --add url."https://github.com/".insteadOf "git@github.com:" \
+    && git config --system --add url."https://github.com/".insteadOf "ssh://git@github.com/" \
+    # fix git repository directory is owned by someone else for Github Actions
+    && { echo '#!/bin/sh'; echo 'if [ -n "$GITHUB_WORKSPACE" ] && [ "$(id -u)" -eq 0 ]; then'; echo '    (cd / && /usr/bin/git config --global --add safe.directory "$GITHUB_WORKSPACE")'; echo 'fi'; echo '/usr/bin/git "$@"'; } > /usr/local/bin/git && chmod +x /usr/local/bin/git
+
+# install common PHP extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN git clone --recurse-submodules https://github.com/phpredis/phpredis.git -b develop phpredis \
+    && cd phpredis && git reset --hard d3b2d87b10 && rm -r .git
+RUN git clone https://github.com/xdebug/xdebug.git -b master xdebug \
+    && cd xdebug && git reset --hard 12adc6394a && rm -r .git \
+    && sed 's~<max>8.4.99</max>~<max>99.99.99</max>~' -i package.xml
+RUN IPE_ICU_EN_ONLY=1 install-php-extensions \
+    bcmath \
+    exif \
+    gd \
+    gmp \
+    igbinary \
+    Imagick/imagick@ef495c0b8f \
+    php/pecl-mail-imap@25b62dbf7b \
+    intl \
+    mysqli \
+    php/pecl-database-oci8@74893c6e3d \
+    opcache \
+    pcntl \
+    pdo_mysql \
+    php/pecl-database-pdo_oci@be8a277c27 \
+    pdo_pgsql \
+    pdo_sqlsrv \
+    $(realpath phpredis) \
+    sockets \
+    tidy \
+    $(realpath xdebug) \
+    xsl \
+    zip \
+    # pack Oracle Instant Client libs, reduce image size by 85 MB
+    && rm /usr/lib/oracle/*/client64/lib/*.jar && tar -czvf /usr/lib/oracle-pack.tar.gz -C / /usr/lib/oracle /usr/local/etc/php/conf.d/docker-php-ext-pdo_oci.ini /usr/local/etc/php/conf.d/docker-php-ext-oci8.ini && rm -r /usr/lib/oracle/* /usr/local/etc/php/conf.d/docker-php-ext-pdo_oci.ini /usr/local/etc/php/conf.d/docker-php-ext-oci8.ini && mv /usr/lib/oracle-pack.tar.gz /usr/lib/oracle/pack.tar.gz \
+    && { echo '#!/bin/sh'; echo 'if [ ! -d /usr/lib/oracle/*/client64 ]; then'; echo '    tar -xzf /usr/lib/oracle/pack.tar.gz -C / && rm /usr/lib/oracle/pack.tar.gz'; echo 'fi'; } > /usr/lib/oracle/setup.sh && chmod +x /usr/lib/oracle/setup.sh
+
+# redis - v8.4-rc deprecated
+# RUN pecl install redis \
+#     && pecl install xdebug \
+#     && docker-php-ext-enable redis xdebug
+
+# TODO memcached
+# RUN apt-get update && apt-get install -y \
+#     libmemcached-dev \
+#     zlib1g-dev \
+#     pkg-config \
+#     build-essential \
+#     && pecl install memcached --with-libmemcached-dir=/usr \
+#     && docker-php-ext-enable memcached
+
+# install Composer
+RUN install-php-extensions @composer
 
 # Deprecated libpng12-dev
 RUN apt-get update && apt-get upgrade -y
@@ -175,6 +235,10 @@ RUN mysql --version
 # 04. npm dependencies
 RUN npm install -g jest
 RUN jest --version
+
+# TODO 05. Redis & memcached
+RUN ls /usr/include/
+RUN ls /usr/lib/
 
 # Disk usage
 RUN df -h
