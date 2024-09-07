@@ -1,5 +1,6 @@
 {
     "name": "docker-images",
+    "version": "1.0.3-rc",
     "private": true,
     "repository": {
         "type": "git",
