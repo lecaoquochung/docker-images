@@ -1,0 +1,45 @@
+{
+    "name": "docker-images",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lecaoquochung/docker-image"
+    },
+    "scripts": {
+        "format:eslint": "eslint --ext js --ext mjs --ext ts --fix .",
+        "format:prettier": "prettier --write .",
+        "lint": "run-s lint:*",
+        "lint:eslint": "eslint --ext js --ext mjs --ext ts .",
+        "lint:prettier": "prettier --check ."
+    },
+    "devDependencies": {
+        "@actions/core": "1.10.1",
+        "@types/mocha": "10.0.7",
+        "@types/node": "20.8.4",
+        "@types/semver": "7.5.8",
+        "@types/sinon": "17.0.3",
+        "@typescript-eslint/eslint-plugin": "7.18.0",
+        "@typescript-eslint/parser": "7.18.0",
+        "esbuild": "0.23.1",
+        "eslint": "8.57.0",
+        "eslint-config-prettier": "9.1.0",
+        "eslint-import-resolver-typescript": "3.6.3",
+        "eslint-plugin-import": "2.29.1",
+        "eslint-plugin-mocha": "10.5.0",
+        "eslint-plugin-prettier": "5.2.1",
+        "eslint-plugin-rulesdir": "0.2.2",
+        "eslint-plugin-tsdoc": "0.3.0",
+        "eslint-plugin-unused-imports": "3.2.0",
+        "expect": "29.7.0",
+        "license-checker": "25.0.1",
+        "mocha": "10.7.3",
+        "prettier": "3.3.3",
+        "typescript": "5.4.5",
+        "wireit": "0.14.8"
+    },
+    "overrides": {
+        "@microsoft/api-extractor": {
+            "typescript": "$typescript"
+        }
+    }
+}

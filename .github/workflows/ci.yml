@@ -1,12 +1,32 @@
-name: Docker Image CI
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "ci" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
+  inspect-code:
+    name: '[Required] Inspect code'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
+
   # OS Ubuntu
   build-ubuntu-latest:
     runs-on: ubuntu-latest
