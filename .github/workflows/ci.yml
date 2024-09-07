@@ -95,4 +95,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
-      run: docker build . --file ./puuppeteer/Dockerfile.latest --tag puppeteer-latest:$(date +%s)
+      run: docker build . --file ./puppeteer/Dockerfile.latest --tag puppeteer-latest:$(date +%s)
