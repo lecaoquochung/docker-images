@@ -17,20 +17,42 @@ require("chromedriver");
 //     .builder()
 //     .setChromeOptions(options.addArguments('--headless=new'))
 //     .build();
-const options = new Chrome.Options();
-options.addArguments('--headless=new');
+let options = new Chrome.Options();
+// options.addArguments('headless'); // Run Chrome in headless mode
+options.addArguments('--headless=new'); // Run Chrome in new headless mode
+// options.addArguments('disable-gpu'); // Disable GPU rendering (for headless mode)
+// options.addArguments('no-sandbox'); // Required in some environments like Docker
+// options.addArguments('disable-dev-shm-usage'); // Avoid memory issues in Docker
+// options.addArguments('disable-extensions'); // Disable extensions
+// options.addArguments('start-maximized'); // Start maximized for consistent dimensions
+// options.addArguments('--enable-logging', '--v=1');
+
 const driver = new Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
     .build();
 
 Given('I am on the Google search page', { timeout: 30000 }, async function () {
-    await driver.get('http://www.google.com');
+    try {
+        await driver.manage().setTimeouts({ implicit: 1000 });
+        await driver.get('https://www.google.com');
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 // https://www.selenium.dev/selenium/docs/api/javascript/index.html
 When('I search for {string}', { timeout: 30000 }, async function (searchTerm) {
-    const element = await driver.findElement(By.css('textarea'));
+    // Wait for the textarea element to be visible (explicit wait)
+    const element = await driver.wait(
+        until.elementLocated(By.css('textarea')), // Wait until the element is located
+        10000 // Wait up to 10 seconds
+    );
+
+    // Ensure the element is visible before interacting
+    await driver.wait(until.elementIsVisible(element), 10000);
+
+    // Type into the textarea and submit the form
     await element.sendKeys(searchTerm);
     await element.submit();
 });
@@ -38,5 +60,7 @@ When('I search for {string}', { timeout: 30000 }, async function (searchTerm) {
 Then('the page title should start with {string}', {timeout: 60 * 1000}, async function (searchTerm) {
     const title = await driver.getTitle();
     const isTitleStartWithCheese = title.toLowerCase().lastIndexOf(`${searchTerm}`, 0) === 0;
+    console.log('Title should include search term: ' + searchTerm);
+    console.log('Title: ' + title)
     expect(isTitleStartWithCheese).to.equal(true);
 });

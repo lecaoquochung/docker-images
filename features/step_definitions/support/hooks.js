@@ -57,9 +57,9 @@ Before(
     try {
       setDefaultTimeout(constant.scenarioTimeout);
       this.version = packageJson.version;
-      this.scenario = await scenario.pickle.name;
-      this.currentUnixTime = await currentUnixTime;
-      this.date = await date;
+      this.scenario = scenario.pickle.name;
+      this.currentUnixTime = currentUnixTime;
+      this.date = date;
       this.taskDuration = 0; // performance testing - calculate page load from the beginning when the browser is opened if tastDuration = 0
 
       if (await constant.tool === 'puppeteer') {
@@ -159,7 +159,7 @@ Before(
       }
 
       // Output Test Browser Information
-      console.log('BROWSER INFORMATION:', this.browserVersion);
+      console.log('BROWSER VERSION:', this.browserVersion);
     } catch (error) {
       // Handle the error as needed
       console.error("An error occurred in the Before hook:", error);

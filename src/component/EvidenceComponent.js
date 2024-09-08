@@ -142,14 +142,14 @@ class EvidenceComponent {
     debug = parseInt(constant.debugMode),
     browser = null
   ) {
-    if (parseInt(constant.debugMode) === 1) await console.log('EvidenceComponent:endingNotification - ' + currentUnixTime)
+    if (parseInt(constant.debugMode) === 1) console.log('EvidenceComponent:endingNotification - ' + currentUnixTime)
 
     screenshot === true ? await this.slackNotification(page, constant.notificationEnding, describeName) : await ''
-    if (parseInt(constant.debugMode) === 1) await console.log('url: ' + url)
-    if (parseInt(constant.debugMode) === 1) await console.log(data)
-    parseInt(debug) !== 1 ? await page.close() : await ''
+    if (parseInt(constant.debugMode) === 1) console.log('url: ' + url)
+    if (parseInt(constant.debugMode) === 1) console.log(data)
+    parseInt(debug) !== 1 ? await page.close() : ''
     parseInt(debug) !== 1 && browser !== null && browser.isConnected() === true ? await browser.close() : await ''
-    await console.log(constant.notificationEnding + ' - ' + env + ' - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
+    console.log(constant.notificationEnding + ' - ' + env + ' - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
   }
 
   async closing (page, browser = null, namespace = currentUnixTime) {
@@ -160,23 +160,23 @@ class EvidenceComponent {
         await page.waitForTimeout(3000) // handling After - function timed out
         getMetrics = await page.metrics()
 
-        await console.log(constant.infoPrefix + 'Task Duration: ' + getMetrics.TaskDuration)
-        await console.log('Metrics : ' + JSON.stringify(getMetrics))
+        console.log(constant.infoPrefix + 'Task Duration: ' + getMetrics.TaskDuration)
+        console.log('Metrics : ' + JSON.stringify(getMetrics))
       } else {
         // MEMO - Playwright
       }
     }
 
-    if (parseInt(constant.debugMode) !== 1) await page.close()
+    if (parseInt(constant.debugMode) !== 1 && constant.tool !== 'selenium') await page.close()
     if (parseInt(constant.debugMode) !== 1 && browser !== null && browser.isConnected() === true) await browser.close()
   }
 
   async startedAt () {
-    await console.log(constant.startedAtPrefix + env + ' - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
+    console.log(constant.startedAtPrefix + env + ' - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
   }
 
   async currentTime () {
-    if (parseInt(constant.debugMode) === 1) await console.log('currentTime - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
+    if (parseInt(constant.debugMode) === 1) console.log('currentTime - ' + moment.unix(moment().unix()).format('YYYY-MM-DD HH:mm:ss'))
   }
 
   async pending (warningText) {
