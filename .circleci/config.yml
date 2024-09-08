@@ -55,46 +55,6 @@ orbs:
 working_directory: ~/code
 
 jobs:
-  build-latest:
-    environment:
-      - ENV=<< pipeline.parameters.env >>
-      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
-      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
-    working_directory: /home/qa/code
-    docker:
-      - image: lecaoquochung/puppeteer:latest
-        environment:
-          TZ: "Asia/Tokyo"
-    steps:
-      - checkout
-      - run:
-          name: Update PATH and Define Environment Variable at Runtime
-          command: |
-            ./.circleci/env/var.sh
-      - restore_cache:
-          keys:
-          - v1-build-latest-yarn-{{ checksum "package.json" }}
-      - run:
-          name: Submodule
-          command: |
-            ./.circleci/submodule.sh
-      - run: 
-          name: Build Dependencies
-          command: |
-            ./.circleci/job/shared/build-dependencies.sh
-      - run:
-          name: DOMAIN
-          command: |
-            ./.circleci/job/shared/server-domain-info.sh
-      - run:
-          name: SCOPE
-          command: |
-            ./.circleci/job/shared/scope.sh
-      - save_cache:
-          key: v1-build-latest-yarn-{{ checksum "package.json" }}
-          paths:
-            - "/home/qa/code/node_modules"
-
   # job test latest | job test-latest
   test-latest:
     environment:
@@ -106,7 +66,7 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/puppeteer:latest
+      - image: lecaoquochung/docker-images:latest
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -160,47 +120,7 @@ jobs:
           path: artifact
           when: always
 
-  build-version:
-    environment:
-      - ENV=<< pipeline.parameters.env >>
-      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
-      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
-    working_directory: /home/qa/code
-    docker:
-      - image: lecaoquochung/puppeteer:node-21.0.0
-        environment:
-          TZ: "Asia/Tokyo"
-    steps:
-      - checkout
-      - run:
-          name: Update PATH and Define Environment Variable at Runtime
-          command: |
-            ./.circleci/env/var.sh
-      - restore_cache:
-          keys:
-          - v1-build-version-yarn-{{ checksum "package.json" }}
-      - run:
-          name: Submodule
-          command: |
-            ./.circleci/submodule.sh
-      - run: 
-          name: Build Dependencies
-          command: |
-            ./.circleci/job/shared/build-dependencies.sh
-      - run:
-          name: DOMAIN
-          command: |
-            ./.circleci/job/shared/server-domain-info.sh
-      - run:
-          name: SCOPE
-          command: |
-            ./.circleci/job/shared/scope.sh
-      - save_cache:
-          key: v1-build-version-yarn-{{ checksum "package.json" }}
-          paths:
-            - "/home/qa/code/node_modules"
-
-  test-version:
+  test-dev:
     environment:
       - ENV=<< pipeline.parameters.env >>
       - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
@@ -210,7 +130,7 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/puppeteer:node-21.0.0
+      - image: lecaoquochung/docker-images:node-21.0.0
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -269,10 +189,7 @@ jobs:
             ./.circleci/job/shared/aws-s3.sh
           when: always
 
-  # EOL gradually
-  # job test node 18 | job test-node-18
-  # Node 18 - chrome 126x driver uncompatible with selenium 4
-  test-node-18:
+  test-build:
     environment:
       - ENV=<< pipeline.parameters.env >>
       - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
@@ -282,7 +199,7 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/puppeteer:node-18.17.0
+      - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -306,73 +223,7 @@ jobs:
       - run:
           name: Cucumber
           command: |
-            yarn cucumber -v; pip --version; 
-      # EOL - v4.0.0
-      # - run:
-      #     name: Split test by Test suite
-      #     command: |
-      #       xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
-      - run:
-          name: Report
-          command: |
-            ./.circleci/job/shared/report.sh
-          when: always
-      - run:
-          name: Test artifacts
-          command: |
-            ./.circleci/job/shared/artifact.sh
-          when: always
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-      - store_test_results:
-          path: coverage/cucumber
-          when: always
-      - store_artifacts:
-          path: artifact
-          when: always
-      - run:
-          name: Upload report to S3
-          command: |
-            ./.circleci/job/shared/aws-s3.sh
-          when: always
-
-  test-node-21:
-    environment:
-      - ENV=<< pipeline.parameters.env >>
-      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
-      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
-      - TOOL=<< pipeline.parameters.tool >>
-      - BROWSER=<< pipeline.parameters.browser >>
-    parallelism: 2
-    working_directory: /home/qa/code
-    docker:
-      - image: lecaoquochung/puppeteer:node-21
-        environment:
-          TZ: "Asia/Tokyo"
-    steps:
-      - checkout
-      - run:
-          name: Submodule
-          command: |
-            ./.circleci/submodule.sh
-      - run:
-          name: DOMAIN
-          command: |
-            ./.circleci/job/shared/server-domain-info.sh
-      - run:
-          name: Dependencies
-          command: |
-            ./.circleci/os/linux/dependencies.sh
-      - run:
-          name: Jest
-          command: |
-            yarn test src/jest/openGoogle.test.js
-      - run:
-          name: Cucumber
-          command: |
-            yarn cucumber -v; pip --version; 
+            yarn cucumber -v; pip --version;
       - run:
           name: Split test by Test suite
           command: |
@@ -408,20 +259,12 @@ workflows:
 
   test:
     jobs:
-      - build-latest
-      - build-version
-      - test-node-18
-      - test-node-21
-      - test-latest:
-          requires:
-            - build-latest
-      - test-version:
-          requires:
-            - build-version
+      - test-latest
+      - test-dev
+      - test-build
 
   # For CircleCI API manual trigger only
   test_manual:
     unless: << pipeline.parameters.trigger_workflow_test_manual >>
     jobs:
-      - build-latest
-      - build-version
+      - test-build
