@@ -6,6 +6,9 @@
         "type": "git",
         "url": "https://github.com/lecaoquochung/docker-image"
     },
+    "author": "lecaoquochung@gmail.com",
+    "license": "MIT",
+    "type": "commonjs",
     "scripts": {
         "test": "jest",
         "feature": "cucumber-js",
