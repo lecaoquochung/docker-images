@@ -14,7 +14,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 26613922
+              "duration": 27060765
             }
           },
           {
@@ -27,7 +27,7 @@
             },
             "result": {
               "status": "failed",
-              "duration": 161083971,
+              "duration": 152741481,
               "error_message": "SessionNotCreatedError: session not created: Chrome failed to start: exited normally.\n  (session not created: DevToolsActivePort file doesn't exist)\n  (The process started from chrome location /home/codespace/.cache/selenium/chrome/linux64/128.0.6613.119/chrome is no longer running, so ChromeDriver is assuming that Chrome has crashed.)\n    at Object.throwDecodedError (/workspaces/docker-images/node_modules/selenium-webdriver/lib/error.js:521:15)\n    at parseHttpResponse (/workspaces/docker-images/node_modules/selenium-webdriver/lib/http.js:514:13)\n    at Executor.execute (/workspaces/docker-images/node_modules/selenium-webdriver/lib/http.js:446:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
             }
           },
@@ -62,7 +62,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 238714
+              "duration": 302484
             }
           }
         ],

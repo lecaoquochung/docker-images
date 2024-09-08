@@ -48,13 +48,18 @@ When('I search for {string}', { timeout: 30000 }, async function (searchTerm) {
         until.elementLocated(By.css('textarea')), // Wait until the element is located
         10000 // Wait up to 10 seconds
     );
-
-    // Ensure the element is visible before interacting
-    await driver.wait(until.elementIsVisible(element), 10000);
-
     // Type into the textarea and submit the form
     await element.sendKeys(searchTerm);
     await element.submit();
+
+    // Wait for the page to fully load by checking the document's ready state
+    await driver.wait(async () => {
+    const readyState = await driver.executeScript('return document.readyState');
+    return readyState === 'complete';
+    }, 10000); // Wait up to 10 seconds for the page to load
+
+    // Optionally wait for a specific element on the results page
+    await driver.wait(until.elementLocated(By.id('main')), 10000);
 });
 
 Then('the page title should start with {string}', {timeout: 60 * 1000}, async function (searchTerm) {
