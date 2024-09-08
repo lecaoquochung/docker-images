@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "main", "ci" ]
+    branches: [ "ci", "build*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -27,14 +27,16 @@ jobs:
       - name: Check code
         run: ls -all
 
-  # OS Ubuntu
+  # OS 
+  # Ubuntu
   build-ubuntu-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
       run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
-
+  
+  # Ubuntu for QA
   build-ubuntu-qa:
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +50,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
       run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)
-
+  
+  # PROGRAMMING LANGUAGE
   # PHP
   build-php-latest:
     runs-on: ubuntu-latest
@@ -56,7 +59,6 @@ jobs:
     - uses: actions/checkout@v4
     - name: php-fpm
       run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
-    
   build-php-beta:
     runs-on: ubuntu-latest
     steps:
@@ -71,17 +73,26 @@ jobs:
     - uses: actions/checkout@v4
     - name: scala-bionic
       run: docker build . --file ./scala/Dockerfile.bionic --tag scala-bionic:$(date +%s)
-
   build-scala-mantic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-mantic
       run: docker build . --file ./scala/Dockerfile.mantic --tag scala-mantic:$(date +%s)
-
+  
+  # APPLICATIONS
+  # JENKINS
   build-jenkins-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: jenkins-latest
       run: docker build . --file ./jenkins/Dockerfile.latest --tag jenkins-latest:$(date +%s)
+
+  # PUPPETEER
+  build-puppeteer-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: puppeteer-latest
+      run: docker build . --file ./puppeteer/Dockerfile.latest --tag puppeteer-latest:$(date +%s)
