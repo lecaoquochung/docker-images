@@ -104,11 +104,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Use variables
+      run: |
+        echo "Github environment indirect : $REPOSITORY_VAR"
+        echo "Github environment direct :  ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
     - name: Install Postman CLI
       run: |
         curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
     - name: Login to Postman CLI
-      run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      run: postman login --with-api-key $POSTMAN_API_KEY
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
     - name: Run API tests
       run: |
         postman collection run "${{ github.workspace }}/postman/collections/Users.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168419-${{ github.run_id }}"
