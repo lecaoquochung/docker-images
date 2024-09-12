@@ -102,6 +102,7 @@ jobs:
   test-postman:
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
+    environment: CI
     steps:
     - uses: actions/checkout@v4
     - name: ENV
