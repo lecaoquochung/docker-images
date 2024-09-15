@@ -99,6 +99,7 @@ jobs:
 
   # TEST
   # API TEST WITH POSTMAN
+  # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
   test-postman:
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
