@@ -122,7 +122,9 @@ jobs:
       run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
     - name: Run API tests - Postman
       run: |
-        postman collection run "15804725-fe71a0f4-6ee1-4966-95ff-a26f472e7613" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
+        postman collection run "15804725-1deca745-1604-4657-9f7e-353bdf2adac7" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168584-${{ github.run_id }}"
+        # Lint your API using Postman CLI
+        postman api lint 1512548b-2196-422a-8a3c-b8d374f227f9 --integration-id 168584
     # - name: Run API tests - Newman
     #   run: |
     #     postman collection run "${{ github.workspace }}/postman/sample/user.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
