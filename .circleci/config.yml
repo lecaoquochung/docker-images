@@ -51,6 +51,7 @@ orbs:
   macos: circleci/macos@2.3.4
   slack: circleci/slack@4.9.3
   browser-tools: circleci/browser-tools@1.4.1
+  newman: postman/newman@1.0.0
 
 working_directory: ~/code
 
@@ -254,6 +255,14 @@ jobs:
             ./.circleci/job/shared/aws-s3.sh
           when: always
 
+  test-postman:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./postman/sample/user.json
+          environment: ./postman/sample/env.json
+
 workflows:
   version: 2
 
@@ -262,6 +271,7 @@ workflows:
       - test-latest
       - test-dev
       - test-build
+      - test-postman
 
   # For CircleCI API manual trigger only
   test_manual:
