@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "ci", "build*" ]
+    branches: [ "ci", "dev", "build*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -95,4 +95,41 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
-      run: docker build . --file ./puppeteer/Dockerfile.latest --tag puppeteer-latest:$(date +%s)
+      run: docker build . --file ./puppeteer/Dockerfile.latest --tag "puppeteer-latest:$(date +%s)"
+
+  # TEST
+  # API TEST WITH POSTMAN
+  # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
+  test-postman:
+    needs: build-ubuntu-latest
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : " "$CONTACT_VAR"
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Install Postman CLI
+      run: |
+        curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+    - name: Login to Postman CLI
+      run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+    - name: Run API tests - Postman
+      run: |
+        postman collection run "15804725-1deca745-1604-4657-9f7e-353bdf2adac7" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168584-${{ github.run_id }}"
+    # - name: Run API tests - Newman
+    #   run: |
+    #     postman collection run "${{ github.workspace }}/postman/sample/user.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
+    #     # Lint your API using Postman CLI
+    #     postman api lint 1512548b-2196-422a-8a3c-b8d374f227f9 --integration-id 168419
+
+  # TODO API TEST WITH NEWMAN
+  # https://github.com/lecaoquochung/docker-images/issues/21
+  # Test Commit
+  # Config update
