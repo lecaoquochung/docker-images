@@ -95,7 +95,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
-      run: docker build . --file ./puppeteer/Dockerfile.latest --tag puppeteer-latest:$(date +%s)
+      run: docker build . --file ./puppeteer/Dockerfile.latest --tag "puppeteer-latest:$(date +%s)"
 
   # TEST
   # API TEST WITH POSTMAN
@@ -111,7 +111,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : " "$CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
