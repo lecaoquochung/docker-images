@@ -1,0 +1,280 @@
+version: 2.1
+
+# parameters only | params only
+parameters:
+  feature-domain:
+    type: string
+    default: "google.co.jp"
+
+  tool:
+    type: string
+    default: "puppeteer"
+
+  browser:
+    type: string
+    default: "chrome"
+
+  env:
+    type: string
+    default: "dev"
+
+  test_suite_name:
+    type: string
+    default: "basic_test"
+
+  trigger_api:
+    default: true
+    type: boolean
+
+  trigger_cli:
+    default: true
+    type: boolean
+
+  trigger_implementation:
+    default: true
+    type: boolean
+
+  trigger_linux:
+    default: true
+    type: boolean
+
+  trigger_workflow_test_manual:
+    default: true
+    type: boolean
+
+  os:
+    type: string
+    default: "linux"
+
+orbs:
+  win: circleci/windows@2.4.0
+  macos: circleci/macos@2.3.4
+  slack: circleci/slack@4.9.3
+  browser-tools: circleci/browser-tools@1.4.1
+  newman: postman/newman@1.0.0
+
+working_directory: ~/code
+
+jobs:
+  # job test latest | job test-latest
+  test-latest:
+    environment:
+      - ENV=<< pipeline.parameters.env >>
+      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
+      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
+      - TOOL=<< pipeline.parameters.tool >>
+      - BROWSER=<< pipeline.parameters.browser >>
+    parallelism: 2
+    working_directory: /home/qa/code
+    docker:
+      - image: lecaoquochung/puppeteer:latest
+        environment:
+          TZ: "Asia/Tokyo"
+    steps:
+      - checkout
+      - run:
+          name: Submodule
+          command: |
+            ./.circleci/submodule.sh
+      - restore_cache:
+          keys:
+          - v1-build-latest-yarn-{{ checksum "package.json" }}
+          - vi-build-latest-yarn-
+      - run:
+          name: DOMAIN
+          command: |
+            ./.circleci/job/shared/server-domain-info.sh
+      - run:
+          name: Dependencies
+          command: |
+            ./.circleci/os/linux/dependencies.sh
+      - run:
+          name: Cucumber
+          command: |
+            yarn cucumber -v; pip --version; 
+      - run:
+          name: Jest
+          command: |
+            yarn test src/jest/openGoogle.test.js
+      - run:
+          name: Split test by Test suite
+          command: |
+            xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
+      - run:
+          name: Report
+          command: |
+            ./.circleci/job/shared/report.sh
+          when: always
+      - run:
+          name: Test artifacts
+          command: |
+            ./.circleci/job/shared/artifact.sh
+          when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: coverage/cucumber
+          when: always
+      - store_artifacts:
+          path: artifact
+          when: always
+
+  test-dev:
+    environment:
+      - ENV=<< pipeline.parameters.env >>
+      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
+      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
+      - TOOL=<< pipeline.parameters.tool >>
+      - BROWSER=<< pipeline.parameters.browser >>
+    parallelism: 2
+    working_directory: /home/qa/code
+    docker:
+      - image: lecaoquochung/puppeteer:node-21.0.0
+        environment:
+          TZ: "Asia/Tokyo"
+    steps:
+      - checkout
+      - run:
+          name: Submodule
+          command: |
+            ./.circleci/submodule.sh
+      - restore_cache:
+          keys:
+          - v1-build-version-yarn-{{ checksum "package.json" }}
+          - vi-build-version-yarn-
+      - run:
+          name: DOMAIN
+          command: |
+            ./.circleci/job/shared/server-domain-info.sh
+      - run:
+          name: Dependencies
+          command: |
+            ./.circleci/os/linux/dependencies.sh
+      - run:
+          name: Jest
+          command: |
+            yarn test src/jest/openGoogle.test.js
+      - run:
+          name: Cucumber
+          command: |
+            yarn test src/jest/openGoogle.test.js
+      - run:
+          name: Split test by Test suite
+          command: |
+            xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
+      - run:
+          name: Report
+          command: |
+            ./.circleci/job/shared/report.sh
+          when: always
+      - run:
+          name: Test artifacts
+          command: |
+            ./.circleci/job/shared/artifact.sh
+          when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: coverage/cucumber
+          when: always
+      - store_artifacts:
+          path: artifact
+          when: always
+      - run:
+          name: Upload report to S3
+          command: |
+            ./.circleci/job/shared/aws-s3.sh
+          when: always
+
+  test-build:
+    environment:
+      - ENV=<< pipeline.parameters.env >>
+      - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
+      - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
+      - TOOL=<< pipeline.parameters.tool >>
+      - BROWSER=<< pipeline.parameters.browser >>
+    parallelism: 2
+    working_directory: /home/qa/code
+    docker:
+      - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
+        environment:
+          TZ: "Asia/Tokyo"
+    steps:
+      - checkout
+      - run:
+          name: Submodule
+          command: |
+            ./.circleci/submodule.sh
+      - run:
+          name: DOMAIN
+          command: |
+            ./.circleci/job/shared/server-domain-info.sh
+      - run:
+          name: Dependencies
+          command: |
+            ./.circleci/os/linux/dependencies.sh
+      - run:
+          name: Jest
+          command: |
+            yarn test src/jest/openGoogle.test.js
+      - run:
+          name: Cucumber
+          command: |
+            yarn cucumber -v; pip --version;
+      - run:
+          name: Split test by Test suite
+          command: |
+            ./.circleci/job/shared/run-test.sh
+      - run:
+          name: Report
+          command: |
+            ./.circleci/job/shared/report.sh
+          when: always
+      - run:
+          name: Test artifacts
+          command: |
+            ./.circleci/job/shared/artifact.sh
+          when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: coverage/cucumber
+          when: always
+      - store_artifacts:
+          path: artifact
+          when: always
+      - run:
+          name: Upload report to S3
+          command: |
+            ./.circleci/job/shared/aws-s3.sh
+          when: always
+
+  test-postman:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./postman/sample/user.json
+          environment: ./postman/sample/env.json
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - test-latest
+      - test-dev
+      - test-build
+      - test-postman
+
+  # For CircleCI API manual trigger only
+  test_manual:
+    unless: << pipeline.parameters.trigger_workflow_test_manual >>
+    jobs:
+      - test-build

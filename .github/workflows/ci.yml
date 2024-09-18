@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [ "ci", "dev", "build*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  inspect-code:
+    name: '[Required] Inspect code'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
+
+  # OS 
+  # Ubuntu
+  build-ubuntu-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-lastest
+      run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+  
+  # Ubuntu for QA
+  build-ubuntu-qa:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-qa
+      run: docker build . --file ./ubuntu/Dockerfile.qa --tag ubuntu-qa:$(date +%s)
+
+  build-ubuntu-noble:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: ubuntu-noble
+      run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)
+  
+  # PROGRAMMING LANGUAGE
+  # PHP
+  build-php-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: php-fpm
+      run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
+  build-php-beta:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: php-fpm
+      run: docker build . --file ./php/Dockerfile.beta --tag php:$(date +%s)
+
+  # SCALA
+  build-scala-bionic:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-bionic
+      run: docker build . --file ./scala/Dockerfile.bionic --tag scala-bionic:$(date +%s)
+  build-scala-mantic:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-mantic
+      run: docker build . --file ./scala/Dockerfile.mantic --tag scala-mantic:$(date +%s)
+  
+  # APPLICATIONS
+  # JENKINS
+  build-jenkins-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: jenkins-latest
+      run: docker build . --file ./jenkins/Dockerfile.latest --tag jenkins-latest:$(date +%s)
+
+  # PUPPETEER
+  build-puppeteer-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: puppeteer-latest
+      run: docker build . --file ./puppeteer/Dockerfile.latest --tag "puppeteer-latest:$(date +%s)"
+
+  # TEST
+  # API TEST WITH POSTMAN
+  # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
+  test-postman:
+    needs: build-ubuntu-latest
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : " "$CONTACT_VAR"
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Install Postman CLI
+      run: |
+        curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+    - name: Login to Postman CLI
+      run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+    - name: Run API tests - Postman
+      run: |
+        postman collection run "15804725-1deca745-1604-4657-9f7e-353bdf2adac7" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168584-${{ github.run_id }}"
+    # - name: Run API tests - Newman
+    #   run: |
+    #     postman collection run "${{ github.workspace }}/postman/sample/user.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
+    #     # Lint your API using Postman CLI
+    #     postman api lint 1512548b-2196-422a-8a3c-b8d374f227f9 --integration-id 168419
+
+  # TODO API TEST WITH NEWMAN
+  # https://github.com/lecaoquochung/docker-images/issues/21
+  # Test Commit
+  # Config update
