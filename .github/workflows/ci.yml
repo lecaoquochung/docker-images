@@ -150,7 +150,7 @@ jobs:
         newman --version 
     - name: Run API tests - Newman - Collection Cloud (Shared JSON)
       run: |
-        newman run https://api.postman.com/collections/15804725-2460c2a8-98d1-434d-9412-c7a0ab130f8e?access_key=PMAT-01J8CEBC4WCC8QWQ38BEJP6JDN
+        newman run https://api.postman.com/collections/15804725-2460c2a8-98d1-434d-9412-c7a0ab130f8e?access_key=${{ vars.POSTMAN_ACCESS_KEY_ME }}
     - name: Run API tests - Newman - Collection JSON (Export)
       run: |
         newman run ./postman/ME.postman_collection.json -e ./postman/SAMPLE.postman_environment.json

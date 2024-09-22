@@ -260,8 +260,8 @@ jobs:
     steps:
       - checkout
       - newman/newman-run:
-          collection: ./postman/sample/user.json
-          environment: ./postman/sample/env.json
+          collection: ./postman/ME.postman_collection.json
+          environment: ./postman/SAMPLE.postman_environment.json
 
 workflows:
   version: 2
