@@ -123,13 +123,33 @@ jobs:
     - name: Run API tests - Postman
       run: |
         postman collection run "15804725-1deca745-1604-4657-9f7e-353bdf2adac7" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168584-${{ github.run_id }}"
-    # - name: Run API tests - Newman
-    #   run: |
-    #     postman collection run "${{ github.workspace }}/postman/sample/user.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
-    #     # Lint your API using Postman CLI
-    #     postman api lint 1512548b-2196-422a-8a3c-b8d374f227f9 --integration-id 168419
 
   # TODO API TEST WITH NEWMAN
   # https://github.com/lecaoquochung/docker-images/issues/21
   # Test Commit
   # Config update
+  test-newman:
+    needs: build-ubuntu-latest
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Install Postman CLI
+      run: |
+        npm install -g newman
+        npm update -g newman
+        newman --version 
+  # - name: Run API tests - Newman
+    #   run: |
+    #     postman collection run "${{ github.workspace }}/postman/sample/user.json" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168583-${{ github.run_id }}"
+    #     # Lint your API using Postman CLI
+    #     postman api lint 1512548b-2196-422a-8a3c-b8d374f227f9 --integration-id 168419
