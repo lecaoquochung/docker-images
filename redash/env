@@ -1,0 +1,22 @@
+# Minimum mandatory values (when not just developing)
+DOCKER_BASE_PATH=/docker
+REDASH_BASE_PATH=/docker/redash
+# COOKIE_SECRET=$(pwgen -1s 32)
+REDASH_COOKIE_SECRET=REDASH_COOKIE_SECRET
+# SECRET_KEY=$(pwgen -1s 32)
+REDASH_SECRET_KEY=REDASH_SECRET_KEY
+# POSTGRES_HOST_AUTH_METHOD="trust|allow all"
+POSTGRES_HOST_AUTH_METHOD="trust"
+# PG_PASSWORD=$(pwgen -1s 32)
+POSTGRES_PASSWORD=POSTGRES_PASSWORD
+# DATABASE_URL="postgresql://postgres:${POSTGRES_PASSWORD}@postgres/postgres"
+DATABASE_URL="postgresql://postgres:POSTGRES_PASSWORD@redash-postgres:5432/postgres"
+# REDASH_REDIS_URL: "redis://redis:6379/0"
+REDASH_REDIS_URL: "redis://redash-redis:6379/0"
+# REDASH_MAIL_SERVER: "smtp2http"
+REDASH_MAIL_SERVER: "smtp2http"
+# REDASH_MAIL_DEFAULT_SENDER: "me@lehungio.com"
+REDASH_MAIL_DEFAULT_SENDER: "me@lehungio.com"
+# REDASH_LOG_LEVEL: "INFO"
+REDASH_LOG_LEVEL: "INFO"
+GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID
