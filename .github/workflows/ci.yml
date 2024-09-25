@@ -171,11 +171,12 @@ jobs:
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
-    - name: Clone Run Redash setup
+    - name: Checkout Redash setup
       uses: actions/checkout@master
       with:
         repository: getredash/setup
     - name: Run setup.sh script
       run: |
-        cd setup
-        ./setup.sh
+        ls -all
+        # cd setup
+        # ./setup.sh
