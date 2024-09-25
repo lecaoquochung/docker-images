@@ -287,11 +287,16 @@ jobs:
     - name: Run docker-compose up
       working-directory: ./redash
       run: |
+        cp env .env
         docker --version
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.29.6/docker-compose-windows-x86_64.exe" -Destination $Env:ProgramFiles\Docker\docker-compose.exe
-        docker-compose --version
-        docker-compose up -d
-        docker-compose ps
-        docker-compose logs
+        docker compose --version
+        docker compose up -d
+        docker compose ps
+        docker compose logs
+
+        # Install docker-compose
+        # https://docs.docker.com/compose/install/standalone/#on-windows-server
+        # [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        # Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.29.6/docker-compose-windows-x86_64.exe" -Destination $Env:ProgramFiles\Docker\docker-compose.exe
+        # docker-compose --version
         
