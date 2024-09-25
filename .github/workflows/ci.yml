@@ -175,6 +175,11 @@ jobs:
       uses: actions/checkout@master
       with:
         repository: getredash/setup
+    - name: Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y pwgen
+        pwgen 32 1
     - name: Run setup.sh script
       run: |
         ls -all
