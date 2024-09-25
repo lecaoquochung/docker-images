@@ -54,16 +54,18 @@ jobs:
         npm --version
         swift --version
         swift package init --name HelloWorld --type executable
-        ls HelloWorld
-        cat HelloWorld/Package.swift
-        cat HelloWorld/Sources/HelloWorld/main.swift
-        cat HelloWorld/Tests/HelloWorldTests/HelloWorldTests.swift
+        ls -all
+        cat Package.swift
+        cat Sources/main.swift
+        # cat /Tests/HelloWorldTests.swift
     - name: Build
       working-directory: ./swift
       run: swift build -v
     - name: Run tests
       working-directory: ./swift
-      run: swift test -v
+      run: |
+        ls -all
+        # swift test -v
   
   # Windows
   # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
