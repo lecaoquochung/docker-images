@@ -35,14 +35,50 @@ jobs:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
       run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+  
+  # MacOS
+  # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
   build-macos-latest:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Build-in dependencies
+      working-directory: ./swift
+      run: |
+        env
+        ls -all
+        sw_vers -productName
+        sw_vers -productVersion
+        sw_vers -buildVersion
+        pip list
+        npm ls
+        swift --version
+        swift package init --name HelloWorld --type executable
+        ls HelloWorld
+        cat HelloWorld/Package.swift
+        cat HelloWorld/Sources/HelloWorld/main.swift
+        cat HelloWorld/Tests/HelloWorldTests/HelloWorldTests.swift
     - name: Build
+      working-directory: ./swift
       run: swift build -v
     - name: Run tests
+      working-directory: ./swift
       run: swift test -v
+  
+  # Windows
+  # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
+  build-windows-latest:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build-in dependencies
+      run: |
+        env
+        ls -all
+        systeminfo | findstr /B /C:"OS Name" /B /C:"OS Version"
+        systeminfo
+        pnpm list
+        packet show-installed-packages  
   
   # Ubuntu for QA
   build-ubuntu-qa:
@@ -192,9 +228,10 @@ jobs:
       run: |
         ls -all
         # cd setup
+        sudo ./setup.sh startup
         sudo ./setup.sh
 
-  # REDASH SETUP
+  # REDASH SETUP MACOS
   test-redash-setup-macos:
     needs: build-macos-latest
     runs-on: macos-latest
@@ -223,4 +260,32 @@ jobs:
       run: |
         ls -all
         # cd setup
-        sudo ./setup.sh
+        sudo ./setup.sh startup
+        sudo ./setup.sh 
+
+  
+  # TEST REDASH DOCKER
+  test-redash-docker:
+    needs: build-windows-latest
+    runs-on: macos-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Run docker-compose up
+      working-directory: ./redash
+      run: |
+        docker --version
+        docker-compose --version
+        docker-compose up -d
+        docker-compose ps
+        docker-compose logs
+        
