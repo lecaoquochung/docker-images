@@ -271,7 +271,7 @@ jobs:
   # TEST REDASH DOCKER
   test-redash-docker:
     needs: build-windows-latest
-    runs-on: macos-latest
+    runs-on: windows-latest
     environment: CI
     steps:
     - uses: actions/checkout@v4
