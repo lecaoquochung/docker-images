@@ -35,6 +35,14 @@ jobs:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
       run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+  build-macos-latest:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v
   
   # Ubuntu for QA
   build-ubuntu-qa:
@@ -155,7 +163,7 @@ jobs:
       run: |
         newman run ./postman/ME.postman_collection.json -e ./postman/SAMPLE.postman_environment.json
 
-# REDASH SETUP
+  # REDASH SETUP
   test-redash-setup:
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
@@ -179,6 +187,37 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install -y pwgen
+        pwgen 32 1
+    - name: Run setup.sh script
+      run: |
+        ls -all
+        # cd setup
+        sudo ./setup.sh
+
+  # REDASH SETUP
+  test-redash-setup-macos:
+    needs: build-macos-latest
+    runs-on: macos-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Checkout Redash setup
+      uses: actions/checkout@master
+      with:
+        repository: getredash/setup
+    - name: Dependencies
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install pwgen
         pwgen 32 1
     - name: Run setup.sh script
       run: |
