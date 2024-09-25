@@ -51,7 +51,7 @@ jobs:
         sw_vers -productVersion
         sw_vers -buildVersion
         pip list
-        npm ls
+        npm --version
         swift --version
         swift package init --name HelloWorld --type executable
         ls HelloWorld
@@ -77,9 +77,11 @@ jobs:
         ls # no -all
         systeminfo | findstr /B /C:"OS Name" /B /C:"OS Version"
         systeminfo
-        pnpm list
-        packet show-installed-packages  
-  
+        Get-Acl
+        Get-Command
+        Get-Package
+        Get-Process
+
   # Ubuntu for QA
   build-ubuntu-qa:
     runs-on: ubuntu-latest
