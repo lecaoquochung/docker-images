@@ -74,7 +74,7 @@ jobs:
     - name: Build-in dependencies
       run: |
         env
-        ls -all
+        ls # no -all
         systeminfo | findstr /B /C:"OS Name" /B /C:"OS Version"
         systeminfo
         pnpm list
