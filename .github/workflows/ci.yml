@@ -337,6 +337,8 @@ jobs:
         # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
 
         # verify localhost:5500 response by curl
-        curl http://localhost:5500
+        npm install -g wait-on
+        npx wait-on http://localhost:5500 -t 60000 -l
+        curl http://localhost:5500 -vd
 
         
