@@ -36,6 +36,70 @@ jobs:
     - name: ubuntu-lastest
       run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
   
+  # MacOS
+  # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
+  build-macos-latest:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build-in dependencies
+      working-directory: ./swift
+      run: |
+        env
+        ls -all
+        sw_vers -productName
+        sw_vers -productVersion
+        sw_vers -buildVersion
+        pip list
+        npm --version
+        swift --version
+        swift package init --name HelloWorld --type executable
+        ls -all
+        cat Package.swift
+        cat Sources/main.swift
+        # cat /Tests/HelloWorldTests.swift
+    - name: Build
+      working-directory: ./swift
+      run: swift build -v
+    - name: Run tests
+      working-directory: ./swift
+      run: |
+        ls -all
+        # swift test -v
+        # INFO: https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196802
+  
+  # Windows
+  # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
+  build-windows-latest:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # Setup Node.js
+    # https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196810
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: '14' # Or your preferred version
+    
+    # Windows build-in dependencies
+    - name: Build-in dependencies
+      shell: pwsh
+      run: |
+        env
+        ls # no -all
+        systeminfo | findstr /B /C:"OS Name" /B /C:"OS Version"
+        systeminfo
+        
+        # Powsershell
+        $env:Path
+        Get-ChildItem
+        Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber
+        Get-Acl
+        Get-Command
+        Get-Package
+        Get-Process
+
   # Ubuntu for QA
   build-ubuntu-qa:
     runs-on: ubuntu-latest
@@ -139,7 +203,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : $CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
@@ -154,3 +218,132 @@ jobs:
     - name: Run API tests - Newman - Collection JSON (Export)
       run: |
         newman run ./postman/ME.postman_collection.json -e ./postman/SAMPLE.postman_environment.json
+
+  # REDASH SETUP
+  test-redash-setup:
+    needs: build-ubuntu-latest
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : $CONTACT_VAR"
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Checkout Redash setup
+      uses: actions/checkout@master
+      with:
+        repository: getredash/setup
+    - name: Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y pwgen
+        pwgen 32 1
+    - name: Run setup.sh script
+      run: |
+        ls -all
+        # cd setup
+        sudo ./setup.sh startup
+        sudo ./setup.sh
+
+  # REDASH SETUP MACOS
+  test-redash-setup-macos:
+    needs: build-macos-latest
+    runs-on: macos-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : $CONTACT_VAR"
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Checkout Redash setup
+      uses: actions/checkout@master
+      with:
+        repository: getredash/setup
+    - name: Dependencies (*For Testing purpose only)
+      run: |
+        # Homebrew is pre-installed on GitHub-hosted macOS runners
+        # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install pwgen
+        pwgen 32 1
+    - name: Run setup.sh script
+      run: |
+        ls -all
+        chmod +x ./setup.sh
+        ./setup.sh startup || { echo "Redash startup failed"; exit 1; }
+        ./setup.sh || { echo "Redash setup failed"; exit 1; }
+
+  
+  # TEST REDASH DOCKER
+  test-redash-docker:
+    needs: build-windows-latest
+    runs-on: windows-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v4
+    - name: ENV
+      run: |
+        env
+    - name: Environment variables
+      run: |
+        echo "Github environment indirect : $CONTACT_VAR"
+        echo "Github environment direct   : " ${{ vars.CONTACT }}
+      env:
+        CONTACT_VAR: ${{ vars.CONTACT }}
+    - name: Run docker-compose up
+      working-directory: ./redash
+      run: |
+        cp env .env
+        docker --version
+        docker compose --version
+        docker compose up -d
+        docker compose ps
+        docker compose logs
+        docker compose down
+
+        # Install docker-compose
+        # https://docs.docker.com/compose/install/standalone/#on-windows-server
+        # [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        # Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.29.6/docker-compose-windows-x86_64.exe" -Destination $Env:ProgramFiles\Docker\docker-compose.exe
+        # docker-compose --version
+        # Docker Compose alternative
+        # https://docs.docker.com/compose/gettingstarted/
+    - name: Test Redash
+      working-directory: ./redash
+      run: |
+        docker compose run --rm redash-server create_db
+        # Should response
+        # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Context impl PostgresqlImpl.
+        # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Will assume transactional DDL.
+        # [2024-09-29 02:43:16,124][PID:1][INFO][alembic.runtime.migration] Running stamp_revision  -> 89bc7873a3e0
+        
+        # NEED REPORT - Github Action Windows latest runner not supported
+        # no matching manifest for windows/amd64 10.0.20348 in the manifest list entries
+        # https://github.com/lecaoquochung/docker-images/actions/runs/11089568047/job/30810875892#step:6:25
+
+
+        docker compose up -d
+        docker compose ps
+        docker compose logs
+        # should response
+        # docker-images-redash-worker    | Starting RQ scheduler...
+        # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Starting gunicorn 20.0.4
+        # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
+
+        # verify localhost:5500 response by curl
+        # npm install -g wait-on
+        # npx wait-on http://localhost:5500 -t 60000 -l
+        # curl http://localhost:5500 -vd
+
+        
