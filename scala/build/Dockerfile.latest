@@ -1,9 +1,9 @@
-# https://wiki.ubuntu.com/Releases
-# Ubuntu 23.10 (Mantic Minotaur)
-FROM ubuntu:mantic
+# Release: https://releases.ubuntu.com
+# Wiki: https://wiki.ubuntu.com/Releases
+FROM ubuntu:oracular
 
 # Maintainer information
-LABEL maintainer="lecaoquochung@gmail.com"
+LABEL maintainer="me@lehungio.com"
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
