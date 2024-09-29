@@ -1,6 +1,8 @@
 # Minimum mandatory values (when not just developing)
-DOCKER_BASE_PATH=/docker
-REDASH_BASE_PATH=/docker/redash
+# DOCKER_BASE_PATH=/docker
+# REDASH_BASE_PATH=/docker/redash
+DOCKER_BASE_PATH=${DOCKER_BASE_PATH:-/docker}
+REDASH_BASE_PATH=${REDASH_BASE_PATH:-/docker/redash}
 # COOKIE_SECRET=$(pwgen -1s 32)
 REDASH_COOKIE_SECRET=REDASH_COOKIE_SECRET
 # SECRET_KEY=$(pwgen -1s 32)

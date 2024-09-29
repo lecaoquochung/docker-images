@@ -36,6 +36,18 @@ Access the Redash web interface to complete the setup:
   Follow the on-screen instructions to create an admin account and set up your first data source.
 ```
 
+- Web
+
+![web](./img/web.png)
+
+- CLI
+
+![cli](./img/cli.png)
+
+- Dashboard
+
+![dashboard](./img/dashboard.png)
+
 ## Customization
 
 (Information about customizable options, if any)

@@ -66,6 +66,7 @@ jobs:
       run: |
         ls -all
         # swift test -v
+        # INFO: https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196802
   
   # Windows
   # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
@@ -73,12 +74,27 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+
+    # Setup Node.js
+    # https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196810
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: '14' # Or your preferred version
+    
+    # Windows build-in dependencies
     - name: Build-in dependencies
+      shell: pwsh
       run: |
         env
         ls # no -all
         systeminfo | findstr /B /C:"OS Name" /B /C:"OS Version"
         systeminfo
+        
+        # Powsershell
+        $env:Path
+        Get-ChildItem
+        Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber
         Get-Acl
         Get-Command
         Get-Package
@@ -255,17 +271,18 @@ jobs:
       uses: actions/checkout@master
       with:
         repository: getredash/setup
-    - name: Dependencies
+    - name: Dependencies (*For Testing purpose only)
       run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # Homebrew is pre-installed on GitHub-hosted macOS runners
+        # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         brew install pwgen
         pwgen 32 1
     - name: Run setup.sh script
       run: |
         ls -all
-        # cd setup
-        sudo ./setup.sh startup
-        sudo ./setup.sh 
+        chmod +x ./setup.sh
+        ./setup.sh startup || { echo "Redash startup failed"; exit 1; }
+        ./setup.sh || { echo "Redash setup failed"; exit 1; }
 
   
   # TEST REDASH DOCKER
@@ -293,6 +310,7 @@ jobs:
         docker compose up -d
         docker compose ps
         docker compose logs
+        docker compose down
 
         # Install docker-compose
         # https://docs.docker.com/compose/install/standalone/#on-windows-server
@@ -301,4 +319,24 @@ jobs:
         # docker-compose --version
         # Docker Compose alternative
         # https://docs.docker.com/compose/gettingstarted/
+    - name: Test Redash
+      working-directory: ./redash
+      run: |
+        docker compose run --rm redash-server create_db
+        # Should response
+        # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Context impl PostgresqlImpl.
+        # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Will assume transactional DDL.
+        # [2024-09-29 02:43:16,124][PID:1][INFO][alembic.runtime.migration] Running stamp_revision  -> 89bc7873a3e0
+
+        docker compose up -d
+        docker compose ps
+        docker compose logs
+        # should response
+        # docker-images-redash-worker    | Starting RQ scheduler...
+        # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Starting gunicorn 20.0.4
+        # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
+
+        # verify localhost:5500 response by curl
+        curl http://localhost:5500
+
         
