@@ -187,7 +187,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : $CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
@@ -215,7 +215,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : $CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
@@ -247,7 +247,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : $CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
@@ -280,7 +280,7 @@ jobs:
         env
     - name: Environment variables
       run: |
-        echo "Github environment indirect : " $CONTACT_VAR
+        echo "Github environment indirect : $CONTACT_VAR"
         echo "Github environment direct   : " ${{ vars.CONTACT }}
       env:
         CONTACT_VAR: ${{ vars.CONTACT }}
@@ -299,4 +299,6 @@ jobs:
         # [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         # Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.29.6/docker-compose-windows-x86_64.exe" -Destination $Env:ProgramFiles\Docker\docker-compose.exe
         # docker-compose --version
+        # Docker Compose alternative
+        # https://docs.docker.com/compose/gettingstarted/
         

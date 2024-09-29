@@ -3,6 +3,7 @@
 This repository contains Docker images for various environments including Ubuntu, PHP, Scala, and Jenkins. The images are automatically built and tagged using GitHub Actions upon every push or pull request to the `main` branch.
 
 ## Table of Contents
+
 - [Build Configuration](#build-configuration)
 - [Images](#images)
   - [Ubuntu](#ubuntu)

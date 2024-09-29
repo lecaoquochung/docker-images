@@ -1,26 +1,27 @@
 # Setup https://github.com/getredash/redash/wiki/Local-development-setup
 # Official https://github.com/getredash/setup/blob/master/data/compose.yaml
 services:
-  # docker-compose run --rm redash-server create_db
-  # docker-compose exec redash-server /bin/bash
+  # rm ./docker/postgres/data -rf
+  # docker compose exec redash-server /bin/bash
+  # docker compose run --rm redash-server create_db
   redash-server:
-    hostname: redash-server
-    container_name: redash-server
+    hostname: docker-images-redash-server
+    container_name: docker-images-redash-server
     image: redash/redash:latest
     command: server
     depends_on:
       - redash-postgres
       - redash-redis
     ports:
-      - "55000:5000"
+      - "5500:5000"
     env_file: .env
     environment:
       REDASH_WEB_WORKERS: 4
       PYTHONUNBUFFERED: 0
   
   redash-worker:
-    hostname: redash-worker
-    container_name: redash-worker
+    hostname: docker-images-redash-worker
+    container_name: docker-images-redash-worker
     image: redash/redash:latest
     command: scheduler
     depends_on:
@@ -33,18 +34,23 @@ services:
       PYTHONUNBUFFERED: 0
   
   redash-redis:
-    hostname: redash-redis
-    container_name: redash-redis
+    hostname: docker-images-redash-redis
+    container_name: docker-images-redash-redis
     image: redis:7-alpine
     # command: --port 56379 # insider default port
     ports:
      - "56379:6379"
     restart: unless-stopped
 
+   # init db
+  # postgres://username:password@host:5432/dbname
+  # postgres://me:${SECRET}@postgres:5432/me
   # docker-compose exec redash-postgres /bin/bash
+  # docker compose exec redash-postgres /bin/bash
+  # docker compose run --rm redash create_db
   redash-postgres:
-    hostname: redash-postgres
-    container_name: redash-postgres
+    hostname: docker-images-redash-postgres
+    container_name: docker-images-redash-postgres
     image: pgautoupgrade/pgautoupgrade:latest
     # command: --port 55432
     ports:

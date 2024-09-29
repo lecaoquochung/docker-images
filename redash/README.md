@@ -1,22 +1,51 @@
 # docker-redash
 
-## how to run
+Docker setup for Redash, an open-source business intelligence tool.
+
+## What is Redash?
+
+(Brief description of Redash and its key features)
+
+## Prerequisites
+
+- Docker (version X.X or higher)
+- Docker Compose (version X.X or higher)
+
+## How to run
+
 - init .env
-```code
+```
 cp env .env
 ```
 
 - init database
-```code
-docker-compose run --rm redash-server create_db
+```
+docker compose run --rm redash-server create_db
 ```
 
 - start servers
-```code
-docker-compose up -d
+```
+docker compose up -d
 ```
 
 - config server
-```code
-http://localhost:55000
+Access the Redash web interface to complete the setup:
 ```
+[http://localhost:5500](http://localhost:5500)
+
+  Follow the on-screen instructions to create an admin account and set up your first data source.
+```
+
+## Customization
+
+(Information about customizable options, if any)
+
+## Troubleshooting
+
+(Common issues and their solutions)
+
+## Additional Resources
+
+- [Redash Documentation](https://redash.io/help/)
+- [Docker Documentation](https://docs.docker.com/)
+- (Any other relevant resources)
