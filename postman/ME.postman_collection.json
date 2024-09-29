@@ -1,9 +1,10 @@
 {
 	"info": {
 		"_postman_id": "2460c2a8-98d1-434d-9412-c7a0ab130f8e",
-		"name": "Users",
+		"name": "ME",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15804725"
+		"_exporter_id": "15804725",
+		"_collection_link": "https://cloudy-shadow-800513.postman.co/workspace/885e6b40-0422-488c-8ab6-2f85ee3179ca/collection/15804725-2460c2a8-98d1-434d-9412-c7a0ab130f8e?action=share&source=collection_link&creator=15804725"
 	},
 	"item": [
 		{
