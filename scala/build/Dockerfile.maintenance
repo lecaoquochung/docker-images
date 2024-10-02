@@ -110,13 +110,14 @@ RUN apt install -y \
   fonts-kouzan-mouhitsu
 #   ttf-mscorefonts-installer
 
-# Install Python 3.10 and required packages
+# Install Python and required packages
+# Optional: If you need venv for virtual environments
 RUN apt-get update && apt-get install -y software-properties-common && \
     add-apt-repository universe && \
     apt-get update && apt-get install -y \
     python3.10 \
-    python3-distutils \
-    python3-pip
+    python3-pip \
+    python3.10-venv
 
 # Upgrade pip to the latest version
 RUN python3.10 -m pip install --upgrade pip
