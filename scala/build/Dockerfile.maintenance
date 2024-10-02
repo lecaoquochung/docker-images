@@ -1,6 +1,19 @@
 # Ubuntu 18.04 LTS (Bionic Beaver)
 FROM ubuntu:22.04
 
+# Set environment to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set timezone non-interactively
+ENV TZ=Asia/Tokyo
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    apt-get update && apt-get install -y apt-utils tzdata && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+# Install dependencies
+RUN apt-get update && apt-get install -y gnupg2 lsb-release ca-certificates
+
 # === INSTALL BROWSER DEPENDENCIES ===
 
 # Install WebKit dependencies
@@ -97,22 +110,22 @@ RUN apt install -y \
   fonts-kouzan-mouhitsu
 #   ttf-mscorefonts-installer
 
-# Install Python 3.12 - v2024.2.40
+# Install Python 3.13 - v2024.2.40
 RUN apt-get update && apt-get install -y \
     software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update && apt-get install -y \
-    python3.12 \
+    python3.13 \
     python3-pip
-RUN python3.12 -m pip install pip
+RUN python3.13 -m pip install pip
 RUN apt-get update && apt-get install -y \
     python3 screen bash \
     python3-setuptools
-RUN python3.12 -m pip install pip --upgrade pip
+RUN python3.13 -m pip install pip --upgrade pip
 
 # Instal java
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk ca-certificates \
+    openjdk-11-jdk \
     openssh-server curl \
     zip tar \
     postgresql-client sudo \
