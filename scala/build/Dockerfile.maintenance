@@ -253,6 +253,8 @@ USER root
 RUN ln -s /home/qa/sbt/bin/sbt /usr/local/bin/sbt
 RUN chown -R $(whoami) /tmp/.sbt
 RUN chmod -R 777 /tmp/.sbt
+ENV PATH="/home/qa/.local/bin:${PATH}"
+RUN chmod -R u+x /home/qa/.local/bin/aws
 
 USER qa
 # RUN export SBT_OPTS="-Dsbt.global.base=/path/to/another/tmp"
