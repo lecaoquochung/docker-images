@@ -253,12 +253,12 @@ RUN sudo chmod -R 777 /tmp/.sbt
 # RUN export SBT_OPTS="-Dsbt.global.base=/path/to/another/tmp"
 
 # aws-cli
-# RUN sudo curl -O https://bootstrap.pypa.io/get-pip.py \
-# 	&& python3 get-pip.py --user \
-# 	&& pip3 install awscli --upgrade --user \
-# 	&& sudo rm get-pip.py
-RUN pip install awscli --upgrade --user
-RUN sudo ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
+# Install pipx and set up PATH
+RUN apt-get update && apt-get install -y pipx && pipx ensurepath
+# Install awscli using pipx
+RUN pipx install awscli
+# Create symlink for aws CLI
+RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
 ########################### TEST-8 #############################
 
