@@ -267,7 +267,6 @@ RUN pwd;ls -all
 RUN sbt sbtVersion
 RUN yarn --version
 RUN python3 --version
-RUN aws --version
 RUN sudo aws --version
 RUN ls -all /home/qa
 RUN cat /home/qa/package.json
