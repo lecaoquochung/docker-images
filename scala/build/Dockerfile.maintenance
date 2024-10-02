@@ -178,6 +178,16 @@ RUN git clone https://github.com/sstephenson/bats.git \
 	&& (cd bats && ./install.sh /usr/local) \
 	&& rm -rf bats
 
+# Install python version
+
+# Install AWS CLI
+# Install pipx and set up PATH
+RUN apt-get update && apt-get install -y pipx && pipx ensurepath
+# Install awscli using pipx
+RUN pipx install awscli
+# Create symlink for aws CLI
+RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
+
 # Configure aws
 RUN aws configure set default.region ap-northeast-1
 
