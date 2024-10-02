@@ -1,4 +1,3 @@
-# Ubuntu 18.04 LTS (Bionic Beaver)
 FROM ubuntu:24.04
 
 # Set environment to avoid interactive prompts
@@ -44,10 +43,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gstreamer1.0-libav
 
 # Install Chromium dependencies
+# outdate in ubuntu 24.04
+# 1.601 E: Package 'libasound2' has no installation candidate
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libnss3 \
     libxss1 \
-    libasound2 \
     fonts-noto-color-emoji \
     libxtst6
 
