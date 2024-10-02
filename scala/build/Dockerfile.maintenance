@@ -200,19 +200,16 @@ RUN yarn install
 # 1. Add tip-of-tree Playwright package to install its browsers.
 #    The package should be built beforehand from tip-of-tree Playwright.
 COPY ./scala/build/packages/playwright-1.47.2.tar.gz /tmp/playwright.tar.gz
-
-# 2. Install playwright and then delete the installation.
-#    Browsers will remain downloaded in `/home/qa/.cache/ms-playwright`.
 RUN su root -c "mkdir /tmp/qa && cd /tmp/qa && npm init -y && \
     npm i /tmp/playwright.tar.gz" && \
     rm -rf /tmp/qa && rm /tmp/playwright.tar.gz
 
-# 3. Symlink downloaded browsers for root user
-# RUN mkdir /root/.cache/ && \
-    # ln -s /home/qa/.cache/ms-playwright/ /root/.cache/ms-playwright
-RUN mkdir /home/qa/.cache/ && \
-    # cp /root/.cache/ms-playwright /home/qa/.cache/ms-playwright 
-    rsync -av --exclude=/root/.cache/ms-playwright/* /root/.cache/ms-playwright/ /home/qa/.cache/ms-playwright
+# 2. Ensure the Playwright cache exists
+RUN mkdir -p /root/.cache/ms-playwright && \
+    mkdir -p /home/qa/.cache/ms-playwright
+
+# 3. Sync the Playwright cache
+RUN rsync -av --exclude=/root/.cache/ms-playwright/* /root/.cache/ms-playwright/ /home/qa/.cache/ms-playwright || true
 
 # Add user so we don't need --no-sandbox.
 RUN groupadd -r qa && useradd -r -g qa -G audio,video qa \
