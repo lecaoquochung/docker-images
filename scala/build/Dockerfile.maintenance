@@ -249,8 +249,7 @@ ENV PATH /home/qa/.local/bin:/home/qa/sbt/bin:/home/qa/bin:${PATH}
 # aws-cli
 # Install awscli using pipx
 RUN pipx install awscli
-# Create symlink for aws CLI
-RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
+# RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
 # Create symlink for sbt
 USER root
