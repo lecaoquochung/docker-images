@@ -149,6 +149,13 @@ jobs:
     - uses: actions/checkout@v4
     - name: scala-mantic
       run: docker build . --file ./scala/build/Dockerfile.mantic --tag scala-mantic:$(date +%s)
+  build-scala-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-maintenance
+      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag scala-mantenance:$(date +%s)
+  
   
   # APPLICATIONS
   # JENKINS

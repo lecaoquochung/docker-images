@@ -52,13 +52,19 @@ jobs:
     - uses: actions/checkout@v4
     - name: scala-bionic
       run: docker build . --file ./scala/build/Dockerfile.bionic --tag scala-bionic:$(date +%s)
-
   build-scala-mantic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-mantic
       run: docker build . --file ./scala/build/Dockerfile.mantic --tag scala-mantic:$(date +%s)
+  build-scala-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-maintenance
+      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag scala-mantenance:$(date +%s)
+  
 
   build-jenkins-latest:
     runs-on: ubuntu-latest
