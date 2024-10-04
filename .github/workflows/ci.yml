@@ -136,25 +136,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: scala-bionic
-      run: docker build . --file ./scala/build/Dockerfile.latest --tag scala-latest:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.latest --tag "scala-latest:$(date +%s)" 
   build-scala-bionic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-bionic
-      run: docker build . --file ./scala/build/Dockerfile.bionic --tag scala-bionic:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.bionic --tag "scala-bionic:$(date +%s)"
   build-scala-mantic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-mantic
-      run: docker build . --file ./scala/build/Dockerfile.mantic --tag scala-mantic:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.mantic --tag "scala-mantic:$(date +%s)"
   build-scala-maintenance:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-maintenance
-      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag scala-mantenance:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag "scala-maintenance:$(date +%s)"
   
   
   # APPLICATIONS
@@ -358,26 +358,45 @@ jobs:
         # curl http://localhost:5500 -vd
 
   # TEST SCALA CODING
-  test-scala-coding:
-    needs: build-scala-latest
-    runs-on: ubuntu-latest
-    environment: CI
-    steps:
-    - uses: actions/checkout@v4
-    - name: ENV
-      run: |
-        env
-    - name: Environment variables
-      run: |
-        echo "Github environment indirect : $CONTACT_VAR"
-        echo "Github environment direct   : " ${{ vars.CONTACT }}
-      env:
-        CONTACT_VAR: ${{ vars.CONTACT }}
-    - name: Dependencies
-      run: |
-        sudo apt-get update
-    - name: Run test
-      working-directory: ./scala/coding
-      run: |
-        ls -all
-        sbt test
+  # test-scala-coding:
+  #   needs: build-scala-latest
+  #   runs-on: ubuntu-latest
+  #   environment: CI
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: ENV
+  #     run: |
+  #       env
+  #   - name: Environment variables
+  #     run: |
+  #       echo "Github environment indirect : $CONTACT_VAR"
+  #       echo "Github environment direct   : " ${{ vars.CONTACT }}
+  #     env:
+  #       CONTACT_VAR: ${{ vars.CONTACT }}
+  #   - name: Dependencies
+  #     run: |
+  #       sudo apt-get update
+  #   - name: Run test
+  #     working-directory: ./scala/coding
+  #     run: |
+  #       ls -all
+  #       sbt test
+  
+  test-scala-coding:  
+    needs: build-scala-latest  
+    runs-on: ubuntu-latest  
+    environment: CI  
+    steps:  
+      - uses: actions/checkout@v4  
+      - name: Set up Scala and sbt  
+        uses: olafurpg/setup-scala@v14  
+        with:  
+          java-version: adopt@1.11  
+      - name: Run tests  
+        working-directory: ./scala/coding  
+        run: |  
+          sbt clean coverage test coverageReport  
+      - name: Upload coverage to Codecov  
+        uses: codecov/codecov-action@v3  
+        with:  
+          fail_ci_if_error: true

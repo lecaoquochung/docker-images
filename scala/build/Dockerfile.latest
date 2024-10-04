@@ -5,6 +5,9 @@ FROM ubuntu:oracular
 # Maintainer information
 LABEL maintainer="me@lehungio.com"
 
+ARG DOCKER_VERSION=27.3.1
+ARG DOCKER_COMPOSE_VERSION=2.29.2
+
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
 PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
@@ -53,12 +56,23 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm -rf awscliv2.zip ./aws
 
 # Install Docker and Docker Compose
+# RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+#     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+#     apt-get update && \
+#     apt-get install -y docker-ce docker-ce-cli containerd.io && \
+#     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+#     chmod +x /usr/local/bin/docker-compose
+
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     apt-get update && \
-    apt-get install -y docker-ce docker-ce-cli containerd.io && \
-    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose
+    apt-get install -y --no-install-recommends \
+    docker-ce=${DOCKER_VERSION} \
+    docker-ce-cli=${DOCKER_VERSION} \
+    containerd.io && \
+    curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose && \
+    rm -rf /var/lib/apt/lists/*
 
 # Setup application directory
 RUN mkdir -p /home/qa/Downloads /app /home/qa/code && \
@@ -69,10 +83,11 @@ WORKDIR /home/qa/code
 
 # Install Node & Yarn dependencies
 RUN yarn install && \
-    yarn global add junit-report-merger
+    yarn global add junit-report-merger && \
+    yarn cache clean
 
 # Install trcli and Playwright
-RUN pip install --no-dependencies trcli && \
+RUN pip install --no-cache-dir trcli && \
     npx playwright install
 
 # Version check and other commands
@@ -81,7 +96,7 @@ RUN date && pwd && ls && \
     npm --version && \
     yarn --version && \
     trcli && \
-    npx playwright -V
+    npx playwright --version
 
 # Start command (example: running a server, for instance)
 CMD ["bash"]
