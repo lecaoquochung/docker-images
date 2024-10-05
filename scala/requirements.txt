@@ -1,5 +1,0 @@
-beartype
-click
-pyyaml
-requests
-tqdm

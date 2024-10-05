@@ -1,0 +1,85 @@
+# https://wiki.ubuntu.com/Releases
+# Ubuntu 23.10 (Mantic Minotaur)
+FROM ubuntu:mantic
+
+# Maintainer information
+LABEL maintainer="lecaoquochung@gmail.com"
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive \
+PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
+QA_PATH="/home/qa/code"
+
+# Update package index and install system dependencies
+RUN apt-get update && apt-get install -y \
+    git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
+    postgresql-client default-jre default-jdk apt-transport-https ca-certificates \
+    software-properties-common chromium-bsu chromium-browser xvfb python3-full \
+    make build-essential 
+
+# Create a virtual environment
+RUN python3 -m venv /venv
+
+# Activate the virtual environment
+ENV PATH="/venv/bin:$PATH"
+
+# Upgrade pip within the virtual environment
+RUN pip install --upgrade pip
+
+# Python global dependencies requirements.txt file into the container
+# Install dependencies from the requirements file
+COPY scala/build/requirements.txt .
+RUN pip install -r requirements.txt
+
+# Install Yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && \
+    apt-get install -y yarn
+
+# Install Node.js and utilities
+RUN apt-get install -y nodejs npm && \
+    npm install -g n
+
+# RUN npm install -g npm@latest
+RUN n stable
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip ./aws
+
+# Install Docker and Docker Compose
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+
+# Setup application directory
+RUN mkdir -p /home/qa/Downloads /app /home/qa/code && \
+chown -R 1000:1000 /home/qa
+
+# Set work directory
+WORKDIR /home/qa/code
+
+# Install Node & Yarn dependencies
+RUN yarn install && \
+    yarn global add junit-report-merger
+
+# Install trcli and Playwright
+RUN pip install --no-dependencies trcli && \
+    npx playwright install
+
+# Version check and other commands
+RUN date && pwd && ls && \
+    docker --version && \
+    npm --version && \
+    yarn --version && \
+    trcli && \
+    npx playwright -V
+
+# Start command (example: running a server, for instance)
+CMD ["bash"]

@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
-      run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.latest --tag "ubuntu-latest:$(date +%s)"
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
@@ -106,14 +106,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
-      run: docker build . --file ./ubuntu/Dockerfile.qa --tag ubuntu-qa:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.qa --tag "ubuntu-qa:$(date +%s)"
 
   build-ubuntu-noble:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
-      run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.noble --tag "ubuntu-noble:$(date +%s)"
   
   # PROGRAMMING LANGUAGE
   # PHP
@@ -122,27 +122,40 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.latest --tag "php:$(date +%s)"
   build-php-beta:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.beta --tag php:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.beta --tag "php:$(date +%s)"
 
   # SCALA
+  build-scala-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-latest
+      run: docker build . --file ./scala/build/Dockerfile.latest --tag "scala-latest:$(date +%s)" 
   build-scala-bionic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-bionic
-      run: docker build . --file ./scala/Dockerfile.bionic --tag scala-bionic:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.bionic --tag "scala-bionic:$(date +%s)"
   build-scala-mantic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-mantic
-      run: docker build . --file ./scala/Dockerfile.mantic --tag scala-mantic:$(date +%s)
+      run: docker build . --file ./scala/build/Dockerfile.mantic --tag "scala-mantic:$(date +%s)"
+  build-scala-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: scala-maintenance
+      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag "scala-maintenance:$(date +%s)"
+  
   
   # APPLICATIONS
   # JENKINS
@@ -284,7 +297,6 @@ jobs:
         ./setup.sh startup || { echo "Redash startup failed"; exit 1; }
         ./setup.sh || { echo "Redash setup failed"; exit 1; }
 
-  
   # TEST REDASH DOCKER
   test-redash-docker:
     needs: build-windows-latest
@@ -322,17 +334,16 @@ jobs:
     - name: Test Redash
       working-directory: ./redash
       run: |
+        # Init
         docker compose run --rm redash-server create_db
         # Should response
         # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Context impl PostgresqlImpl.
         # [2024-09-29 02:43:15,704][PID:1][INFO][alembic.runtime.migration] Will assume transactional DDL.
         # [2024-09-29 02:43:16,124][PID:1][INFO][alembic.runtime.migration] Running stamp_revision  -> 89bc7873a3e0
-        
         # NEED REPORT - Github Action Windows latest runner not supported
         # no matching manifest for windows/amd64 10.0.20348 in the manifest list entries
         # https://github.com/lecaoquochung/docker-images/actions/runs/11089568047/job/30810875892#step:6:25
-
-
+        # Start
         docker compose up -d
         docker compose ps
         docker compose logs
@@ -340,10 +351,52 @@ jobs:
         # docker-images-redash-worker    | Starting RQ scheduler...
         # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Starting gunicorn 20.0.4
         # docker-images-redash-server    | [2024-09-29 02:43:27 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
-
-        # verify localhost:5500 response by curl
+        # Test
+        # Verify localhost:5500 response by curl
         # npm install -g wait-on
         # npx wait-on http://localhost:5500 -t 60000 -l
         # curl http://localhost:5500 -vd
 
-        
+  # TEST SCALA CODING
+  # test-scala-coding:
+  #   needs: build-scala-latest
+  #   runs-on: ubuntu-latest
+  #   environment: CI
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: ENV
+  #     run: |
+  #       env
+  #   - name: Environment variables
+  #     run: |
+  #       echo "Github environment indirect : $CONTACT_VAR"
+  #       echo "Github environment direct   : " ${{ vars.CONTACT }}
+  #     env:
+  #       CONTACT_VAR: ${{ vars.CONTACT }}
+  #   - name: Dependencies
+  #     run: |
+  #       sudo apt-get update
+  #   - name: Run test
+  #     working-directory: ./scala/coding
+  #     run: |
+  #       ls -all
+  #       sbt test
+  
+  test-scala-coding:  
+    needs: build-scala-latest  
+    runs-on: ubuntu-latest  
+    environment: CI  
+    steps:  
+      - uses: actions/checkout@v4  
+      - name: Set up Scala and sbt  
+        uses: olafurpg/setup-scala@v14  
+        with:  
+          java-version: adopt@1.11  
+      - name: Run tests  
+        working-directory: ./scala/coding  
+        run: |  
+          sbt clean coverage test coverageReport  
+      - name: Upload coverage to Codecov  
+        uses: codecov/codecov-action@v3  
+        with:  
+          fail_ci_if_error: true
