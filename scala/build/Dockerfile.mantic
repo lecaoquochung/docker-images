@@ -26,12 +26,10 @@ ENV PATH="/venv/bin:$PATH"
 # Upgrade pip within the virtual environment
 RUN pip install --upgrade pip
 
-# Copy the requirements file into the container
-COPY scala/build/requirements.txt .
-
+# Python global dependencies requirements.txt file into the container
 # Install dependencies from the requirements file
+COPY scala/build/requirements.txt .
 RUN pip install -r requirements.txt
-
 
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \

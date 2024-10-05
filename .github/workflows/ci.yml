@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
-      run: docker build . --file ./ubuntu/Dockerfile.latest --tag ubuntu-latest:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.latest --tag "ubuntu-latest:$(date +%s)"
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
@@ -106,14 +106,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
-      run: docker build . --file ./ubuntu/Dockerfile.qa --tag ubuntu-qa:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.qa --tag "ubuntu-qa:$(date +%s)"
 
   build-ubuntu-noble:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
-      run: docker build . --file ./ubuntu/Dockerfile.noble --tag ubuntu-noble:$(date +%s)
+      run: docker build . --file ./ubuntu/Dockerfile.noble --tag "ubuntu-noble:$(date +%s)"
   
   # PROGRAMMING LANGUAGE
   # PHP
@@ -122,20 +122,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.latest --tag php:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.latest --tag "php:$(date +%s)"
   build-php-beta:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.beta --tag php:$(date +%s)
+      run: docker build . --file ./php/Dockerfile.beta --tag "php:$(date +%s)"
 
   # SCALA
   build-scala-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: scala-bionic
+    - name: scala-latest
       run: docker build . --file ./scala/build/Dockerfile.latest --tag "scala-latest:$(date +%s)" 
   build-scala-bionic:
     runs-on: ubuntu-latest

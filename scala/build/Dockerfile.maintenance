@@ -174,7 +174,7 @@ EXPOSE 9000
 EXPOSE 8080 
 
 # Install mocha for API testing
-RUN npm install -g mocha
+RUN npm install -g mocha@10.7.3
 
 ########################### TEST-8 #############################
 # Install bats (needed for do-exclusively script)

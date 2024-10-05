@@ -1,6 +1,7 @@
 # Release: https://releases.ubuntu.com
 # Wiki: https://wiki.ubuntu.com/Releases
-FROM ubuntu:oracular
+# FROM ubuntu:oracular
+FROM ubuntu:24.10
 
 # Maintainer information
 LABEL maintainer="me@lehungio.com"
@@ -32,33 +33,44 @@ RUN apt-get update && apt-get install -y \
 #     && rm -rf /var/lib/apt/lists/* 
 
 # Create a virtual environment
-RUN python3 -m venv /venv
-
 # Activate the virtual environment
-ENV PATH="/venv/bin:$PATH"
-
 # Upgrade pip within the virtual environment
-RUN pip install --upgrade pip
-
 # Copy the requirements file into the container
-COPY scala/build/requirements.txt .
-
 # Install dependencies from the requirements file
-RUN pip install -r requirements.txt
+# RUN python3 -m venv /venv
+# ENV PATH="/venv/bin:$PATH"
+# RUN pip install --upgrade pip
+# COPY scala/build/requirements.txt .
+# RUN pip install -r requirements.txt
+COPY scala/build/requirements.txt /tmp/requirements.txt
+RUN python3 -m venv /venv && \
+    . /venv/bin/activate && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
+ENV PATH="/venv/bin:$PATH"
 
 
 # Install Yarn
+# Install Node.js and utilities
+# RUN npm install -g npm@latest
+# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+#     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+#     apt-get update && \
+#     apt-get install -y yarn
+# RUN apt-get install -y nodejs npm && \
+#     npm install -g n
+# RUN n stable
+
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
     apt-get update && \
-    apt-get install -y yarn
-
-# Install Node.js and utilities
-RUN apt-get install -y nodejs npm && \
-    npm install -g n
-
-# RUN npm install -g npm@latest
-RUN n stable
+    apt-get install -y --no-install-recommends yarn=<version> nodejs=<version> npm=<version> && \
+    npm install -g n && \
+    n 22.9.0 && \
+    npm cache clean --force && \
+    yarn cache clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
@@ -104,12 +116,23 @@ RUN pip install --no-cache-dir trcli && \
     npx playwright install
 
 # Version check and other commands
-RUN date && pwd && ls && \
-    docker --version && \
-    npm --version && \
-    yarn --version && \
-    trcli && \
-    npx playwright --version
+# RUN date && pwd && ls && \
+#     docker --version && \
+#     npm --version && \
+#     yarn --version && \
+#     trcli && \
+#     npx playwright --version
+# TODO CI build test
+# RUN yarn install && \
+#     yarn global add junit-report-merger && \
+#     yarn cache clean && \
+#     pip install --no-cache-dir trcli && \
+#     npx playwright install && \
+#     docker --version && \
+#     npm --version && \
+#     yarn --version && \
+#     trcli --version && \
+#     npx playwright --version
 
 # Start command (example: running a server, for instance)
 CMD ["bash"]
