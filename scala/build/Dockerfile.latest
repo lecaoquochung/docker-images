@@ -66,12 +66,15 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
     apt-get update && \
     # apt-get install -y --no-install-recommends yarn=<version> nodejs=<version> npm=<version> && \
-    apt-get install -y --no-install-recommends yarn=stable nodejs=stable npm=stable && \
+    apt-get install -y --no-install-recommends yarn=1.22.22 nodejs=22.9.0 npm=10.9.0 && \
     npm install -g n && \
     n 22.9.0 && \
     npm cache clean --force && \
     yarn cache clean && \
     rm -rf /var/lib/apt/lists/*
+
+# TODO - update to yarn 2
+# https://yarnpkg.com/getting-started/install
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
