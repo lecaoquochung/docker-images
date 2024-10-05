@@ -5,20 +5,31 @@ FROM ubuntu:oracular
 # Maintainer information
 LABEL maintainer="me@lehungio.com"
 
-ARG DOCKER_VERSION=27.3.1
-ARG DOCKER_COMPOSE_VERSION=2.29.2
+# Docker Engine https://docs.docker.com/engine/
+ARG DOCKER_VERSION=27.3
+ARG DOCKER_COMPOSE_VERSION=2.29.7
+ARG QA_PATH="/home/qa/code"
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
 PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
-QA_PATH="/home/qa/code"
+ENV QA_PATH=${QA_PATH}
 
 # Update package index and install system dependencies
 RUN apt-get update && apt-get install -y \
     git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
     postgresql-client default-jre default-jdk apt-transport-https ca-certificates \
     software-properties-common chromium-bsu chromium-browser xvfb python3-full \
-    make build-essential 
+    make build-essential
+# TODO Build by installing package with specific version
+# RUN apt-get update && apt-get install -y --no-install-recommends \  
+#     git=<version> curl=<version> iputils-ping=<version> telnet=<version> vim=<version> \  
+#     gnupg=<version> unzip=<version> wget=<version> python3=<version> python3-venv=<version> \  
+#     postgresql-client=<version> default-jre=<version> default-jdk=<version> \  
+#     apt-transport-https=<version> ca-certificates=<version> \  
+#     software-properties-common=<version> chromium-browser=<version> xvfb=<version> \  
+#     python3-full=<version> make=<version> build-essential=<version> \  
+#     && rm -rf /var/lib/apt/lists/* 
 
 # Create a virtual environment
 RUN python3 -m venv /venv
@@ -56,23 +67,25 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm -rf awscliv2.zip ./aws
 
 # Install Docker and Docker Compose
-# RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-#     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
-#     apt-get update && \
-#     apt-get install -y docker-ce docker-ce-cli containerd.io && \
-#     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-#     chmod +x /usr/local/bin/docker-compose
-
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     apt-get update && \
-    apt-get install -y --no-install-recommends \
-    docker-ce=${DOCKER_VERSION} \
-    docker-ce-cli=${DOCKER_VERSION} \
-    containerd.io && \
-    curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+
+# TODO build docker engine with specific version
+# https://docs.docker.com/engine/install/ubuntu/
+# RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+#     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+#     apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#     docker-ce=${DOCKER_VERSION} \
+#     docker-ce-cli=${DOCKER_VERSION} \
+#     containerd.io && \
+#     curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+#     chmod +x /usr/local/bin/docker-compose && \
+#     rm -rf /var/lib/apt/lists/*
 
 # Setup application directory
 RUN mkdir -p /home/qa/Downloads /app /home/qa/code && \
@@ -100,3 +113,12 @@ RUN date && pwd && ls && \
 
 # Start command (example: running a server, for instance)
 CMD ["bash"]
+
+# This build is for testing purpose only
+# For production application with scala
+# Replace /app/your-scala-app.jar with the actual path to your Scala application's JAR file.
+# CMD ["java", "-jar", "/app/your-scala-app.jar"]
+# Alternatively, you could use an ENTRYPOINT script that performs any necessary setup and then runs your application:
+# COPY entrypoint.sh /entrypoint.sh
+# RUN chmod +x /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
