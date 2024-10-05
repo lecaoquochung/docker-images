@@ -65,7 +65,8 @@ ENV PATH="/venv/bin:$PATH"
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
     apt-get update && \
-    apt-get install -y --no-install-recommends yarn=<version> nodejs=<version> npm=<version> && \
+    # apt-get install -y --no-install-recommends yarn=<version> nodejs=<version> npm=<version> && \
+    apt-get install -y --no-install-recommends yarn=stable nodejs=stable npm=stable && \
     npm install -g n && \
     n 22.9.0 && \
     npm cache clean --force && \
