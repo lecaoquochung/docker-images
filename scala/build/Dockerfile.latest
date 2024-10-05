@@ -11,8 +11,8 @@ ARG DOCKER_COMPOSE_VERSION=2.29.7
 ARG QA_PATH="/home/qa/code"
 
 # Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive \
-PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
+ENV DEBIAN_FRONTEND=noninteractive  
+ENV PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}"  
 ENV QA_PATH=${QA_PATH}
 
 # Update package index and install system dependencies
