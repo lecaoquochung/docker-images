@@ -385,7 +385,7 @@ jobs:
   test-scala-coding:  
     needs: build-scala-latest  
     runs-on: ubuntu-latest  
-    environment: CI  
+    environment: CI
     steps:  
       - uses: actions/checkout@v4  
       - name: Set up Scala and sbt  
@@ -397,6 +397,8 @@ jobs:
         run: |  
           sbt clean coverage test coverageReport  
       - name: Upload coverage to Codecov  
-        uses: codecov/codecov-action@v3  
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN}}
         with:  
           fail_ci_if_error: true
