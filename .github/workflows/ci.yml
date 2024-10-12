@@ -358,30 +358,6 @@ jobs:
         # curl http://localhost:5500 -vd
 
   # TEST SCALA CODING
-  # test-scala-coding:
-  #   needs: build-scala-latest
-  #   runs-on: ubuntu-latest
-  #   environment: CI
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: ENV
-  #     run: |
-  #       env
-  #   - name: Environment variables
-  #     run: |
-  #       echo "Github environment indirect : $CONTACT_VAR"
-  #       echo "Github environment direct   : " ${{ vars.CONTACT }}
-  #     env:
-  #       CONTACT_VAR: ${{ vars.CONTACT }}
-  #   - name: Dependencies
-  #     run: |
-  #       sudo apt-get update
-  #   - name: Run test
-  #     working-directory: ./scala/coding
-  #     run: |
-  #       ls -all
-  #       sbt test
-  
   test-scala-coding:  
     needs: build-scala-latest  
     runs-on: ubuntu-latest  

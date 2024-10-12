@@ -25,18 +25,8 @@ jobs:
       - name: Check code
         run: ls -all
   
-  # PROGRAMMING LANGUAGE
-  # SCALA
-  build-scala-latest:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: scala-latest
-      run: docker build . --file ./scala/build/Dockerfile.latest --tag "scala-latest:$(date +%s)" 
-  
   # TEST
   test-scala-coding:  
-    needs: build-scala-latest  
     runs-on: ubuntu-latest  
     environment: CI
     steps:  
