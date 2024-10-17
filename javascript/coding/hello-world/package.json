@@ -1,0 +1,11 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "Javascript Hello World!",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "me@lehungio.com",
+  "license": "MIT"
+}
