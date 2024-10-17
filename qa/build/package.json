@@ -1,0 +1,16 @@
+{
+  "name": "qa",
+  "version": "1.0.0",
+  "description": "Build QA Dockerfile",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@cucumber/cucumber": "^11.0.1",
+    "playwright": "^1.48.1",
+    "puppeteer": "^23.6.0"
+  }
+}

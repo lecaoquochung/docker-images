@@ -4,6 +4,12 @@ FROM ubuntu:24.04
 # Set environment variables for non-interactive installations
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Set working directory
+WORKDIR /home/qa/code
+# Copy package.json and package-lock.json (if available)
+COPY package.json ./
+COPY package-lock.json ./
+
 # Update package index and install basic dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -76,7 +82,7 @@ RUN npm install -g playwright && \
 RUN pip3 install --break-system-packages trcli
 
 # Install global Node/Yarn dependencies
-WORKDIR /home/qa/code
+# WORKDIR /home/qa/code
 RUN yarn install && \
     yarn global add junit-report-merger
 
