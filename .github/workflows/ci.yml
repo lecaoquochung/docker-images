@@ -100,6 +100,7 @@ jobs:
         Get-Package
         Get-Process
 
+  # QA
   # Ubuntu for QA
   build-ubuntu-qa:
     runs-on: ubuntu-latest
@@ -107,13 +108,19 @@ jobs:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
       run: docker build . --file ./ubuntu/Dockerfile.qa --tag "ubuntu-qa:$(date +%s)"
-
   build-ubuntu-noble:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
       run: docker build . --file ./ubuntu/Dockerfile.noble --tag "ubuntu-noble:$(date +%s)"
+  build-qa-scala:
+    build-ubuntu-noble:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: qa-scala
+      run: docker build . --file ./qa/build/scala.Dockerfile --tag "qa-scals:$(date +%s)"
   
   # PROGRAMMING LANGUAGE
   # PHP
