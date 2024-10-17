@@ -100,7 +100,7 @@ RUN date && \
     docker --version && \
     npm --version && \
     yarn --version && \
-    trcli --version && \
+    trcli --help && \
     npx playwright -V
 
 # Final cleanup
