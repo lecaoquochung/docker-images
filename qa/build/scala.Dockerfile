@@ -15,15 +15,12 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         bash \
         chromium \
-        nss \
         git \
         curl \
         iputils-ping \
         telnet \
         vim \
-        freetype \
         gnupg \
-        harfbuzz \
         unzip \
         wget \
         apt-transport-https \
@@ -33,7 +30,6 @@ RUN apt-get update && \
         python3-venv \
         python3-pip \
         postgresql-client \
-        ttf-freefont \
         default-jre \
         default-jdk \
         chromium-bsu \
