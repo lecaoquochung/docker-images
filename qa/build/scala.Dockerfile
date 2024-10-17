@@ -13,12 +13,17 @@ COPY package-lock.json ./
 # Update package index and install basic dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        bash \
+        chromium \
+        nss \
         git \
         curl \
         iputils-ping \
         telnet \
         vim \
+        freetype \
         gnupg \
+        harfbuzz \
         unzip \
         wget \
         apt-transport-https \
@@ -28,6 +33,7 @@ RUN apt-get update && \
         python3-venv \
         python3-pip \
         postgresql-client \
+        ttf-freefont \
         default-jre \
         default-jdk \
         chromium-bsu \
@@ -73,11 +79,6 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose
 
-# Install Playwright and dependencies for browser testing
-RUN npm install -g playwright && \
-    npx playwright install && \
-    yarn playwright install-deps
-
 # Install trcli
 RUN pip3 install --break-system-packages trcli
 
@@ -85,6 +86,12 @@ RUN pip3 install --break-system-packages trcli
 # WORKDIR /home/qa/code
 RUN yarn install && \
     yarn global add junit-report-merger
+
+# Install Playwright and dependencies for browser testing
+RUN npm install -g playwright 
+# Install Playwright and its dependencies
+RUN npm install -g playwright && \
+    npx playwright install-deps
 
 # Environment variables
 ENV PATH=$PATH:/home/qa/.yarn/bin:/home/qa/.local/bin
