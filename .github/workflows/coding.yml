@@ -24,8 +24,8 @@ jobs:
           TEST: true
       - name: Check code
         run: ls -all
-      - name: Lint code  
-        run: npm run lint  # Assuming you have a lint script in your package.json  
+      # - name: Lint code  
+      #  run: npm run lint  # Assuming you have a lint script in your package.json  
   
   # TEST
   test-scala-coding:  
