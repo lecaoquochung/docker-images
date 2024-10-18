@@ -64,6 +64,7 @@ jobs:
       - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
       - TOOL=<< pipeline.parameters.tool >>
       - BROWSER=<< pipeline.parameters.browser >>
+      - PUPPETEER_EXECUTABLE_PATH=''
     parallelism: 2
     working_directory: /home/qa/code
     docker:
@@ -128,6 +129,7 @@ jobs:
       - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
       - TOOL=<< pipeline.parameters.tool >>
       - BROWSER=<< pipeline.parameters.browser >>
+      - PUPPETEER_EXECUTABLE_PATH=''
     parallelism: 2
     working_directory: /home/qa/code
     docker:
