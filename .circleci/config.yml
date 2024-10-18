@@ -68,7 +68,7 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/puppeteer:latest
+      - image: lecaoquochung/docker-images:puppeteer-v1.4.0
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -133,7 +133,7 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/puppeteer:node-21.0.0
+      - image: lecaoquochung/docker-images:puppeteer-v1.4.0
         environment:
           TZ: "Asia/Tokyo"
     steps:
