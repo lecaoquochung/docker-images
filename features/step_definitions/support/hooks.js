@@ -65,13 +65,11 @@ Before(
       if (await constant.tool === 'puppeteer') {
         this.browser = await puppeteer.launch({
           executablePath: constant.puppeteerExecutablePath,
-          headless: constant.headless, // Chrome new headless https://developer.chrome.com/articles/new-headless/
+          headless: constant.headlessPupeeteer, // Chrome new headless https://developer.chrome.com/articles/new-headless/
           args: constant.argsSandbox, 
           dumpio: constant.dumpio
         });
         
-        // this.context = await this.browser.createIncognitoBrowserContext();
-        // this.page = parseInt(constant.debugMode === 1) ? await this.browser.newPage({context: currentUnixTime}) : await this.context.newPage({context: currentUnixTime});
         this.page = await this.browser.newPage()
         this.browserVersion = await this.page.browser().version()
         await this.page.authenticate({username: constant.basicAuthUser, password: constant.basicAuthPassword});

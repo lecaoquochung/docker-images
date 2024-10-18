@@ -6,7 +6,8 @@ module.exports = Object.freeze({
     tool: process.env.TOOL || 'puppeteer', // puppeteer, playwright
     browser: process.env.BROWSER || 'chrome', // chrome, firefox, safari, edge
     os: process.env.OS || 'macos', // linux, windows, macos
-    headless: process.env.DEBUG === '1' ? false : 'new',
+    headless: process.env.DEBUG === '1' ? false : true,
+    headlessPuppeteer: process.env.DEBUG === '1' ? false : 'new',
     slowMo: process.env.DEBUG === "1" ? 0 : 0,
     devtools: process.env.CONSOLE === "1" ? true : false,
     dumpio: process.env.DEBUG === "1" ? true : false,
