@@ -360,45 +360,31 @@ jobs:
         # curl http://localhost:5500 -vd
 
   # TEST SCALA CODING
-  # test-scala-coding:
-  #   needs: build-scala-latest
-  #   runs-on: ubuntu-latest
-  #   environment: CI
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: ENV
-  #     run: |
-  #       env
-  #   - name: Environment variables
-  #     run: |
-  #       echo "Github environment indirect : $CONTACT_VAR"
-  #       echo "Github environment direct   : " ${{ vars.CONTACT }}
-  #     env:
-  #       CONTACT_VAR: ${{ vars.CONTACT }}
-  #   - name: Dependencies
-  #     run: |
-  #       sudo apt-get update
-  #   - name: Run test
-  #     working-directory: ./scala/coding
-  #     run: |
-  #       ls -all
-  #       sbt test
-  
   test-scala-coding:  
-    needs: build-scala-latest  
     runs-on: ubuntu-latest  
-    environment: CI  
-    steps:  
+    environment: CI
+    steps:
       - uses: actions/checkout@v4  
-      - name: Set up Scala and sbt  
-        uses: olafurpg/setup-scala@v14  
-        with:  
-          java-version: adopt@1.11  
-      - name: Run tests  
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'sbt'
+      - name: Install sbt
+        run: |
+          echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+          echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+          curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x99E82A75642AC823" | sudo apt-key add
+          sudo apt-get update
+          sudo apt-get install sbt
+      - name: Run tests
         working-directory: ./scala/coding  
         run: |  
-          sbt clean coverage test coverageReport  
+          sbt clean coverage test coverageReport
       - name: Upload coverage to Codecov  
-        uses: codecov/codecov-action@v3  
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN}}
         with:  
           fail_ci_if_error: true
