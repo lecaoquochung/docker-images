@@ -2,7 +2,7 @@ name: Coding Test
 
 on:
   push:
-    branches: [ "coding*", "scala*" ]
+    branches: [ "coding*" ]
 
 jobs:
   inspect-code:
