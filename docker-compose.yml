@@ -6,7 +6,7 @@ services:
   ubuntu-qa:
     build:
       context: .
-      dockerfile: ./ubuntu/Dockerfile.qa
+      dockerfile: ./ubuntu/qa.Dockerfile
     working_dir: /home/qa/code
     volumes:
       - ".:/home/qa/code"

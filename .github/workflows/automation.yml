@@ -23,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
-      run: docker build . --file ./ubuntu/Dockerfile.qa --tag ubuntu-qa:$(date +%s)
+      run: docker build . --file ./ubuntu/qa.Dockerfile --tag ubuntu-qa:$(date +%s)
 
   build-ubuntu-latest:
     runs-on: ubuntu-latest
