@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-lastest
-      run: docker build . --file ./ubuntu/Dockerfile.latest --tag "ubuntu-latest:$(date +%s)"
+      run: docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%s)"
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
@@ -110,7 +110,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
-      run: docker build . --file ./ubuntu/Dockerfile.noble --tag "ubuntu-noble:$(date +%s)"
+      run: docker build . --file ./ubuntu/noble.Dockerfile --tag "ubuntu-noble:$(date +%s)"
   build-qa-scala:
     runs-on: ubuntu-latest
     steps:
@@ -125,7 +125,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/Dockerfile.latest --tag "php:$(date +%s)"
+      run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
   build-php-beta:
     runs-on: ubuntu-latest
     steps:
@@ -139,13 +139,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: scala-latest
-      run: docker build . --file ./scala/build/Dockerfile.latest --tag "scala-latest:$(date +%s)" 
+      run: docker build . --file ./scala/build/latest.Dockerfile --tag "scala-latest:$(date +%s)" 
   build-scala-bionic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-bionic
-      run: docker build . --file ./scala/build/Dockerfile.bionic --tag "scala-bionic:$(date +%s)"
+      run: docker build . --file ./scala/build/bionic.Dockerfile --tag "scala-bionic:$(date +%s)"
   build-scala-mantic:
     runs-on: ubuntu-latest
     steps:
@@ -157,7 +157,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: scala-maintenance
-      run: docker build . --file ./scala/build/Dockerfile.maintenance --tag "scala-maintenance:$(date +%s)"
+      run: docker build . --file ./scala/build/maintenance.Dockerfile --tag "scala-maintenance:$(date +%s)"
   
   # APPLICATIONS
   # JENKINS
@@ -166,7 +166,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: jenkins-latest
-      run: docker build . --file ./jenkins/Dockerfile.latest --tag jenkins-latest:$(date +%s)
+      run: docker build . --file ./jenkins/latest.Dockerfile --tag jenkins-latest:$(date +%s)
 
   # PUPPETEER
   build-puppeteer-latest:
@@ -174,7 +174,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
-      run: docker build . --file ./puppeteer/Dockerfile.latest --tag "puppeteer-latest:$(date +%s)"
+      run: docker build . --file ./puppeteer/latest.Dockerfile --tag "puppeteer-latest:$(date +%s)"
 
   # TEST
   # API TEST WITH POSTMAN
