@@ -10,6 +10,7 @@ ENV ORACLE_BASE=/opt/oracle \
 # Update Ubuntu and install necessary packages
 RUN apt-get update && \
     apt-get install -y \
+    apt-get install -y --no-install-recommends \
     libaio1 \
     unzip \
     wget \
@@ -26,7 +27,8 @@ RUN mkdir -p /opt/oracle/product/19c/dbhome_1 && \
     mkdir -p /opt/oracle/scripts/startup
 
 # Add Oracle installation files (assume they are in the current directory)
-ADD LINUX.X64_193000_db_home.zip /opt/oracle/
+#ADD LINUX.X64_193000_db_home.zip /opt/oracle/
+COPY LINUX.X64_193000_db_home.zip /opt/oracle/  
 WORKDIR /opt/oracle
 
 # Install Oracle Database software
@@ -55,8 +57,12 @@ ENV INSTALL_RSP=/opt/oracle/db_install.rsp \
 
 # Run Oracle installer in silent mode
 RUN /opt/oracle/product/19c/dbhome_1/runInstaller -silent -responseFile /opt/oracle/db_install.rsp -ignorePrereq && \
-    /opt/oracle/oraInventory/orainstRoot.sh && \
+    exit 
+
+USER root  
+RUN /opt/oracle/oraInventory/orainstRoot.sh && \  
     /opt/oracle/product/19c/dbhome_1/root.sh
+USER oracle
 
 # Set up listener and create the database
 RUN $ORACLE_HOME/bin/netca -silent -responseFile $NETCA_RSP && \
@@ -66,9 +72,14 @@ RUN $ORACLE_HOME/bin/netca -silent -responseFile $NETCA_RSP && \
 EXPOSE 1521 5500
 
 # Add startup scripts
-COPY setupDatabase.sh /opt/oracle/scripts/setup/
-COPY startDB.sh /opt/oracle/scripts/startup/
-RUN chmod +x /opt/oracle/scripts/setup/setupDatabase.sh /opt/oracle/scripts/startup/startDB.sh
+# COPY setupDatabase.sh /opt/oracle/scripts/setup/
+# COPY startDB.sh /opt/oracle/scripts/startup/
+# RUN chmod +x /opt/oracle/scripts/setup/setupDatabase.sh /opt/oracle/scripts/startup/startDB.sh
+USER root  
+COPY setupDatabase.sh /opt/oracle/scripts/setup/  
+COPY startDB.sh /opt/oracle/scripts/startup/  
+RUN chmod +x /opt/oracle/scripts/setup/setupDatabase.sh /opt/oracle/scripts/startup/startDB.sh  
+USER oracle
 
 # Set the entry point to start the database
 ENTRYPOINT ["/opt/oracle/scripts/startup/startDB.sh"]
