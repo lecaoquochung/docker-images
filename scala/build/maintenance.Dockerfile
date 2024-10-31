@@ -256,6 +256,9 @@ ENV PATH /home/qa/.local/bin:/home/qa/sbt/bin:/home/qa/bin:${PATH}
 RUN pipx install awscli
 # RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
+# trcli
+RUN pipx install --no-cache-dir trcli
+
 # Create symlink for sbt
 USER root
 # Ensure /usr/local/bin is writable
