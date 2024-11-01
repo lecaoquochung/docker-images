@@ -116,22 +116,29 @@ RUN apt install -y \
 
 # Install Python and required packages
 # Optional: If you need venv for virtual environments
-RUN apt-get update && apt-get install -y software-properties-common && \
+RUN apt-get update && apt-get install -y software-properties-common curl && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && apt-get install -y \
-    python3.10 \
-    python3-pip \
-    python3-venv # Use this for virtual environment support
+    python3.12 \
+    python3.12-venv \
+    python3-pip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clean up
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Optionally verify installation of Python
+RUN python3.12 --version
 
-# Optionally verify installation
-RUN python3.10 --version && pip3 --version
+# Create and activate a virtual environment
+RUN python3.12 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade pip to the latest version
-# Found existing installation: pip 24.0
-# RUN python3.10 -m pip install --upgrade pip
+# Upgrade pip in the virtual environment
+RUN python -m pip install --upgrade pip
+
+# Install trcli in the virtual environment
+RUN python -m pip install trcli
+
+# Optionally verify trcli installation
+RUN trcli --help  # This will check if trcli is installed correctly
 
 # Instal java
 RUN apt-get update && apt-get install -y \
