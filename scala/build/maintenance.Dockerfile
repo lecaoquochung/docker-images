@@ -119,19 +119,19 @@ RUN apt install -y \
 RUN apt-get update && apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && apt-get install -y \
-    python3.13 \
+    python3.12 \
     python3-pip \
     python3-venv && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Optionally verify installation
-RUN python3.13 --version && pip3 --version
+RUN python3.12 --version && pip3 --version
 
 # Upgrade pip to the latest version
-RUN python3.13 -m pip install --upgrade pip
+RUN python3.12 -m pip install --upgrade pip
 
 # Install trcli using pip
-RUN python3.13 -m pip install trcli
+RUN python3.12 -m pip install trcli
 
 # Optionally verify trcli installation
 RUN trcli --version  # This will check if trcli is installed correctly
