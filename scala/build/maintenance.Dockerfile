@@ -256,13 +256,6 @@ ENV PATH /home/qa/.local/bin:/home/qa/sbt/bin:/home/qa/bin:${PATH}
 RUN pipx install awscli
 # RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
-# trcli
-RUN apt-get update && apt-get install -y python3-full python3-pip
-RUN pip install --upgrade pip
-RUN pip install --user pipx
-RUN python3 -m pipx ensurepath
-RUN pipx install trcli
-
 # Create symlink for sbt
 USER root
 # Ensure /usr/local/bin is writable
@@ -271,6 +264,13 @@ RUN ln -s /home/qa/sbt/bin/sbt /usr/local/bin/sbt
 RUN chown -R $(whoami) /tmp/.sbt
 RUN chmod -R 777 /tmp/.sbt
 ENV PATH="/home/qa/.local/bin:${PATH}"
+
+# trcli
+RUN apt-get update && apt-get install -y python3-full python3-pip
+RUN pip install --upgrade pip
+RUN pip install --user pipx
+RUN python3 -m pipx ensurepath
+RUN pipx install trcli
 
 USER qa
 # RUN export SBT_OPTS="-Dsbt.global.base=/path/to/another/tmp"
