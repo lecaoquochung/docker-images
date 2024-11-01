@@ -119,19 +119,22 @@ RUN apt install -y \
 RUN apt-get update && apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && apt-get install -y \
-    python3.10 \
+    python3.13 \
     python3-pip \
-    python3-venv # Use this for virtual environment support
-
-# Clean up
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    python3-venv && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Optionally verify installation
-RUN python3.10 --version && pip3 --version
+RUN python3.13 --version && pip3 --version
 
 # Upgrade pip to the latest version
-# Found existing installation: pip 24.0
-# RUN python3.10 -m pip install --upgrade pip
+RUN python3.13 -m pip install --upgrade pip
+
+# Install trcli using pip
+RUN python3.13 -m pip install trcli
+
+# Optionally verify trcli installation
+RUN trcli --version  # This will check if trcli is installed correctly
 
 # Instal java
 RUN apt-get update && apt-get install -y \
@@ -264,13 +267,6 @@ RUN ln -s /home/qa/sbt/bin/sbt /usr/local/bin/sbt
 RUN chown -R $(whoami) /tmp/.sbt
 RUN chmod -R 777 /tmp/.sbt
 ENV PATH="/home/qa/.local/bin:${PATH}"
-
-# trcli
-RUN apt-get update && apt-get install -y python3-full python3-pip
-RUN pip install --upgrade pip
-RUN pip install --user pipx
-RUN python3 -m pipx ensurepath
-RUN pipx install trcli
 
 USER qa
 # RUN export SBT_OPTS="-Dsbt.global.base=/path/to/another/tmp"
