@@ -116,24 +116,19 @@ RUN apt install -y \
 
 # Install Python and required packages
 # Optional: If you need venv for virtual environments
-# Install required packages and Python 3.12
 RUN apt-get update && apt-get install -y software-properties-common curl && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && apt-get install -y \
     python3.12 \
-    python3-venv && \
+    python3.12-venv \
+    python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Optionally verify installation of Python
 RUN python3.12 --version
 
-# Download and install pip
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python3.12 get-pip.py && \
-    rm get-pip.py
-
 # Verify pip installation
-RUN pip3 --version
+RUN python3.12 -m pip --version
 
 # Upgrade pip to the latest version (if needed)
 RUN python3.12 -m pip install --upgrade pip
