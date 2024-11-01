@@ -127,14 +127,15 @@ RUN apt-get update && apt-get install -y software-properties-common curl && \
 # Optionally verify installation of Python
 RUN python3.12 --version
 
-# Verify pip installation
-RUN python3.12 -m pip --version
+# Create and activate a virtual environment
+RUN python3.12 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade pip to the latest version (if needed)
-RUN python3.12 -m pip install --upgrade pip
+# Upgrade pip in the virtual environment
+RUN python -m pip install --upgrade pip
 
-# Install trcli using pip
-RUN python3.12 -m pip install trcli
+# Install trcli in the virtual environment
+RUN python -m pip install trcli
 
 # Optionally verify trcli installation
 RUN trcli --version  # This will check if trcli is installed correctly
