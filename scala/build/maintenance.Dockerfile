@@ -138,7 +138,7 @@ RUN python -m pip install --upgrade pip
 RUN python -m pip install trcli
 
 # Optionally verify trcli installation
-RUN trcli --version  # This will check if trcli is installed correctly
+RUN trcli --help  # This will check if trcli is installed correctly
 
 # Instal java
 RUN apt-get update && apt-get install -y \
