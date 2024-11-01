@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgstreamer-plugins-bad1.0-0 \
     gstreamer1.0-plugins-good \
     gstreamer1.0-libav
-
+t
 # Install Chromium dependencies
 # outdate in ubuntu 24.04
 # 1.601 E: Package 'libasound2' has no installation candidate
@@ -257,6 +257,7 @@ RUN pipx install awscli
 # RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
 # trcli
+RUN pip install --upgrade pip pipx
 RUN pipx install --no-cache-dir trcli
 
 # Create symlink for sbt
