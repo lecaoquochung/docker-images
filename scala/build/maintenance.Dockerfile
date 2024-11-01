@@ -116,7 +116,8 @@ RUN apt install -y \
 
 # Install Python and required packages
 # Optional: If you need venv for virtual environments
-RUN apt-get update && apt-get install -y software-properties-common && \
+# Install required packages and Python 3.12
+RUN apt-get update && apt-get install -y software-properties-common curl && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && apt-get install -y \
     python3.12 \
