@@ -257,8 +257,11 @@ RUN pipx install awscli
 # RUN ln -s /home/qa/.local/bin/aws /usr/local/bin/aws
 
 # trcli
-RUN pip install --upgrade pip pipx
-RUN pipx install --no-cache-dir trcli
+RUN apt-get update && apt-get install -y python3-full python3-pip
+RUN pip install --upgrade pip
+RUN pip install --user pipx
+RUN python3 -m pipx ensurepath
+RUN pipx install trcli
 
 # Create symlink for sbt
 USER root
