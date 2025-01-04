@@ -46,7 +46,7 @@ jobs:
         docker build . --file ./ubuntu/latest.Dockerfile --tag "docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
         docker images
         # docker tag ghcr.io/lecaqquochung/ubuntu-latest:latest ghcr.io/lecaqquochung/ubuntu-latest:latest
-        # docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-latest
+        docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
