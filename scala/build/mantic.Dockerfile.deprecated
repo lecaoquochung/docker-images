@@ -11,6 +11,10 @@ PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
 QA_PATH="/home/qa/code"
 
 # Update package index and install system dependencies
+# Deprecated:v2024.4.1
+# The error indicates that the repositories for the mantic release 
+# do not have a Release file, which means they are not available. 
+# You can switch to a stable Ubuntu release like jammy (22.04 LTS) to resolve this issue.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
