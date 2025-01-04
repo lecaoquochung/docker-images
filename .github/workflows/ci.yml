@@ -44,6 +44,7 @@ jobs:
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
         docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest-latest"
+        docker images | grep ghcr.io/lecaqquochung/docker-images
         # docker tag ghcr.io/lecaqquochung/ubuntu-latest:latest ghcr.io/lecaqquochung/ubuntu-latest:latest
         docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-latest
     - name: ubuntu-lastest
