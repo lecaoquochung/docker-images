@@ -43,14 +43,17 @@ jobs:
       run: |
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag ghcr.io/lecaqquochung/ubuntu-latest:latest
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaqquochung/ubuntu-latest:latest"
+        # docker tag ghcr.io/lecaqquochung/ubuntu-latest:latest ghcr.io/lecaqquochung/ubuntu-latest:latest
         docker push ghcr.io/lecaoquochung/ubuntu-latest:latest
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d_%H:%M:%S)"
         # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}"
+        docker build . \ 
+          --file ./ubuntu/latest.Dockerfile \ 
+          --tag "ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}"
         # docker push ubuntu-latest:${{ env.DATE_TIME }}
         docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }} 
 
