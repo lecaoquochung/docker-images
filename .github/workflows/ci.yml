@@ -40,11 +40,13 @@ jobs:
         echo "Date and Time: ${{ env.DATE_TIME }}"
     - name: Test build
       run: |
+        docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker build . --tag ghcr.io/lecaqquochung/ubuntu-latest:latest
         docker push ghcr.io/lecaoquochung/ubuntu-latest:latest
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d_%H:%M:%S)"
+        docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:${{ env.DATE_TIME }}"
         docker push ubuntu-latest:${{ env.DATE_TIME }}
 
