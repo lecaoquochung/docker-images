@@ -33,9 +33,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Set up date and time variable
+      run: echo "DATE_TIME=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_ENV
+    - name: Output date and time
+      run: |
+        echo "Date and Time: ${{ env.DATE_TIME }}"
+    - name: Test build
+      run: |
+        docker build . --tag ghcr.io/lecaqquochung/ubuntu-latest:latest
+        docker push ghcr.io/lecaoquochung/ubuntu-latest:latest
     - name: ubuntu-lastest
-      run: docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%s)"
-  
+      run: |
+        # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d_%H:%M:%S)"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:${{ env.DATE_TIME }}"
+        docker push ubuntu-latest:${{ env.DATE_TIME }}
+
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
   build-macos-latest:
