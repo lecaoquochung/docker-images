@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up date and time variable
-      run: echo "DATE_TIME=$(date '+%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV 
+      run: echo "DATE_TIME=$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV 
     - name: Output date and time
       run: |
         ls -all;pwd;whoami;
@@ -43,18 +43,16 @@ jobs:
       run: |
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest-latest"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
         docker images
         # docker tag ghcr.io/lecaqquochung/ubuntu-latest:latest ghcr.io/lecaqquochung/ubuntu-latest:latest
         # docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-latest
     - name: ubuntu-lastest
       run: |
-        # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d_%H:%M:%S)"
+        # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
         # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . \ 
-          --file ./ubuntu/latest.Dockerfile \ 
-          --tag "ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
         docker images
         # docker push ubuntu-latest:${{ env.DATE_TIME }}
         # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }} 
