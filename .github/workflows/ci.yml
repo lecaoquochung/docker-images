@@ -44,9 +44,9 @@ jobs:
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
         docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest-latest"
-        docker images | grep ghcr.io/lecaqquochung/docker-images
+        docker images
         # docker tag ghcr.io/lecaqquochung/ubuntu-latest:latest ghcr.io/lecaqquochung/ubuntu-latest:latest
-        docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-latest
+        # docker push ghcr.io/lecaoquochung/docker-images:ubuntu-latest-latest
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d_%H:%M:%S)"
@@ -55,8 +55,9 @@ jobs:
         docker build . \ 
           --file ./ubuntu/latest.Dockerfile \ 
           --tag "ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}"
+        docker images
         # docker push ubuntu-latest:${{ env.DATE_TIME }}
-        docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }} 
+        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }} 
 
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
