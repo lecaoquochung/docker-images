@@ -11,11 +11,14 @@ PATH="/home/qa/.yarn/bin:/home/qa/.local/bin:${PATH}" \
 QA_PATH="/home/qa/code"
 
 # Update package index and install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     git curl iputils-ping telnet vim gnupg unzip wget python3 python3-venv \
     postgresql-client default-jre default-jdk apt-transport-https ca-certificates \
     software-properties-common chromium-bsu chromium-browser xvfb python3-full \
-    make build-essential 
+    make build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create a virtual environment
 RUN python3 -m venv /venv
