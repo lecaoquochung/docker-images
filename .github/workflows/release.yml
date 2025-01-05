@@ -19,6 +19,7 @@ env:
 
 jobs:
   automation:
+    name: 'Automation'
     runs-on: ubuntu-latest
     permissions:
       contents: read
