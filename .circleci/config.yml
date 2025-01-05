@@ -293,7 +293,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            npm ci
+            whoami;pwd;ls -all; 
+            # npm ci /bin/bash: line 1: npm: command not found
       - run:
           name: List installed packages and versions
           command: |
