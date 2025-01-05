@@ -30,11 +30,52 @@ jobs:
           TEST: true
       - name: Check code
         run: ls -all
+  
+  manual:
+    name: 'Manual workflow'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
+
+  automation:
+    name: 'Automation workflow'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
 
   # OS 
   # Ubuntu
   build-ubuntu-latest-manual:
     name: '[Manual] Build Ubuntu latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -64,6 +105,7 @@ jobs:
   
   build-ubuntu-latest:
     name: '[Auto] Build Ubuntu latest'
+    needs: automation
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -125,7 +167,9 @@ jobs:
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
-  build-macos-latest:
+  build-macos-latest-manual:
+    name: '[Manual] Build MacOS latest'
+    needs: manual
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -157,7 +201,9 @@ jobs:
   
   # Windows
   # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
-  build-windows-latest:
+  build-windows-latest-manual:
+    name: '[Manual] Build Windows latest'
+    needs: manual
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -186,19 +232,25 @@ jobs:
 
   # QA
   # Build Ubuntu for QA
-  build-ubuntu-qa:
+  build-ubuntu-qa-manual:
+    name: '[Manual] Build Ubuntu QA'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
       run: docker build . --file ./ubuntu/qa.Dockerfile --tag "ubuntu-qa:$(date +%s)"
-  build-ubuntu-noble:
+  build-ubuntu-noble-manual:
+    name: '[Manual] Build Ubuntu Noble'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
       run: docker build . --file ./ubuntu/noble.Dockerfile --tag "ubuntu-noble:$(date +%s)"
-  build-qa-scala:
+  build-qa-scala-manual:
+    name: '[Manual] Build QA Scala'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -207,13 +259,17 @@ jobs:
   
   # PROGRAMMING LANGUAGE
   # Build latest PHP version
-  build-php-latest:
+  build-php-latest-manual:
+    name: '[Manual] Build PHP latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
       run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
-  build-php-beta:
+  build-php-beta-manual:
+    name: '[Manual] Build PHP beta'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -221,13 +277,17 @@ jobs:
       run: docker build . --file ./php/beta.Dockerfile --tag "php:$(date +%s)"
 
   # Build latest SCALA version
-  build-scala-latest:
+  build-scala-latest-manual:
+    name: '[Manual] Build Scala latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-latest
       run: docker build . --file ./scala/build/latest.Dockerfile --tag "scala-latest:$(date +%s)" 
-  build-scala-bionic:
+  build-scala-bionic-manual:
+    name: '[Manual] Build Scala bionic'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -241,7 +301,9 @@ jobs:
   #   - name: scala-mantic
   #     run: docker build . --file ./scala/build/mantic.Dockerfile --tag "scala-mantic:$(date +%s)"
   # Build maintenance SCALA version
-  build-scala-maintenance:
+  build-scala-maintenance-manual:
+    name: '[Manual] Build Scala maintenance'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -250,7 +312,9 @@ jobs:
   
   # APPLICATIONS
   # Build latest JENKINS version
-  build-jenkins-latest:
+  build-jenkins-latest-manual:
+    name: '[Manual] Build Jenkins latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -259,12 +323,25 @@ jobs:
 
   # PUPPETEER
   # Build latest PUPPETEER version
-  build-puppeteer-latest:
+  build-puppeteer-latest-manual:
+    name: '[Manual] Build Puppeteer latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
       run: docker build . --file ./puppeteer/latest.Dockerfile --tag "puppeteer-latest:$(date +%s)"
+
+  # REDIS
+  # Build latest REDIS version
+  build-redis-latest-manual:
+    name: '[Manual] Build Redis latest'
+    needs: manual
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: redis-latest
+      run: docker build . --file ./database/redis/latest.Dockerfile --tag "redis-latest:$(date +%s)"
 
   # TEST
   # API TEST WITH POSTMAN
@@ -359,7 +436,7 @@ jobs:
 
   # REDASH SETUP MACOS
   test-redash-setup-macos:
-    needs: build-macos-latest
+    needs: build-macos-latest-manual
     runs-on: macos-latest
     environment: CI
     steps:
@@ -392,7 +469,7 @@ jobs:
 
   # TEST REDASH DOCKER
   test-redash-docker:
-    needs: build-windows-latest
+    needs: build-windows-latest-manual
     runs-on: windows-latest
     environment: CI
     steps:
