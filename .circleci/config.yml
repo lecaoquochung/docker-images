@@ -68,11 +68,17 @@ jobs:
           command: |
             # Install dependencies - Ubuntu latest fresh image
             apt-get update && apt-get install -y curl
-            lsb_release -a
+            dpkg -l
+            dpkg -l | grep -E 'nodejs|npm'
+            cat /etc/os-release
       - restore_cache:
           keys:
           - v1-test-{{ checksum "package.json" }}
-          - vi-test-
+          - v1-test-
+      - save_cache:
+          key: v1-test-{{ checksum "package.json" }}
+          paths:
+            - node_modules
 
   # job test latest | job test-latest
   test-latest:
@@ -97,7 +103,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-build-latest-yarn-{{ checksum "package.json" }}
-          - vi-build-latest-yarn-
+          - v1-build-latest-yarn-
       - run:
           name: DOMAIN
           command: |
@@ -289,8 +295,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update && apt-get install -y nodejs npm
-            npm install
+            npm ci
       - run:
           name: List installed packages and versions
           command: |
@@ -298,7 +303,7 @@ jobs:
       - run:
           name: Version check
           command: |
-            lsb_release -a
+            cat /etc/os-release
             npm -v
             node -v
 
@@ -309,7 +314,8 @@ workflows:
           filters:
             branches:
               only:
-                - /(test|main).*/
+                - /(test).*/
+                - main
       - test-latest:
           requires:
             - test
