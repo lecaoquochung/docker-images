@@ -42,7 +42,7 @@ jobs:
   
   # job manual, workflow manual
   manual:
-    name: 'Manual workflow'
+    name: 'Manual'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -63,7 +63,7 @@ jobs:
   
   # job automation, workflow automation
   automation:
-    name: 'Automation workflow'
+    name: 'Automation'
     runs-on: ubuntu-latest
     environment: CI
     steps:
@@ -110,7 +110,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
+            type=raw,value="${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}"
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
             type=schedule,enable=true,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
