@@ -7,8 +7,13 @@ LABEL org.opencontainers.image.source=https://github.com/lecaoquochung/docker-im
 LABEL org.opencontainers.image.licenses=MIT
 
 # Update package index and install dependencies
-RUN apt-get update && \
-    apt-get install -y git curl iputils-ping telnet vim unzip
+RUN apt-get update && apt-get install -y \
+    locales git curl iputils-ping telnet vim unzip && \
+    sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen && \
+    echo "LANG=en_US.UTF-8" >> /etc/default/locale && \
+    echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y locales 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+ENV LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
