@@ -21,7 +21,7 @@ env:
 jobs:
   # job inspect-code
   inspect-code:
-    name: 'Inspect code'
+    name: 'Inspect'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
