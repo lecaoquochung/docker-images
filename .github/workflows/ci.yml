@@ -7,16 +7,21 @@ on:
   #  branches: [ "main" ]
 
 env:
+  DATETIME: $(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   IMAGE_AUTOMATION_TEST: automation-test
-  IMAGE_UBUNTU: ubuntu-latest
   IMAGE_PHP: php-latest
+  IMAGE_REDIS: redis-latest
+  IMAGE_UBUNTU: ubuntu-latest
+  DOCKERFILE_PHP: ./php/latest.Dockerfile
+  DOCKERFILE_REDIS: ./database/redis/latest.Dockerfile
+  DOCKERFILE_UBUNTU: ./ubuntu/latest.Dockerfile
 
 jobs:
   # job inspect-code
   inspect-code:
-    name: 'Inspect code'
+    name: 'Inspect'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -37,7 +42,7 @@ jobs:
   
   # job manual, workflow manual
   manual:
-    name: 'Manual workflow'
+    name: 'Manual'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -58,7 +63,7 @@ jobs:
   
   # job automation, workflow automation
   automation:
-    name: 'Automation workflow'
+    name: 'Automation'
     runs-on: ubuntu-latest
     environment: CI
     steps:
@@ -76,9 +81,16 @@ jobs:
         env:
           TEST: true
       - name: Check code
-        run: ls -all
+        run: |
+          ls -all;pwd;whoami;
       - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+        run: |
+          echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+      - name: Output date and time
+        run: |
+          echo "GLOBAL ENV DATETIME: ${{ env.DATETIME }}"
+          echo "LOCAL ENV DATE_TIME: ${{ env.DATE_TIME }}"
+          echo "type=raw,enable=true,value=${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}"
       - name: Log in to Docker Hub # https://github.com/docker/login-action
         # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
         uses: docker/login-action@v3
@@ -99,12 +111,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATE_TIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
-            type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
-            type=semver,pattern={{raw}} # TODO release only
-            type=sha # TODO release only
+            type=schedule,enable=true,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
+            type=semver,enable=true,pattern={{raw}} # TODO release only
+            type=sha,enable=true
       
   # OS 
   # Ubuntu - manual build and test
@@ -115,29 +127,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Set up date and time variable
-      run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
     - name: Output date and time
       run: |
         ls -all;pwd;whoami;
-        echo "Date and Time: ${{ env.DATE_TIME }}"
+        echo "Date and Time: ${{ env.DATETIME }}"
     - name: Test build
       run: |
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker build . --file ${{ env.DOCKERFILE_UBUNTU }} --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
-        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
-        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
         # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
-        # docker push ubuntu-latest:${{ env.DATE_TIME }}
-        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}
+        # docker push ubuntu-latest:${{ env.DATETIME }}
+        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATETIME }}
   
   # Ubuntu - automation build and push
   build-ubuntu-latest:
@@ -153,8 +163,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       - name: Log in to Docker Hub # https://github.com/docker/login-action
         # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
         uses: docker/login-action@v3
@@ -175,7 +183,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_UBUNTU }}-${{ env.DATE_TIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
             # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
@@ -187,7 +195,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./ubuntu/latest.Dockerfile
+          file: ${{ env.DOCKERFILE_UBUNTU }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -292,6 +300,7 @@ jobs:
   
   # PROGRAMMING LANGUAGE
   # Build latest PHP version
+  # job build php latest manual
   build-php-latest-manual:
     name: '[Manual] Build PHP latest'
     needs: manual
@@ -299,8 +308,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
+      run: docker build . --file ${{ env.DOCKERFILE_PHP }} --tag "php:$(date +%s)"
   
+  # job build php latest automation
   build-php-latest:
     name: '[Auto] Build PHP latest'
     needs: automation
@@ -314,8 +324,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -333,7 +341,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_PHP }}-${{ env.DATE_TIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
       - name: Build and push Docker images
@@ -341,7 +349,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./php/latest.Dockerfile
+          file: ${{ env.DOCKERFILE_PHP }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -419,6 +427,7 @@ jobs:
 
   # REDIS
   # Build latest REDIS version
+  # job build redis latest manual
   build-redis-latest-manual:
     name: '[Manual] Build Redis latest'
     needs: manual
@@ -426,13 +435,64 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: redis-latest
-      run: docker build . --file ./database/redis/latest.Dockerfile --tag "redis-latest:$(date +%s)"
+      run: docker build . --file ${{ env.DOCKERFILE_REDIS }} --tag "redis-latest:$(date +%s)"
+  
+  # job build redis latest automation
+  build-redis-latest:
+    name: '[Auto] Build Redis latest'
+    needs: automation
+    runs-on: ubuntu-latest
+    environment: CI
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE_REDIS }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
 
   # TEST
   # API TEST WITH POSTMAN
   # MacOS: curl -sL https://dl-cli.pstmn.io/install/osx_64.sh | bash
   # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
   test-postman:
+    name: '[Test] Postman'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -461,6 +521,7 @@ jobs:
   # Test Commit
   # Config update
   test-newman:
+    name: '[Test] Newman'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -489,6 +550,7 @@ jobs:
 
   # REDASH SETUP
   test-redash-setup:
+    name: '[Test] Redash Setup'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -521,6 +583,7 @@ jobs:
 
   # REDASH SETUP MACOS
   test-redash-setup-macos:
+    name: '[Test] Redash Setup MacOS'
     needs: build-macos-latest-manual
     runs-on: macos-latest
     environment: CI
@@ -554,6 +617,7 @@ jobs:
 
   # TEST REDASH DOCKER
   test-redash-docker:
+    name: '[Test] Redash Docker'
     needs: build-windows-latest-manual
     runs-on: windows-latest
     environment: CI
@@ -613,7 +677,9 @@ jobs:
         # curl http://localhost:5500 -vd
 
   # TEST SCALA CODING
+  # job test scala coding
   test-scala-coding:  
+    name: '[Test] Scala Coding'
     runs-on: ubuntu-latest  
     environment: CI
     steps:
