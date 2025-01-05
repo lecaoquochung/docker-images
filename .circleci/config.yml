@@ -335,6 +335,29 @@ jobs:
             php --ini
             php --version
 
+  test-redis:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:redis-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            whoami;pwd;ls -all; 
+      - run:
+          name: List installed packages and versions
+          command: |
+            set -e # exit immediately if a command exits with a non-zero status
+            apt list --installed
+      - run:
+          name: Version check
+          command: |
+            uname -a
+            cat /etc/os-release
+            redis-server -v
+            redis-cli -v
+            locale
+
 workflows:
   run-test:
     jobs:
@@ -342,7 +365,7 @@ workflows:
           filters:
             branches:
               only:
-                - /(test).*/
+                - /(test|implementation).*/
                 - main
       - test-latest:
           requires:
@@ -360,6 +383,9 @@ workflows:
           requires:
             - test
       - test-php:
+          requires:
+            - test
+      - test-redis:
           requires:
             - test
 
