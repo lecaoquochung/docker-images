@@ -56,6 +56,27 @@ orbs:
 working_directory: ~/code
 
 jobs:
+  test:
+    docker:
+      - image: ubuntu:latest
+        environment:
+          TZ: "Asia/Tokyo"
+    steps:
+      - checkout
+      - run:
+          name: Dependencies
+          command: |
+            # Install dependencies - Ubuntu latest fresh image
+            cat /etc/os-release
+      - restore_cache:
+          keys:
+          - v1-test-{{ checksum "package.json" }}
+          - v1-test-
+      - save_cache:
+          key: v1-test-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
   # job test latest | job test-latest
   test-latest:
     environment:
@@ -79,7 +100,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-build-latest-yarn-{{ checksum "package.json" }}
-          - vi-build-latest-yarn-
+          - v1-build-latest-yarn-
       - run:
           name: DOMAIN
           command: |
@@ -263,15 +284,84 @@ jobs:
           collection: ./postman/ME.postman_collection.json
           environment: ./postman/SAMPLE.postman_environment.json
 
-workflows:
-  version: 2
+  # job test-ubuntu | job test-ubuntu-latest | job test ubuntu
+  test-ubuntu:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:ubuntu-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            whoami;pwd;ls -all; 
+            # npm ci /bin/bash: line 1: npm: command not found
+      - run:
+          name: List installed packages and versions
+          command: |
+            set -e # exit immediately if a command exits with a non-zero status
+            # dpkg -l # running stop unexpectedly
+            # apt-get -qq list --installed # E: Command line option --installed is not understood in combination with the other options
+            apt list --installed
+      - run:
+          name: Version check
+          command: |
+            uname -a
+            cat /etc/os-release
+            # npm -v # /bin/bash: line 1: npm: command not found
+            # node -v
+  
+  test-php:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:php-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            whoami;pwd;ls -all; 
+            # npm ci /bin/bash: line 1: npm: command not found
+      - run:
+          name: List installed packages and versions
+          command: |
+            set -e # exit immediately if a command exits with a non-zero status
+            apt list --installed
+      - run:
+          name: Version check
+          command: |
+            uname -a
+            cat /etc/os-release
+            php -v
+            php -r "phpinfo();"
+            php --ini
+            php --version
 
-  test:
+workflows:
+  run-test:
     jobs:
-      - test-latest
-      - test-dev
-      - test-build
-      - test-postman
+      - test:
+          filters:
+            branches:
+              only:
+                - /(test).*/
+                - main
+      - test-latest:
+          requires:
+            - test
+      - test-dev:
+          requires:
+            - test
+      - test-build:
+          requires:
+            - test
+      - test-postman:
+          requires:
+            - test
+      - test-ubuntu:
+          requires:
+            - test
+      - test-php:
+          requires:
+            - test
 
   # For CircleCI API manual trigger only
   test_manual:
