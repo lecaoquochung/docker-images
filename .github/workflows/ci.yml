@@ -6,9 +6,17 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_AUTOMATION_TEST: automation-test
+  IMAGE_UBUNTU: ubuntu-latest
+  IMAGE_PHP: php-latest
+
 jobs:
+  # job inspect-code
   inspect-code:
-    name: '[Required] Inspect code'
+    name: 'Inspect code'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -26,19 +34,175 @@ jobs:
           TEST: true
       - name: Check code
         run: ls -all
-
+  
+  # job manual, workflow manual
+  manual:
+    name: 'Manual workflow'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
+  
+  # job automation, workflow automation
+  automation:
+    name: 'Automation workflow'
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 2
+      - name: Set up Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          cache: npm
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          TEST: true
+      - name: Check code
+        run: ls -all
+      - name: Set up date and time variable
+        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+      - name: Log in to Docker Hub # https://github.com/docker/login-action
+        # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry # https://github.com/docker/login-action
+        # uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        # uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7 # using hash
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATE_TIME }}
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
+            type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
+            type=semver,pattern={{raw}} # TODO release only
+            type=sha # TODO release only
+      
   # OS 
-  # Ubuntu
-  build-ubuntu-latest:
+  # Ubuntu - manual build and test
+  # job build ubuntu latest manual
+  build-ubuntu-latest-manual:
+    name: '[Manual] Build Ubuntu latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Set up date and time variable
+      run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+    - name: Output date and time
+      run: |
+        ls -all;pwd;whoami;
+        echo "Date and Time: ${{ env.DATE_TIME }}"
+    - name: Test build
+      run: |
+        #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
+        docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker images
+        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
     - name: ubuntu-lastest
-      run: docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%s)"
+      run: |
+        # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
+        # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+        docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker images
+        # docker push ubuntu-latest:${{ env.DATE_TIME }}
+        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}
+  
+  # Ubuntu - automation build and push
+  build-ubuntu-latest:
+    name: '[Auto] Build Ubuntu latest'
+    needs: automation
+    runs-on: ubuntu-latest
+    environment: CI
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Set up date and time variable
+        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+      - name: Log in to Docker Hub # https://github.com/docker/login-action
+        # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry # https://github.com/docker/login-action
+        # uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        # uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7 # using hash
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,${{ env.IMAGE_UBUNTU }}-${{ env.DATE_TIME }}
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
+            # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
+            # type=semver,pattern={{raw}} # TODO release only
+            # type=sha # TODO release only
+      - name: Build and push Docker images # https://github.com/docker/build-push-action
+        id: push
+        # uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./ubuntu/latest.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
-  build-macos-latest:
+  build-macos-latest-manual:
+    name: '[Manual] Build MacOS latest'
+    needs: manual
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -70,7 +234,9 @@ jobs:
   
   # Windows
   # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
-  build-windows-latest:
+  build-windows-latest-manual:
+    name: '[Manual] Build Windows latest'
+    needs: manual
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -98,20 +264,26 @@ jobs:
         Get-Process
 
   # QA
-  # Ubuntu for QA
-  build-ubuntu-qa:
+  # Build Ubuntu for QA
+  build-ubuntu-qa-manual:
+    name: '[Manual] Build Ubuntu QA'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-qa
       run: docker build . --file ./ubuntu/qa.Dockerfile --tag "ubuntu-qa:$(date +%s)"
-  build-ubuntu-noble:
+  build-ubuntu-noble-manual:
+    name: '[Manual] Build Ubuntu Noble'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: ubuntu-noble
       run: docker build . --file ./ubuntu/noble.Dockerfile --tag "ubuntu-noble:$(date +%s)"
-  build-qa-scala:
+  build-qa-scala-manual:
+    name: '[Manual] Build QA Scala'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -119,40 +291,104 @@ jobs:
       run: docker build . --file ./qa/build/scala.Dockerfile --tag "qa-scals:$(date +%s)"
   
   # PROGRAMMING LANGUAGE
-  # PHP
-  build-php-latest:
+  # Build latest PHP version
+  build-php-latest-manual:
+    name: '[Manual] Build PHP latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
       run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
-  build-php-beta:
+  
+  build-php-latest:
+    name: '[Auto] Build PHP latest'
+    needs: automation
+    runs-on: ubuntu-latest
+    environment: CI
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Set up date and time variable
+        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,${{ env.IMAGE_PHP }}-${{ env.DATE_TIME }}
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./php/latest.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+  
+  build-php-beta-manual:
+    name: '[Manual] Build PHP beta'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
       run: docker build . --file ./php/beta.Dockerfile --tag "php:$(date +%s)"
 
-  # SCALA
-  build-scala-latest:
+  # Build latest SCALA version
+  build-scala-latest-manual:
+    name: '[Manual] Build Scala latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-latest
       run: docker build . --file ./scala/build/latest.Dockerfile --tag "scala-latest:$(date +%s)" 
-  build-scala-bionic:
+  build-scala-bionic-manual:
+    name: '[Manual] Build Scala bionic'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: scala-bionic
       run: docker build . --file ./scala/build/bionic.Dockerfile --tag "scala-bionic:$(date +%s)"
-  build-scala-mantic:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: scala-mantic
-      run: docker build . --file ./scala/build/mantic.Dockerfile --tag "scala-mantic:$(date +%s)"
-  build-scala-maintenance:
+  # Deprecated - v2024.4.1
+  # build-scala-mantic:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: scala-mantic
+  #     run: docker build . --file ./scala/build/mantic.Dockerfile --tag "scala-mantic:$(date +%s)"
+  # Build maintenance SCALA version
+  build-scala-maintenance-manual:
+    name: '[Manual] Build Scala maintenance'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -160,8 +396,10 @@ jobs:
       run: docker build . --file ./scala/build/maintenance.Dockerfile --tag "scala-maintenance:$(date +%s)"
   
   # APPLICATIONS
-  # JENKINS
-  build-jenkins-latest:
+  # Build latest JENKINS version
+  build-jenkins-latest-manual:
+    name: '[Manual] Build Jenkins latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -169,15 +407,30 @@ jobs:
       run: docker build . --file ./jenkins/latest.Dockerfile --tag "jenkins-latest:$(date +%s)"
 
   # PUPPETEER
-  build-puppeteer-latest:
+  # Build latest PUPPETEER version
+  build-puppeteer-latest-manual:
+    name: '[Manual] Build Puppeteer latest'
+    needs: manual
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: puppeteer-latest
       run: docker build . --file ./puppeteer/latest.Dockerfile --tag "puppeteer-latest:$(date +%s)"
 
+  # REDIS
+  # Build latest REDIS version
+  build-redis-latest-manual:
+    name: '[Manual] Build Redis latest'
+    needs: manual
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: redis-latest
+      run: docker build . --file ./database/redis/latest.Dockerfile --tag "redis-latest:$(date +%s)"
+
   # TEST
   # API TEST WITH POSTMAN
+  # MacOS: curl -sL https://dl-cli.pstmn.io/install/osx_64.sh | bash
   # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
   test-postman:
     needs: build-ubuntu-latest
@@ -268,7 +521,7 @@ jobs:
 
   # REDASH SETUP MACOS
   test-redash-setup-macos:
-    needs: build-macos-latest
+    needs: build-macos-latest-manual
     runs-on: macos-latest
     environment: CI
     steps:
@@ -301,7 +554,7 @@ jobs:
 
   # TEST REDASH DOCKER
   test-redash-docker:
-    needs: build-windows-latest
+    needs: build-windows-latest-manual
     runs-on: windows-latest
     environment: CI
     steps:

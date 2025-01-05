@@ -1,4 +1,4 @@
-FROM node:21.1.0
+FROM node:22.12.0
 
 WORKDIR /build
 
