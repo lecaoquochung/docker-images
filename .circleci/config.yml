@@ -56,6 +56,30 @@ orbs:
 working_directory: ~/code
 
 jobs:
+  test:
+    docker:
+      - image: ubuntu:latest
+        environment:
+          TZ: "Asia/Tokyo"
+    steps:
+      - checkout
+      - run:
+          name: Submodule
+          command: |
+            ./.circleci/submodule.sh
+      - restore_cache:
+          keys:
+          - v1-test-{{ checksum "package.json" }}
+          - vi-test-
+      - run:
+          name: DOMAIN
+          command: |
+            ./.circleci/job/shared/server-domain-info.sh
+      - run:
+          name: Dependencies
+          command: |
+            ./.circleci/os/linux/dependencies.sh
+
   # job test latest | job test-latest
   test-latest:
     environment:
@@ -263,15 +287,50 @@ jobs:
           collection: ./postman/ME.postman_collection.json
           environment: ./postman/SAMPLE.postman_environment.json
 
-workflows:
-  version: 2
+  test-ubuntu:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:ubuntu-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apt-get update && apt-get install -y nodejs npm
+            npm install
+      - run:
+          name: List installed packages and versions
+          command: |
+            dpkg -l
+      - run:
+          name: Version check
+          command: |
+            lsb_release -a
+            npm -v
+            node -v
 
-  test:
+workflows:
+  run-test:
     jobs:
-      - test-latest
-      - test-dev
-      - test-build
-      - test-postman
+      - test:
+          filters:
+            branches:
+              only:
+                - /(test|main).*/
+      - test-latest:
+          requires:
+            - test
+      - test-dev:
+          requires:
+            - test
+      - test-build:
+          requires:
+            - test
+      - test-postman:
+          requires:
+            - test
+      - test-ubuntu:
+          requires:
+            - test
 
   # For CircleCI API manual trigger only
   test_manual:
