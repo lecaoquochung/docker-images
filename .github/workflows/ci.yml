@@ -424,6 +424,7 @@ jobs:
 
   # REDIS
   # Build latest REDIS version
+  # job build redis latest manual
   build-redis-latest-manual:
     name: '[Manual] Build Redis latest'
     needs: manual
@@ -432,6 +433,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: redis-latest
       run: docker build . --file ${{ env.DOCKERFILE_REDIS }} --tag "redis-latest:$(date +%s)"
+  
+  # job build redis latest automation
   build-redis-latest:
     name: '[Auto] Build Redis latest'
     needs: automation
@@ -462,7 +465,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
+            type=raw,${{ env.IMAGE_REDIS }}-${{ env.DATE_TIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
       - name: Build and push Docker images
