@@ -298,13 +298,37 @@ jobs:
       - run:
           name: List installed packages and versions
           command: |
-            dpkg -l
+            set -e # exit immediately if a command exits with a non-zero status
+            # dpkg -l # running stop unexpectedly
+            apt list --installed
+            apt-get -qq list --installed
       - run:
           name: Version check
           command: |
             cat /etc/os-release
             # npm -v # /bin/bash: line 1: npm: command not found
             # node -v
+  
+  test-php:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:php-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            whoami;pwd;ls -all; 
+            # npm ci /bin/bash: line 1: npm: command not found
+      - run:
+          name: List installed packages and versions
+          command: |
+            set -e # exit immediately if a command exits with a non-zero status
+            apk info -vv
+      - run:
+          name: Version check
+          command: |
+            cat /etc/os-release
+            php -v
 
 workflows:
   run-test:
@@ -328,6 +352,9 @@ workflows:
           requires:
             - test
       - test-ubuntu:
+          requires:
+            - test
+      - test-php:
           requires:
             - test
 
