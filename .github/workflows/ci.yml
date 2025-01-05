@@ -83,7 +83,13 @@ jobs:
       - name: Check code
         run: ls -all
       - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+        run: |
+          echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+      - name: Output date and time
+        run: |
+          ls -all;pwd;whoami;
+          echo "GLOBAL ENV DATETIME: ${{ DATETIME }}"
+          echo "LOCAL ENV DATE_TIME: ${{ env.DATE_TIME }}"
       - name: Log in to Docker Hub # https://github.com/docker/login-action
         # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
         uses: docker/login-action@v3
@@ -120,8 +126,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Set up date and time variable
-      run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
     - name: Output date and time
       run: |
         ls -all;pwd;whoami;
@@ -158,8 +162,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       - name: Log in to Docker Hub # https://github.com/docker/login-action
         # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
         uses: docker/login-action@v3
@@ -297,6 +299,7 @@ jobs:
   
   # PROGRAMMING LANGUAGE
   # Build latest PHP version
+  # job build php latest manual
   build-php-latest-manual:
     name: '[Manual] Build PHP latest'
     needs: manual
@@ -306,6 +309,7 @@ jobs:
     - name: php-fpm
       run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
   
+  # job build php latest automation
   build-php-latest:
     name: '[Auto] Build PHP latest'
     needs: automation
@@ -319,8 +323,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Set up date and time variable
-        run: echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -489,6 +491,7 @@ jobs:
   # MacOS: curl -sL https://dl-cli.pstmn.io/install/osx_64.sh | bash
   # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
   test-postman:
+    name: '[Test] Postman'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -517,6 +520,7 @@ jobs:
   # Test Commit
   # Config update
   test-newman:
+    name: '[Test] Newman'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -545,6 +549,7 @@ jobs:
 
   # REDASH SETUP
   test-redash-setup:
+    name: '[Test] Redash Setup'
     needs: build-ubuntu-latest
     runs-on: ubuntu-latest
     environment: CI
@@ -577,6 +582,7 @@ jobs:
 
   # REDASH SETUP MACOS
   test-redash-setup-macos:
+    name: '[Test] Redash Setup MacOS'
     needs: build-macos-latest-manual
     runs-on: macos-latest
     environment: CI
@@ -610,6 +616,7 @@ jobs:
 
   # TEST REDASH DOCKER
   test-redash-docker:
+    name: '[Test] Redash Docker'
     needs: build-windows-latest-manual
     runs-on: windows-latest
     environment: CI
@@ -669,7 +676,9 @@ jobs:
         # curl http://localhost:5500 -vd
 
   # TEST SCALA CODING
+  # job test scala coding
   test-scala-coding:  
+    name: '[Test] Scala Coding'
     runs-on: ubuntu-latest  
     environment: CI
     steps:
