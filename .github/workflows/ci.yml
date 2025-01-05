@@ -81,13 +81,13 @@ jobs:
         env:
           TEST: true
       - name: Check code
-        run: ls -all
+        run: |
+          ls -all;pwd;whoami;
       - name: Set up date and time variable
         run: |
           echo "DATE_TIME=$(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
       - name: Output date and time
         run: |
-          ls -all;pwd;whoami;
           echo "GLOBAL ENV DATETIME: ${{ env.DATETIME }}"
           echo "LOCAL ENV DATE_TIME: ${{ env.DATE_TIME }}"
       - name: Log in to Docker Hub # https://github.com/docker/login-action
@@ -113,9 +113,9 @@ jobs:
             type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
-            type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
-            type=semver,pattern={{raw}} # TODO release only
-            type=sha # TODO release only
+            type=schedule,enable=true,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
+            type=semver,enable=true,pattern={{raw}} # TODO release only
+            type=sha,enable=true
       
   # OS 
   # Ubuntu - manual build and test
