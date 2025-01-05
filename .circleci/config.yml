@@ -67,9 +67,6 @@ jobs:
           name: Dependencies
           command: |
             # Install dependencies - Ubuntu latest fresh image
-            apt-get update && apt-get install -y curl
-            dpkg -l
-            dpkg -l | grep -E 'nodejs|npm'
             cat /etc/os-release
       - restore_cache:
           keys:
