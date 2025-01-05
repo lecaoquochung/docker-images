@@ -24,8 +24,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Publish
-        uses: actions/publish-immutable-action@v0.0.4
+        name: Validate
+        run: 
+          # TODO Validate the Dockerfile
+          # https://docs.docker.com/build/checks/
+          docker build --help
+
+      # -
+      #   name: Publish
+      #   uses: actions/publish-immutable-action@v0.0.4
 
   release-ubuntu-latest:
     name: '[Auto] Release Ubuntu latest'
