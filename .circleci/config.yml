@@ -284,6 +284,7 @@ jobs:
           collection: ./postman/ME.postman_collection.json
           environment: ./postman/SAMPLE.postman_environment.json
 
+  # job test-ubuntu | job test-ubuntu-latest | job test ubuntu
   test-ubuntu:
     docker:
       - image: ghcr.io/lecaoquochung/docker-images:ubuntu-latest
@@ -301,8 +302,8 @@ jobs:
           name: Version check
           command: |
             cat /etc/os-release
-            npm -v
-            node -v
+            # npm -v # /bin/bash: line 1: npm: command not found
+            # node -v
 
 workflows:
   run-test:
