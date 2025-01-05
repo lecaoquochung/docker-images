@@ -64,21 +64,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Submodule
+          name: Dependencies
           command: |
-            ./.circleci/submodule.sh
+            # Install dependencies - Ubuntu latest fresh image
+            apt-get update && apt-get install -y curl
+            lsb_release -a
       - restore_cache:
           keys:
           - v1-test-{{ checksum "package.json" }}
           - vi-test-
-      - run:
-          name: DOMAIN
-          command: |
-            ./.circleci/job/shared/server-domain-info.sh
-      - run:
-          name: Dependencies
-          command: |
-            ./.circleci/os/linux/dependencies.sh
 
   # job test latest | job test-latest
   test-latest:
