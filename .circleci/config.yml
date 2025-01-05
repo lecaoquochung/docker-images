@@ -300,11 +300,12 @@ jobs:
           command: |
             set -e # exit immediately if a command exits with a non-zero status
             # dpkg -l # running stop unexpectedly
+            # apt-get -qq list --installed # E: Command line option --installed is not understood in combination with the other options
             apt list --installed
-            apt-get -qq list --installed
       - run:
           name: Version check
           command: |
+            uname -a
             cat /etc/os-release
             # npm -v # /bin/bash: line 1: npm: command not found
             # node -v
@@ -323,12 +324,16 @@ jobs:
           name: List installed packages and versions
           command: |
             set -e # exit immediately if a command exits with a non-zero status
-            apk info -vv
+            apt list --installed
       - run:
           name: Version check
           command: |
+            uname -a
             cat /etc/os-release
             php -v
+            php -r "phpinfo();"
+            php --ini
+            php --version
 
 workflows:
   run-test:
