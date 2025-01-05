@@ -90,6 +90,7 @@ jobs:
         run: |
           echo "GLOBAL ENV DATETIME: ${{ env.DATETIME }}"
           echo "LOCAL ENV DATE_TIME: ${{ env.DATE_TIME }}"
+          echo "type=raw,enable=true,value=${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}"
       - name: Log in to Docker Hub # https://github.com/docker/login-action
         # uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a 
         uses: docker/login-action@v3
@@ -110,7 +111,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value="${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}"
+            type=raw,enable=true,value=${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
             type=schedule,enable=true,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
