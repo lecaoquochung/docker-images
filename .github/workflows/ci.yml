@@ -183,7 +183,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_UBUNTU }}-${{ env.DATETIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
             # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
@@ -308,7 +308,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/latest.Dockerfile --tag "php:$(date +%s)"
+      run: docker build . --file ${{ env.DOCKERFILE_PHP }} --tag "php:$(date +%s)"
   
   # job build php latest automation
   build-php-latest:
@@ -341,7 +341,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_PHP }}-${{ env.DATETIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
       - name: Build and push Docker images
@@ -468,7 +468,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
       - name: Build and push Docker images
