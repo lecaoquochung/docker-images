@@ -110,7 +110,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATE_TIME }}
+            type=raw,${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
             type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
@@ -129,24 +129,24 @@ jobs:
     - name: Output date and time
       run: |
         ls -all;pwd;whoami;
-        echo "Date and Time: ${{ env.DATE_TIME }}"
+        echo "Date and Time: ${{ env.DATETIME }}"
     - name: Test build
       run: |
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ${{ env.DOCKERFILE_UBUNTU }} --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker build . --file ${{ env.DOCKERFILE_UBUNTU }} --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
-        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
-        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
         # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATE_TIME }}"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
-        # docker push ubuntu-latest:${{ env.DATE_TIME }}
-        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATE_TIME }}
+        # docker push ubuntu-latest:${{ env.DATETIME }}
+        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATETIME }}
   
   # Ubuntu - automation build and push
   build-ubuntu-latest:
@@ -182,7 +182,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_UBUNTU }}-${{ env.DATE_TIME }}
+            type=raw,${{ env.IMAGE_UBUNTU }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
             # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
@@ -340,7 +340,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_PHP }}-${{ env.DATE_TIME }}
+            type=raw,${{ env.IMAGE_PHP }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
       - name: Build and push Docker images
@@ -467,7 +467,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,${{ env.IMAGE_REDIS }}-${{ env.DATE_TIME }}
+            type=raw,${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
       - name: Build and push Docker images
