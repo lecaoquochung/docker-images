@@ -737,7 +737,7 @@ jobs:
 
     - name: Verify Redis connection
       run: |
-        docker exec -it redis-test redis-cli PING
-        docker exec -it redis-test redis-cli SET test_key "Hello, Docker Redis!"
-        docker exec -it redis-test redis-cli GET test_key
+        docker exec redis-test redis-cli PING
+        docker exec redis-test redis-cli SET test_key "Hello, Docker Redis!"
+        docker exec redis-test redis-cli GET test_key
         
