@@ -712,6 +712,7 @@ jobs:
     name: '[Test] Redis Docker Connection'
     needs: build-redis-latest-manual
     runs-on: ubuntu-latest
+    environment: CI
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4
