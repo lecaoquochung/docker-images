@@ -707,3 +707,36 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN}}
         with:  
           fail_ci_if_error: true
+
+  test-redis-connection-docker:
+    name: '[Test] Redis Docker Connection'
+    needs: build-redis-latest-manual
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Set up Docker Compose
+      run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+    - name: Run Docker Compose
+      run: docker-compose -f database/redis/test/connection/docker-compose.yml up -d
+
+    - name: Verify Docker Compose services
+      run: docker-compose -f database/redis/test/connection/docker-compose.yml ps
+
+    - name: Verify Redis connection
+      run: |
+        docker exec -it redis-test redis-cli PING
+        docker exec -it redis-test redis-cli SET test_key "Hello, Docker Redis!"
+        docker exec -it redis-test redis-cli GET test_key
+        
