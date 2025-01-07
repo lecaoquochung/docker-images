@@ -343,7 +343,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            whoami;pwd;ls -all; 
+            whoami;pwd;ls -all;
       - run:
           name: List installed packages and versions
           command: |
@@ -357,6 +357,9 @@ jobs:
             redis-server -v
             redis-cli -v
             locale
+      - run:
+          name: Start Redis server
+          command: redis-server --daemonize yes
       - run:
           name: Redis functionality check
           command: |

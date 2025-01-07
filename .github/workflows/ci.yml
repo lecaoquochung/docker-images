@@ -763,7 +763,8 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN}}
         with:  
           fail_ci_if_error: true
-
+  
+  # job test redis connection
   test-redis-connection-docker:
     name: '[Test] Redis Docker Connection'
     needs: build-redis-latest-manual
