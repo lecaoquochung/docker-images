@@ -362,6 +362,9 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   
+  # job build php beta manual
+  # docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "php:$(date +%s)"
+  # docker run -d --name php_container "php:$(date +%s)"
   build-php-beta-manual:
     name: '[Manual] Build PHP beta'
     needs: manual
@@ -369,9 +372,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "php:$(date +%s)"
+      run: |
+        docker build --help
+        docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}"
     - name: Start Docker container  
-      run: docker run -d --name php_container "php:$(date +%s)"
+      run: |
+        docker images
+        docker run --help
+        # docker run -d --name php_container "${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}"
     - name: Verify build
       run: docker exec php_container cat /etc/os-release
   
