@@ -293,7 +293,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            whoami;pwd;ls -all; 
+            whoami;pwd;ls -all;
             # npm ci /bin/bash: line 1: npm: command not found
       - run:
           name: List installed packages and versions
@@ -357,6 +357,13 @@ jobs:
             redis-server -v
             redis-cli -v
             locale
+      - run:
+          name: Redis functionality check
+          command: |
+            redis-cli ping
+            redis-cli set test_key "Hello Redis"
+            redis-cli get test_key
+            redis-cli info
 
 workflows:
   run-test:

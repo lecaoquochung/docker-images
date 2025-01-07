@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "ci", "dev", "build*", "implementation*" ]
+    branches: ["ci", "dev", "build*", "implementation*"]
   # pull_request:
   #  branches: [ "main" ]
 
@@ -12,9 +12,11 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   IMAGE_AUTOMATION_TEST: automation-test
   IMAGE_PHP: php-latest
+  IMAGE_PHP_BETA: php-beta
   IMAGE_REDIS: redis-latest
   IMAGE_UBUNTU: ubuntu-latest
   DOCKERFILE_PHP: ./php/latest.Dockerfile
+  DOCKERFILE_PHP_BETA: ./php/beta.Dockerfile
   DOCKERFILE_REDIS: ./database/redis/latest.Dockerfile
   DOCKERFILE_UBUNTU: ./ubuntu/latest.Dockerfile
 
@@ -367,7 +369,61 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: php-fpm
-      run: docker build . --file ./php/beta.Dockerfile --tag "php:$(date +%s)"
+      run: docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "php:$(date +%s)"
+    - name: Start Docker container  
+      run: docker run -d --name php_container "php:$(date +%s)"
+    - name: Verify build
+      run: docker exec php_container cat /etc/os-release
+  
+  # job build php beta
+  build-php-beta:
+    name: '[Auto] Build PHP beta'
+    needs: automation
+    runs-on: ubuntu-latest
+    environment: CI
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,enable=true,value=${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=branch
+            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=pr
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE_PHP_BETA }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
 
   # Build latest SCALA version
   build-scala-latest-manual:
@@ -726,7 +782,8 @@ jobs:
         rdcli --version
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      # uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
@@ -745,8 +802,12 @@ jobs:
 
     - name: Verify Redis connection
       run: |
-        docker exec redis-test redis-cli PING
-        docker exec redis-test redis-cli SET test_key "Hello, Docker Redis!"
-        docker exec redis-test redis-cli GET test_key
+        docker exec redis-test redis-cli PING || exit 1
+        docker exec redis-test redis-cli SET test_key "Hello, Docker Redis!" || exit 1
+        value=$(docker exec redis-test redis-cli GET test_key)
+        if [ "$value" != "Hello, Docker Redis!" ]; then
+          echo "Redis GET returned unexpected value: $value"
+          exit 1
+        fi
         docker logs redis-test
         

@@ -17,3 +17,6 @@ RUN apt-get update && apt-get install -y \
 
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
+
+# Expose default Redis port
+EXPOSE 6379
