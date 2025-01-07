@@ -717,6 +717,14 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: |
+        # install npm
+        sudo apt-get update
+        sudo apt-get install -y npm
+        npm install -g redis-cli
+        rdcli --version
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -740,4 +748,5 @@ jobs:
         docker exec redis-test redis-cli PING
         docker exec redis-test redis-cli SET test_key "Hello, Docker Redis!"
         docker exec redis-test redis-cli GET test_key
+        docker logs redis-test
         
