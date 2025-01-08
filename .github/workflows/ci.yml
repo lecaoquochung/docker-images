@@ -510,6 +510,7 @@ jobs:
     name: '[Manual] Build Redis latest'
     needs: manual
     runs-on: ubuntu-latest
+    environment: CI
     steps:
     - name: Check out the repo
       uses: actions/checkout@v4
