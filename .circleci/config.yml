@@ -102,6 +102,11 @@ jobs:
           - v1-build-latest-yarn-{{ checksum "package.json" }}
           - v1-build-latest-yarn-
       - run:
+          name: Node version
+          command: |
+            node -v
+            n install stable
+      - run:
           name: DOMAIN
           command: |
             ./.circleci/job/shared/server-domain-info.sh
