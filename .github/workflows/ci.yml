@@ -379,7 +379,7 @@ jobs:
       run: |
         docker images
         docker run --help
-        # docker run -d --name php_container "${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}"
+        docker run -d --name php_container "${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}"
     - name: Verify build
       run: docker exec php_container cat /etc/os-release
   
