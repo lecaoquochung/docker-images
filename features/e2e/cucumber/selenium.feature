@@ -1,3 +1,6 @@
+# TOOL=puppeteer  yarn cucumber --tags "@selenium"
+# TOOL=selenium  yarn cucumber --tags "@selenium"
+# TOOL=playwright  yarn cucumber --tags "@selenium"
 @selenium
 Feature: Searching for Cheese on Google
 

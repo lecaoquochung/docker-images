@@ -293,7 +293,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            whoami;pwd;ls -all; 
+            whoami;pwd;ls -all;
             # npm ci /bin/bash: line 1: npm: command not found
       - run:
           name: List installed packages and versions
@@ -335,6 +335,39 @@ jobs:
             php --ini
             php --version
 
+  test-redis:
+    docker:
+      - image: ghcr.io/lecaoquochung/docker-images:redis-latest
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            whoami;pwd;ls -all;
+      - run:
+          name: List installed packages and versions
+          command: |
+            set -e # exit immediately if a command exits with a non-zero status
+            apt list --installed
+      - run:
+          name: Version check
+          command: |
+            uname -a
+            cat /etc/os-release
+            redis-server -v
+            redis-cli -v
+            locale
+      - run:
+          name: Start Redis server
+          command: redis-server --daemonize yes
+      - run:
+          name: Redis functionality check
+          command: |
+            redis-cli ping
+            redis-cli set test_key "Hello Redis"
+            redis-cli get test_key
+            redis-cli info
+
 workflows:
   run-test:
     jobs:
@@ -342,7 +375,7 @@ workflows:
           filters:
             branches:
               only:
-                - /(test).*/
+                - /(test|implementation).*/
                 - main
       - test-latest:
           requires:
@@ -360,6 +393,9 @@ workflows:
           requires:
             - test
       - test-php:
+          requires:
+            - test
+      - test-redis:
           requires:
             - test
 

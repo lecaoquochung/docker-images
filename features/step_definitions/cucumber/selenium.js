@@ -56,7 +56,7 @@ When('I search for {string}', { timeout: 30000 }, async function (searchTerm) {
     await driver.wait(async () => {
     const readyState = await driver.executeScript('return document.readyState');
     return readyState === 'complete';
-    }, 10000); // Wait up to 10 seconds for the page to load
+    }, 15000); // Wait up to 15 seconds for the page to load
 
     // Optionally wait for a specific element on the results page
     await driver.wait(until.elementLocated(By.id('main')), 10000);
