@@ -105,7 +105,7 @@ jobs:
           name: Node version
           command: |
             node -v
-            n install stable
+            sudo n install stable
       - run:
           name: DOMAIN
           command: |
