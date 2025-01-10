@@ -13,7 +13,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update package index and install basic dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        # Basic dependencies
         bash \
         chromium \
         git \
@@ -36,8 +35,7 @@ RUN apt-get update && \
         chromium-bsu \
         chromium-browser \
         xvfb && \
-        # Install dependencies for Gource
-        build-essential cmake libsdl2-dev libfreetype6-dev libglew-dev libglm-dev \
+        build-essential cmake libsdl2-dev libfreetype6-dev libglew-dev libglm-dev && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
@@ -118,7 +116,8 @@ RUN date && \
     java -version && \
 
 # Check tools
-RUN  gource --version
+# https://datasciencecampus.github.io/visualising-github-commits/
+RUN gource --version
 
 # WORKDIR /home/qa/code
 # COPY ./build/$CURRENT_BRANCH/dependencies.sh .
