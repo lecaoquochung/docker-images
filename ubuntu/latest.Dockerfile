@@ -78,8 +78,8 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     chmod +x /usr/local/bin/docker-compose
 
 # Install trcli
-RUN python --version && \
-    pip install trcli
+RUN python3 --version && \
+    pip3 install trcli
 
 # Install global Node/Yarn dependencies
 # WORKDIR /home/qa/code
@@ -104,16 +104,17 @@ RUN cd gource-0.53 && \
 RUN date && \
     pwd && \
     ls && \
+    aws --version && \
     docker --version && \
+    java -version && \
     node --version && \
     npm --version && \
     npm run --version && \
     npx playwright -V && \
+    sbt --version && \
     trcli --help && \
     yarn --version && \
-    aws --version && \
-    sbt --version && \
-    java -version && \
+    python3 --version
 
 # Check tools
 # https://datasciencecampus.github.io/visualising-github-commits/
