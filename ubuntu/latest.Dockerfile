@@ -78,8 +78,11 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     chmod +x /usr/local/bin/docker-compose
 
 # Install trcli
-RUN python3 --version && \
-    pip3 install trcli
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install trcli && \
+    deactivate
 
 # Install global Node/Yarn dependencies
 # WORKDIR /home/qa/code
