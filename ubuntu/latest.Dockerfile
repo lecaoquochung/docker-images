@@ -96,12 +96,14 @@ RUN npm install -g playwright && \
     npx playwright install-deps
 
 # Tools
-RUN curl -LO https://github.com/acaudwell/Gource/releases/latest/download/gource-0.53.tar.gz
-RUN tar -xvzf gource-0.53.tar.gz
-RUN cd gource-0.53 && \
+RUN curl -LO https://github.com/acaudwell/Gource/releases/latest/download/gource-0.53.tar.gz && \
+    tar -xzf gource-0.53.tar.gz && \
+    cd gource-0.53 && \
     ./configure && \
     make && \
-    make install
+    make install && \
+    cd .. && \
+    rm -rf gource-0.53 gource-0.53.tar.gz
 
 # Check versions and system info
 RUN date && \
