@@ -34,10 +34,10 @@ RUN apt-get update && \
         default-jdk \
         chromium-bsu \
         chromium-browser \
-        xvfb && \
+        xvfb \
         build-essential cmake libsdl2-dev libfreetype6-dev libglew-dev libglm-dev && \
-        apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
