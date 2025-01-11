@@ -26,7 +26,7 @@ RUN apt-get update && \
         apt-transport-https \
         ca-certificates \
         software-properties-common \
-        python3 \
+        python3-full \
         python3-venv \
         python3-pip \
         postgresql-client \
