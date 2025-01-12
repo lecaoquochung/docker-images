@@ -96,7 +96,7 @@ RUN npm install -g playwright && \
     npx playwright install-deps
 
 # Tools
-RUN curl -LO https://github.com/acaudwell/Gource/releases/latest/download/gource-0.53.tar.gz && \
+RUN curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz && \
     tar -xzf gource-0.53.tar.gz && \
     cd gource-0.53 && \
     ./configure && \
