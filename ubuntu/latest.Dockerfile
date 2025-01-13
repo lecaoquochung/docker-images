@@ -96,7 +96,14 @@ RUN npm install -g playwright && \
     npx playwright install-deps
 
 # Tools
-RUN curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz && \
+## Gource v0.55
+### Required dependencies
+### SDL2_image package
+RUN apt-get update && \
+    apt-get install -y build-essential libtool-bin pkg-config \
+    libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev \
+    libglew-dev libglm-dev libfreetype6-dev libpng-dev zlib1g-dev && \
+    curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz && \
     tar -xzf gource-0.55.tar.gz && \
     cd gource-0.55 && \
     ./configure && \
