@@ -126,9 +126,11 @@ RUN date && \
     npm run --version && \
     npx playwright -V && \
     sbt --version && \
-    trcli --help && \
-    yarn --version && \
-    python3 --version
+    yarn --version
+
+# Python virtual environment
+RUN python3 --version && \
+    . /opt/venv/bin/activate && trcli --help && deactivate
 
 # Check tools
 # https://datasciencecampus.github.io/visualising-github-commits/
