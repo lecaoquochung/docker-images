@@ -100,6 +100,15 @@ RUN npm install -g playwright && \
 ### Required dependencies
 ### SDL2_image package
 ### Boost C++ Libraries
+### Install from source
+# ========================================================================================================
+# curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz
+# tar -xzf gource-0.55.tar.gz
+# cd gource-0.55
+# ./configure
+# make
+# sudo make install
+# ========================================================================================================
 RUN apt-get update && \
     apt-get install -y build-essential libtool-bin pkg-config \
     libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev \
@@ -134,7 +143,7 @@ RUN python3 --version && \
 
 # Check tools
 # https://datasciencecampus.github.io/visualising-github-commits/
-RUN gource -v
+RUN gource --help
 
 # WORKDIR /home/qa/code
 # COPY ./build/$CURRENT_BRANCH/dependencies.sh .
