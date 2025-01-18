@@ -153,7 +153,7 @@ Before(
         capabilities.set('chromeOptions', { "w3c": false, args: ["--headless"] }); // Enable headless mode
         const driver = new Builder().withCapabilities(capabilities).build();
       } else {
-        // robotframework
+        // robot framework
       }
 
       // Output Test Browser Information

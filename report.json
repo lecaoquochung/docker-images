@@ -6,54 +6,55 @@
         "description": "    \"\"\"\n      Documentation\n      https://cucumber.io/docs/guides/browser-automation/?lang=javascript\n    \"\"\"",
         "id": "searching-for-cheese-on-google;finding-some-cheese-with-selenium",
         "keyword": "Scenario",
-        "line": 7,
+        "line": 14,
         "name": "Finding some cheese with Selenium",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
-              "status": "passed",
-              "duration": 15181814384
+              "status": "failed",
+              "duration": 30096929792,
+              "error_message": "TimeoutError: Timed out after 30000 ms while waiting for the WS endpoint URL to appear in stdout!\n    at ChromeLauncher.launch (/Users/hl/me/projects/lecaoquochung/docker-images/node_modules/puppeteer/node_modules/puppeteer-core/lib/cjs/puppeteer/node/BrowserLauncher.js:162:23)\n    at async World.<anonymous> (/Users/hl/me/projects/lecaoquochung/docker-images/features/step_definitions/support/hooks.js:66:24)"
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 12,
+            "line": 19,
             "name": "I am on the Google search page",
             "match": {
               "location": "features/step_definitions/cucumber/selenium.js:35"
             },
             "result": {
-              "status": "passed",
-              "duration": 3561471341
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 13,
+            "line": 20,
             "name": "I search for \"Cheese!\"",
             "match": {
               "location": "features/step_definitions/cucumber/selenium.js:45"
             },
             "result": {
-              "status": "passed",
-              "duration": 11534780105
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 14,
+            "line": 21,
             "name": "the page title should start with \"cheese\"",
             "match": {
               "location": "features/step_definitions/cucumber/selenium.js:65"
             },
             "result": {
-              "status": "passed",
-              "duration": 245926002
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
@@ -61,28 +62,28 @@
             "hidden": true,
             "result": {
               "status": "failed",
-              "duration": 1427000,
-              "error_message": "TypeError: page.waitForTimeout is not a function\n    at EvidenceComponent.closing (/Users/hl/me/projects/lecaoquochung/docker-images/src/component/EvidenceComponent.js:160:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async World.<anonymous> (/Users/hl/me/projects/lecaoquochung/docker-images/features/step_definitions/support/hooks.js:181:7)"
+              "duration": 1447140,
+              "error_message": "TypeError: Cannot read properties of undefined (reading 'waitForTimeout')\n    at EvidenceComponent.closing (/Users/hl/me/projects/lecaoquochung/docker-images/src/component/EvidenceComponent.js:160:20)\n    at async World.<anonymous> (/Users/hl/me/projects/lecaoquochung/docker-images/features/step_definitions/support/hooks.js:181:7)"
             }
           }
         ],
         "tags": [
           {
             "name": "@selenium",
-            "line": 4
+            "line": 11
           }
         ],
         "type": "scenario"
       }
     ],
     "id": "searching-for-cheese-on-google",
-    "line": 5,
+    "line": 12,
     "keyword": "Feature",
     "name": "Searching for Cheese on Google",
     "tags": [
       {
         "name": "@selenium",
-        "line": 4
+        "line": 11
       }
     ],
     "uri": "features/e2e/cucumber/selenium.feature"

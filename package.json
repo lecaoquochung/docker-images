@@ -41,7 +41,7 @@
         "os": "^0.1.2",
         "playwright": "^1",
         "prettier": "^3.0.3",
-        "puppeteer": "^23.3.0",
+        "puppeteer": "^24.1.0",
         "puppeteer-core": "^23.6.0",
         "request": "^2.88.2",
         "rimraf": "^5.0.7",

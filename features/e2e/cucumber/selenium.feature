@@ -1,6 +1,13 @@
+# Yarn
 # TOOL=puppeteer  yarn cucumber --tags "@selenium"
 # TOOL=selenium  yarn cucumber --tags "@selenium"
 # TOOL=playwright  yarn cucumber --tags "@selenium"
+
+# NPM
+# TOOL=puppeteer  npx cucumber-js --tags "@selenium"
+# TOOL=selenium  npx cucumber-js --tags "@selenium"
+# TOOL=playwright  npx cucumber-js --tags "@selenium"
+
 @selenium
 Feature: Searching for Cheese on Google
 
