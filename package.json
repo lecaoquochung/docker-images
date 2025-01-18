@@ -51,7 +51,7 @@
         "wrap-ansi": "^9.0.0"
     },
     "devDependencies": {
-        "chromedriver": "^130"
+        "chromedriver": "^132"
     },
     "overrides": {
         "@microsoft/api-extractor": {
