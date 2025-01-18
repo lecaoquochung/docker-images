@@ -134,7 +134,7 @@ RUN python3 --version && \
 
 # Check tools
 # https://datasciencecampus.github.io/visualising-github-commits/
-RUN gource --version
+RUN gource -v
 
 # WORKDIR /home/qa/code
 # COPY ./build/$CURRENT_BRANCH/dependencies.sh .
