@@ -127,6 +127,10 @@ jobs:
           command: |
             xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
       - run:
+          name: Selenium
+          command: |
+            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/selenium.json
+      - run:
           name: Report
           command: |
             ./.circleci/job/shared/report.sh
