@@ -151,7 +151,16 @@ Before(
         // selenium driver setup
         const capabilities = Capabilities.chrome();
         capabilities.set('chromeOptions', { "w3c": false, args: ["--headless"] }); // Enable headless mode
-        const driver = new Builder().withCapabilities(capabilities).build();
+        this.seleniumDriver = new Builder().withCapabilities(capabilities).build();
+
+        // Get browser version
+        const driverCapabilities = await this.seleniumDriver.getCapabilities();
+        console.log('SELENIUM DRIVER CAPABILITIES:', driverCapabilities);
+        const browserName = driverCapabilities.get('browserName');
+        const browserVersion = driverCapabilities.get('browserVersion');
+        console.log(`SELENIUM BROWSER NAME: ${browserName}`);
+        console.log(`SELENIUM BROWSER VERSION: ${browserVersion}`);
+        this.browserVersion = browserVersion;
       } else {
         // robot framework
       }

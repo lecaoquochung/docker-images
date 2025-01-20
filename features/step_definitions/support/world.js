@@ -15,6 +15,7 @@ class World {
     this.notification;
     this.page;
     this.scenario;
+    this.seleniumDriver;
     this.taskDuration;
     this.version;
     this.width;
