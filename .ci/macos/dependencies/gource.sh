@@ -1,13 +1,12 @@
 # Dependencies for Gource
-# ========================================================================================================
-# curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz
-# tar -xzf gource-0.55.tar.gz
-# cd gource-0.55
-# ./configure
-# make
-# sudo make install
-# ========================================================================================================
+# Installs SDL2_image.
+# Installs Boost and sets the BOOST_ROOT environment variable.
+# Installs GLM using Homebrew.
+# Configures Gource with the Boost library path explicitly specified.
+# Builds and installs Gource.
 
+# Install dependenciesSDL2_image
+# ========================================================================================================
 # download and check sum
 curl -LO https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz
 shasum -a 256 SDL2_image-2.0.5.tar.gz
@@ -53,4 +52,67 @@ curl -LO https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.
 #  /usr/bin/install -c -m 644 SDL_image.h '/usr/local/include/SDL2'
 #  ./install-sh -c -d '/usr/local/lib/pkgconfig'
 #  /usr/bin/install -c -m 644 SDL2_image.pc '/usr/local/lib/pkgconfig'
-----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ========================================================================================================
+
+# install dependencies boost
+# ========================================================================================================
+# Install Boost
+brew install boost
+
+# Set BOOST_ROOT environment variable
+export BOOST_ROOT=$(brew --prefix boost)
+
+
+# ========================================================================================================
+# checking for glm/glm.hpp... no
+# configure: error: GLM headers are required. Please see INSTALL
+# Install GLM
+brew install glm
+
+# install goucre
+# ========================================================================================================
+curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz
+tar -xzf gource-0.55.tar.gz
+cd gource-0.55
+./configure
+make
+sudo make install
+
+# link BOOST_ROOT
+curl -LO https://github.com/acaudwell/Gource/releases/download/gource-0.55/gource-0.55.tar.gz && \
+  tar -xzf gource-0.55.tar.gz && \
+  cd gource-0.55 && \
+  ./configure --with-boost=$BOOST_ROOT && \
+  make LDFLAGS="-L$BOOST_ROOT/lib -lboost_filesystem -lboost_system" && \
+  sudo make install && \
+  cd .. && \
+  rm -rf gource-0.55 gource-0.55.tar.gz
+# ========================================================================================================
+
+
+# Gource Usage
+gource --output-custom-log repo.log my-repo-location/
+gource --output-custom-log repo.log my-repo-location/ --start-date "2019-01-01" --stop-date "2019-12-31"
+
+## path .ci/repo/ 
+gource --output-custom-log repo.log ../../ --start-date "2015-01-01" --stop-date "2025-01-18"
+gource --seconds-per-day 1 repo.log
+
+# ========================================================================================================
+# Customizing Gource
+# specific screen resolution
+gource -1280x1024 --camera-mode track --hide progress --output-ppm-stream ./out.ppm
+--background-colour 000000 --font-colour 336699 --highlight-users --highlight-colour ff0000
+--auto-skip-seconds 1 --seconds-per-day 0.051 --title "hmm..." --user-scale 1
+--bloom-multiplier 0.5 --bloom-intensity 0.5 --key
+--file-extensions repo.log
+
+# (?) WHY fullscreen is too slow
+gource -fullscreen --camera-mode track --hide progress --output-ppm-stream ./out.ppm
+--background-colour 000000 --font-colour 336699 --highlight-users --highlight-colour ff0000
+--auto-skip-seconds 1 --seconds-per-day 0.05 --title "hmm..." --user-scale 1
+--bloom-multiplier 0.5 --bloom-intensity 0.5 --key
+--file-extensions repo.log
+# ========================================================================================================
+
