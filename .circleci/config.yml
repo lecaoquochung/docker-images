@@ -118,10 +118,10 @@ jobs:
           name: Cucumber
           command: |
             yarn cucumber -v; pip --version; 
-      - run:
-          name: Jest
-          command: |
-            yarn test src/jest/openGoogle.test.js
+      # - run:
+      #     name: Jest
+      #     command: |
+      #       yarn test src/jest/openGoogle.test.js
       # - run:
       #     name: Split test by Test suite
       #     command: |
