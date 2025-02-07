@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const puppeteer = require('puppeteer');
+const os = require('os');
 const { chromium, firefox, webkit, devices } = require('playwright');
 const { expect } = require('chai');
 require("chromedriver");
@@ -33,9 +34,11 @@ BeforeAll(async function() {
   // Output Test Information
   // TOOL: puppeteer, playwright, robotframework, selenium etc
   // BROWSERS: chrome, firefox, safari, etc
+  const operatingSystem = os.platform(); // 'darwin', 'win32', 'linux', etc.
+
   console.log('VERSION:', packageJson.version);
   console.log('ENV:', constant.env);
-  console.log('OS:', constant.os);
+  console.log('OS:', operatingSystem);
   console.log('TOOL:', constant.tool);
   console.log('BROWSERS:', constant.browser);
   console.log('SCENARIO TIMEOUT:', constant.scenarioTimeout);
