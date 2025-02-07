@@ -85,7 +85,7 @@ jobs:
       - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
       - TOOL=selenium
       - BROWSER=<< pipeline.parameters.browser >>
-    parallelism: 2
+    # parallelism: 2
     working_directory: /home/qa/code
     docker:
       - image: lecaoquochung/docker-images:puppeteer-v1.4.0
