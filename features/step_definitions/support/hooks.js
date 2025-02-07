@@ -151,7 +151,7 @@ Before(
         // selenium driver setup
         const capabilities = Capabilities.chrome();
         // const userDataDir = `/coverage/user-data/s/selenium_user_data_${Date.now()}`; // Unique user data directory
-        const userDataDir = `/coverage/user-data/s/selenium_user_data_${process.pid}_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`; // Unique user data directory for parallism random run
+        const userDataDir = path.resolve(__dirname, '../../../coverage/user-data/selenium_user_data_${process.pid}_${Date.now()}_${Math.random().toString(36).substring(2, 15)}'); // Unique user data for parallelism random run
         capabilities.set('chromeOptions', { 
           "w3c": false, 
           args: [
