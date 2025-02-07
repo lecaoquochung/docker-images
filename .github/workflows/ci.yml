@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["ci", "dev", "build*"]
+    branches: ["ci", "dev", "build*", "implementation*"]
   # pull_request:
   #  branches: [ "main" ]
 
@@ -15,10 +15,12 @@ env:
   IMAGE_AUTOMATION_TEST: automation-test
   IMAGE_PHP: php-latest
   IMAGE_PHP_BETA: php-beta
+  IMAGE_PUPPETEER: puppeteer-latest
   IMAGE_REDIS: redis-latest
   IMAGE_UBUNTU: ubuntu-latest
   DOCKERFILE_PHP: ./php/latest.Dockerfile
   DOCKERFILE_PHP_BETA: ./php/beta.Dockerfile
+  DOCKERFILE_PUPPETEER: ./puppeteer/latest.Dockerfile
   DOCKERFILE_REDIS: ./database/redis/latest.Dockerfile
   DOCKERFILE_UBUNTU: ./ubuntu/latest.Dockerfile
 
@@ -208,7 +210,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
@@ -315,6 +317,8 @@ jobs:
       run: docker build . --file ${{ env.DOCKERFILE_PHP }} --tag "php:$(date +%s)"
   
   # job build php latest automation
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
   build-php-latest:
     name: '[Auto] Build PHP latest'
     needs: automation
@@ -345,9 +349,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-${{ env.DATETIME }}
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=branch
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
+            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-build-${{ env.DATETIME }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -362,7 +365,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
   
   # job build php beta manual
   # docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "php:$(date +%s)"
@@ -399,6 +402,8 @@ jobs:
         run: docker exec php_container cat /etc/os-release
   
   # job build php beta
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=branch
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=pr
   build-php-beta:
     name: '[Auto] Build PHP beta'
     needs: automation
@@ -429,9 +434,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_PHP_BETA }}-${{ env.DATETIME }}
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=branch
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=pr
+            type=raw,enable=true,value=${{ env.IMAGE_PHP_BETA }}-build
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -499,10 +502,84 @@ jobs:
     name: '[Manual] Build Puppeteer latest'
     needs: manual
     runs-on: ubuntu-latest
+    environment: CI
     steps:
-    - uses: actions/checkout@v4
-    - name: puppeteer-latest
-      run: docker build . --file ./puppeteer/latest.Dockerfile --tag "puppeteer-latest:$(date +%s)"
+    - name: Check out the repo
+      uses: actions/checkout@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Docker image
+      run: |
+        docker build . --file ${{ env.DOCKERFILE_PUPPETEER }} --tag "${{ env.IMAGE_PUPPETEER }}-${{ env.DATE }}"
+    - name: Start Docker container
+      run: |
+        docker images
+        docker run -d --name puppeteer-me "${{ env.IMAGE_PUPPETEER }}-${{ env.DATE }}"
+    - name: Verify build container
+      run: |
+        docker ps -a
+        docker exec puppeteer-me cat /etc/os-release
+    - name: Verify Puppeteer
+      run: |
+        docker exec puppeteer-me npx puppeteer --version || exit 1
+    
+  build-puppeteer-latest:
+    name: '[Auto] Build Puppeteer latest'
+    needs: automation
+    runs-on: ubuntu-latest
+    environment: CI
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker # https://github.com/docker/metadata-action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-${{ env.DATE }}
+            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-${{ env.DATETIME }}
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE_PUPPETEER }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
 
   # REDIS
   # Build latest REDIS version
@@ -546,6 +623,8 @@ jobs:
         docker exec redis-me redis-cli GET "key" || exit 1
   
   # job build redis latest automation
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
   build-redis-latest:
     name: '[Auto] Build Redis latest'
     needs: automation
@@ -577,8 +656,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=branch
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -593,7 +670,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
 
   # TEST
   # API TEST WITH POSTMAN
