@@ -150,7 +150,14 @@ Before(
 
         // selenium driver setup
         const capabilities = Capabilities.chrome();
-        capabilities.set('chromeOptions', { "w3c": false, args: ["--headless"] }); // Enable headless mode
+        const userDataDir = `/coverage/user-data/s/selenium_user_data_${Date.now()}`; // Unique user data directory
+        capabilities.set('chromeOptions', { 
+          "w3c": false, 
+          args: [
+            "--headless",
+            `--user-data-dir=${userDataDir}`
+          ] 
+        }); // Enable headless mode
         this.seleniumDriver = new Builder().withCapabilities(capabilities).build();
 
         // Get browser version
