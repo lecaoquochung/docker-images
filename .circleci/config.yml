@@ -83,7 +83,7 @@ jobs:
       - ENV=<< pipeline.parameters.env >>
       - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
       - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
-      - TOOL=<< pipeline.parameters.tool >>
+      - TOOL=selenium
       - BROWSER=<< pipeline.parameters.browser >>
     parallelism: 2
     working_directory: /home/qa/code
