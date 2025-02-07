@@ -2,7 +2,6 @@
 e2e/cucumber/friday.feature
 e2e/cucumber/greeting.feature
 
+# TODO selenium & Puppeteer should run in separated env
 # Selenium Feature
 # e2e/cucumber/selenium.feature
-
-# 
