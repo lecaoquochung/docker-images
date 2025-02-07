@@ -1,6 +1,6 @@
 {
     "name": "docker-images",
-    "version": "3.2.0-rc",
+    "version": "3.2.0-rc.01",
     "private": true,
     "repository": {
         "type": "git",
@@ -45,13 +45,10 @@
         "puppeteer-core": "^24.1.0",
         "request": "^2.88.2",
         "rimraf": "^5.0.7",
-        "selenium-webdriver": "^4.27.0",
+        "selenium-webdriver": "^4.28.1",
         "ts-jest": "^29.2.5",
         "typescript": "^5.2.2",
         "wrap-ansi": "^9.0.0"
-    },
-    "devDependencies": {
-        "chromedriver": "^132"
     },
     "overrides": {
         "@microsoft/api-extractor": {
