@@ -3,87 +3,98 @@
     "description": "",
     "elements": [
       {
-        "description": "    \"\"\"\n      Documentation\n      https://cucumber.io/docs/guides/browser-automation/?lang=javascript\n    \"\"\"",
+        "description": "    \"\"\"\n      Documentation\n      https://cucumber.io/docs/guides/browser-automation/?lang=javascript\n\n      Handling capcha when searching for \"Cheese!\" on Google\n    \"\"\"",
         "id": "searching-for-cheese-on-google;finding-some-cheese-with-selenium",
         "keyword": "Scenario",
-        "line": 14,
+        "line": 16,
         "name": "Finding some cheese with Selenium",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
-              "status": "failed",
-              "duration": 30096929792,
-              "error_message": "TimeoutError: Timed out after 30000 ms while waiting for the WS endpoint URL to appear in stdout!\n    at ChromeLauncher.launch (/Users/hl/me/projects/lecaoquochung/docker-images/node_modules/puppeteer/node_modules/puppeteer-core/lib/cjs/puppeteer/node/BrowserLauncher.js:162:23)\n    at async World.<anonymous> (/Users/hl/me/projects/lecaoquochung/docker-images/features/step_definitions/support/hooks.js:66:24)"
+              "status": "passed",
+              "duration": 3134825135
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 19,
+            "line": 23,
             "name": "I am on the Google search page",
             "match": {
-              "location": "features/step_definitions/cucumber/selenium.js:35"
+              "location": "features/step_definitions/cucumber/selenium.js:50"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 2532196587
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 20,
+            "line": 24,
             "name": "I search for \"Cheese!\"",
             "match": {
-              "location": "features/step_definitions/cucumber/selenium.js:45"
+              "location": "features/step_definitions/cucumber/selenium.js:62"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 21295324083
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 21,
+            "line": 25,
             "name": "the page title should start with \"cheese\"",
             "match": {
-              "location": "features/step_definitions/cucumber/selenium.js:65"
+              "location": "features/step_definitions/cucumber/selenium.js:98"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 20773226
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 26,
+            "name": "Verify screenshot \"selenium-chees\"",
+            "match": {
+              "location": "features/step_definitions/common.js:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 305421264
             }
           },
           {
             "keyword": "After",
             "hidden": true,
             "result": {
-              "status": "failed",
-              "duration": 1447140,
-              "error_message": "TypeError: Cannot read properties of undefined (reading 'waitForTimeout')\n    at EvidenceComponent.closing (/Users/hl/me/projects/lecaoquochung/docker-images/src/component/EvidenceComponent.js:160:20)\n    at async World.<anonymous> (/Users/hl/me/projects/lecaoquochung/docker-images/features/step_definitions/support/hooks.js:181:7)"
+              "status": "passed",
+              "duration": 664305
             }
           }
         ],
         "tags": [
           {
             "name": "@selenium",
-            "line": 11
+            "line": 13
           }
         ],
         "type": "scenario"
       }
     ],
     "id": "searching-for-cheese-on-google",
-    "line": 12,
+    "line": 14,
     "keyword": "Feature",
     "name": "Searching for Cheese on Google",
     "tags": [
       {
         "name": "@selenium",
-        "line": 11
+        "line": 13
       }
     ],
     "uri": "features/e2e/cucumber/selenium.feature"

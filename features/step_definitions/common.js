@@ -1,4 +1,6 @@
 const { Given, Then } = require('@cucumber/cucumber');
+const path = require('path'); // Add this line to import the path module
+const fs = require('fs'); // Add this line to import the fs module
 
 Given('Pending', function () {
   // Write code here that turns the phrase above into concrete actions
