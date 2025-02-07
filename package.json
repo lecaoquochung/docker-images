@@ -1,6 +1,6 @@
 {
     "name": "docker-images",
-    "version": "3.2.0-rc.01",
+    "version": "3.2.0-rc",
     "private": true,
     "repository": {
         "type": "git",
@@ -49,6 +49,9 @@
         "ts-jest": "^29.2.5",
         "typescript": "^5.2.2",
         "wrap-ansi": "^9.0.0"
+    },
+    "devDependencies": {
+        "chromedriver": "^133"
     },
     "overrides": {
         "@microsoft/api-extractor": {
