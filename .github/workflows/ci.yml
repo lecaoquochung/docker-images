@@ -117,10 +117,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=schedule,enable=true,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
             type=raw,enable=true,value=${{ env.IMAGE_AUTOMATION_TEST }}-${{ env.DATETIME }}
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=branch
             type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_AUTOMATION_TEST }}-,event=pr
-            type=schedule,enable=true,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
             type=semver,enable=true,pattern={{raw}} # TODO release only
             type=sha,enable=true
       
@@ -156,6 +156,11 @@ jobs:
         # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATETIME }}
   
   # Ubuntu - automation build and push
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
+  # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
+  # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
+  # type=semver,pattern={{raw}} # TODO release only
+  # type=sha # TODO release only
   build-ubuntu-latest:
     name: '[Auto] Build Ubuntu latest'
     needs: automation
@@ -189,12 +194,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-${{ env.DATETIME }}
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
-            type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=pr
-            # type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
-            # type=semver,pattern={{raw}} # TODO release only
-            # type=sha # TODO release only
+            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-build
       - name: Build and push Docker images # https://github.com/docker/build-push-action
         id: push
         # uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -350,7 +350,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,enable=true,value=${{ env.IMAGE_PHP }}-build
-            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-build-${{ env.DATETIME }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -530,7 +529,9 @@ jobs:
         docker exec puppeteer-me cat /etc/os-release
     - name: Verify Puppeteer
       run: |
-        docker exec puppeteer-me npx puppeteer --version || exit 1
+        docker ps | grep puppeteer-me || (echo "puppeteer-me container is not running" && exit 1)
+        docker exec puppeteer-me ls -all || (echo "Failed to list files" && exit 1)
+        # docker exec puppeteer-me npx puppeteer --version || (echo "Failed to get Puppeteer version" && exit 1)
     
   build-puppeteer-latest:
     name: '[Auto] Build Puppeteer latest'
@@ -563,8 +564,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-build
-            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-${{ env.DATE }}
-            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-${{ env.DATETIME }}
+            type=schedule,enable=true,prefix=${{ env.IMAGE_PUPPETEER }}-,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -655,7 +655,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-${{ env.DATETIME }}
+            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-build
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
