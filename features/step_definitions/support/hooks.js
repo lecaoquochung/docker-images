@@ -1,5 +1,6 @@
 const { BeforeAll, Before, Given, When, Then, After, AfterAll } = require('@cucumber/cucumber');
 const { Builder, By, Capabilities, Key, until } = require('selenium-webdriver');
+const ChromeSeleniumWebdriver = require('selenium-webdriver/chrome');
 var {setDefaultTimeout} = require('@cucumber/cucumber');
 
 // lib
@@ -27,6 +28,18 @@ const packageJson = JSON.parse(fs.readFileSync(pathToJson, 'utf-8'));
 const currentUnixTime = moment().valueOf();
 const date = moment(currentUnixTime).format('YYYYMMDD');
 setDefaultTimeout(constant.stepTimeout);
+
+// TODO component
+function getFormattedDate() {
+  const date = new Date();
+  const YYYY = date.getFullYear();
+  const MM = String(date.getMonth() + 1).padStart(2, '0');
+  const DD = String(date.getDate()).padStart(2, '0');
+  const HH = String(date.getHours()).padStart(2, '0');
+  const mm = String(date.getMinutes()).padStart(2, '0');
+  const ss = String(date.getSeconds()).padStart(2, '0');
+  return `${YYYY}${MM}${DD}_${HH}${mm}${ss}`;
+}
 
 BeforeAll(async function() {
   // Write code here that turns the phrase above into concrete actions
@@ -151,27 +164,42 @@ Before(
         // await driver.manage().window().setRect({width: constant.defaultWidth, height: constant.defaultHeight});
         // await driver.manage().window().maximize();
 
-        // selenium driver setup
-        const capabilities = Capabilities.chrome();
+        // User data directory
         // const userDataDir = `/coverage/user-data/s/selenium_user_data_${Date.now()}`; // Unique user data directory
-        const userDataDir = path.resolve(__dirname, '../../../coverage/user-data/selenium_user_data_${process.pid}_${Date.now()}_${Math.random().toString(36).substring(2, 15)}'); // Unique user data for parallelism random run
-        capabilities.set('chromeOptions', { 
-          "w3c": false, 
-          args: [
-            "--headless",
-            `--user-data-dir=${userDataDir}`
-          ] 
-        }); // Enable headless mode
-        this.seleniumDriver = new Builder().withCapabilities(capabilities).build();
+        const userDataDir = path.resolve(__dirname, `../../../coverage/user-data/selenium_user_data_pid_${process.pid}_${getFormattedDate()}_${Math.random().toString(36).substring(2, 15)}`); // Unique user data for parallelism random run
+
+        // selenium driver setup (deprecated)
+        // const capabilities = Capabilities.chrome();
+        // capabilities.set('chromeOptions', { 
+        //   "w3c": false, 
+        //   args: [
+        //     "--headless",
+        //     `--user-data-dir=${userDataDir}`
+        //   ] 
+        // }); // Enable headless mode
+        // this.seleniumDriver = new Builder().withCapabilities(capabilities).build();
+
+        // selenium driver setup
+        let options = new ChromeSeleniumWebdriver.Options();
+        process.env.DEBUG === "1" ? '' : options.addArguments('--headless=new'); // Run Chrome in new headless mode
+        options.addArguments(`--user-data-dir=${userDataDir}`); // User data directory
+
+        this.seleniumDriver = new Builder()
+          .forBrowser('chrome')
+          .setChromeOptions(options)
+          .build();
 
         // Get browser version
         const driverCapabilities = await this.seleniumDriver.getCapabilities();
-        console.log('SELENIUM DRIVER CAPABILITIES:', driverCapabilities);
         const browserName = driverCapabilities.get('browserName');
         const browserVersion = driverCapabilities.get('browserVersion');
+        this.browserVersion = browserVersion;
+
+        // Output Test Browser Information
+        console.log('SELENIUM DRIVER CAPABILITIES:', driverCapabilities);
         console.log(`SELENIUM BROWSER NAME: ${browserName}`);
         console.log(`SELENIUM BROWSER VERSION: ${browserVersion}`);
-        this.browserVersion = browserVersion;
+        console.log('USER DATA DIR:', userDataDir);
       } else {
         // robot framework
       }

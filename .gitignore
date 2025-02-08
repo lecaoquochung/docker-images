@@ -4,3 +4,6 @@ tmp
 
 # build output
 yarn-error.log
+
+# coverage
+coverage/*

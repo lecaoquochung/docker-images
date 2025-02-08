@@ -32,9 +32,9 @@ async function takeScreenshot(driver, fileName) {
 //     .builder()
 //     .setChromeOptions(options.addArguments('--headless=new'))
 //     .build();
-let options = new Chrome.Options();
+// let options = new Chrome.Options();
 // options.addArguments('headless'); // Run Chrome in headless mode
-options.addArguments('--headless=new'); // Run Chrome in new headless mode
+// options.addArguments('--headless=new'); // Run Chrome in new headless mode
 // options.addArguments('disable-gpu'); // Disable GPU rendering (for headless mode)
 // options.addArguments('no-sandbox'); // Required in some environments like Docker
 // options.addArguments('disable-dev-shm-usage'); // Avoid memory issues in Docker
