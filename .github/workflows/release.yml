@@ -46,7 +46,7 @@ jobs:
       #   name: Publish
       #   uses: actions/publish-immutable-action@v0.0.4
   
-  type=raw,${{ env.IMAGE_UBUNTU }}
+  # type=raw,${{ env.IMAGE_UBUNTU }}
   release-ubuntu-latest:
     name: '[Auto] Release Ubuntu latest'
     needs: automation
