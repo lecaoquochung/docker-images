@@ -3,14 +3,18 @@ mkdir -p artifact
 mkdir -p coverage/cucumber
 ls;
 
+# before
+ls coverage;
+ls coverage/feature;
+ls coverage/user-data;
+
 # test artifact
 cp -r coverage artifact/
 cp -r recordings artifact/
 cp -r swagger artifact/
 
 # log - for debugging only
-# cp -r ./*.log artifact/
-# cp -r ./*.json artifact/
+rm -rfv artifact/coverage/user-data
 
 source_dir="coverage/feature/"
 dest_dir="coverage/cucumber/"
