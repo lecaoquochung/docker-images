@@ -77,18 +77,19 @@ jobs:
           paths:
             - node_modules
 
-  # job test latest | job test-latest
-  test-latest:
+  # job test latest | job test-selenium
+  test-selenium:
     environment:
       - ENV=<< pipeline.parameters.env >>
       - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
       - TEST_SUITE_NAME=<< pipeline.parameters.test_suite_name >>
-      - TOOL=<< pipeline.parameters.tool >>
+      - TOOL=selenium
       - BROWSER=<< pipeline.parameters.browser >>
-    parallelism: 2
+    # parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/docker-images:puppeteer-v1.4.0
+      # - image: lecaoquochung/docker-images:puppeteer-v1.4.0
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -99,8 +100,8 @@ jobs:
             ./.circleci/submodule.sh
       - restore_cache:
           keys:
-          - v1-build-latest-yarn-{{ checksum "package.json" }}
-          - v1-build-latest-yarn-
+          - v1-test-{{ checksum "package.json" }}
+          - v1-test-
       - run:
           name: Node version
           command: |
@@ -118,18 +119,24 @@ jobs:
           name: Cucumber
           command: |
             yarn cucumber -v; pip --version; 
+      # - run:
+      #     name: Jest
+      #     command: |
+      #       yarn test src/jest/openGoogle.test.js
+      # - run:
+      #     name: Split test by Test suite
+      #     command: |
+      #       xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
       - run:
-          name: Jest
+          name: Selenium
           command: |
-            yarn test src/jest/openGoogle.test.js
-      - run:
-          name: Split test by Test suite
-          command: |
-            xargs -a ./features/testsuite/${TEST_SUITE_NAME}.txt -I {} circleci tests glob features/{} | circleci tests split --split-by=timings | xargs -I {} yarn feature -f json:coverage/feature/$TEST_SUITE_NAME.json {}
+            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/selenium.json
       - run:
           name: Report
           command: |
-            ./.circleci/job/shared/report.sh
+            # ./.circleci/job/shared/report.sh
+            yarn test:report coverage/feature/selenium
+            yarn test:junitreport coverage/feature/selenium
           when: always
       - run:
           name: Test artifacts
@@ -147,7 +154,7 @@ jobs:
           path: artifact
           when: always
 
-  test-dev:
+  test-puppeteer:
     environment:
       - ENV=<< pipeline.parameters.env >>
       - FEATURE_DOMAIN=<< pipeline.parameters.feature-domain >>
@@ -157,7 +164,8 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/docker-images:puppeteer-v1.4.0
+      # - image: lecaoquochung/docker-images:puppeteer-v1.4.0
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -382,10 +390,10 @@ workflows:
               only:
                 - /(test|implementation).*/
                 - main
-      - test-latest:
+      - test-selenium:
           requires:
             - test
-      - test-dev:
+      - test-puppeteer:
           requires:
             - test
       - test-build:
