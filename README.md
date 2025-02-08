@@ -1,3 +1,7 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lecaoquochung/docker-images/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/lecaoquochung/docker-images/tree/main)
+![Github Actions](https://github.com/lecaoquochung/docker-images/actions/workflows/release.yml/badge.svg)
+
+
 # Docker Images CI
 
 This repository contains Docker images for various environments including Ubuntu, PHP, Scala, and Jenkins. The images are automatically built and tagged using GitHub Actions upon every push or pull request to the `main` branch.
