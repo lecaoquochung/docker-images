@@ -130,11 +130,13 @@ jobs:
       - run:
           name: Selenium
           command: |
-            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/report.json
+            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/selenium.json
       - run:
           name: Report
           command: |
-            ./.circleci/job/shared/report.sh
+            # ./.circleci/job/shared/report.sh
+            yarn test:report coverage/feature/selenium
+            yarn test:junitreport coverage/feature/selenium
           when: always
       - run:
           name: Test artifacts
