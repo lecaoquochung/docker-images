@@ -130,7 +130,7 @@ jobs:
       - run:
           name: Selenium
           command: |
-            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/selenium.json
+            TOOL=selenium yarn feature --tags "@selenium" -f json:coverage/feature/report.json
       - run:
           name: Report
           command: |
