@@ -210,7 +210,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: false
+          push-to-registry: true
   
   # MacOS
   # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
@@ -364,7 +364,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: false
+          push-to-registry: true
   
   # job build php beta manual
   # docker build . --file ${{ env.DOCKERFILE_PHP_BETA }} --tag "php:$(date +%s)"
@@ -532,7 +532,9 @@ jobs:
         docker ps | grep puppeteer-me || (echo "puppeteer-me container is not running" && exit 1)
         docker exec puppeteer-me ls -all || (echo "Failed to list files" && exit 1)
         # docker exec puppeteer-me npx puppeteer --version || (echo "Failed to get Puppeteer version" && exit 1)
-    
+  
+  # job build puppeteer latest automation
+  # type=schedule,enable=true,prefix=${{ env.IMAGE_PUPPETEER }}-,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
   build-puppeteer-latest:
     name: '[Auto] Build Puppeteer latest'
     needs: automation
@@ -564,7 +566,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-build
-            type=schedule,enable=true,prefix=${{ env.IMAGE_PUPPETEER }}-,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -670,7 +671,7 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: false
+          push-to-registry: true
 
   # TEST
   # API TEST WITH POSTMAN
