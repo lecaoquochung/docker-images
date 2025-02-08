@@ -8,6 +8,10 @@ cp -r coverage artifact/
 cp -r recordings artifact/
 cp -r swagger artifact/
 
+# log
+cp -r *.log artifact/
+cp -r *.json artifact/
+
 source_dir="coverage/feature/"
 dest_dir="coverage/cucumber/"
 timestamp=$(date +"%Y%m%d%H%M%S")

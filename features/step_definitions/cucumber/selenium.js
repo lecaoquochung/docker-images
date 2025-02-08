@@ -47,7 +47,7 @@ options.addArguments('--headless=new'); // Run Chrome in new headless mode
 //     .setChromeOptions(options)
 //     .build();
 
-Given('I am on the Google search page', { timeout: 30000 }, async function () {
+Given('I am on the Google search page', { timeout: 60000 }, async function () {
     try {
         // await driver.manage().setTimeouts({ implicit: 3000 });
         // await driver.get('https://www.google.com');
