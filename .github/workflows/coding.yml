@@ -73,8 +73,8 @@ jobs:
       - name: Run tests - TypeScript Challenges
         run: |
           cd programming/typescript/challenges
+          npm install
           npm run build
-          npm run start
           npm test
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
