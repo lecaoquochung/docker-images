@@ -1,11 +1,11 @@
 // Or import the entire module
 import * as Challenges from '@lehungio/typescript';
-let helloAll = Challenges.greet('All'); // Output: "Hello, World!"
+const helloAll = Challenges.greet('All'); // Output: "Hello, World!"
 console.log(helloAll);
 
 //Challenge 1: Hello, World!
 import { greet } from '@lehungio/typescript';
-let greetMessage = greet('Typescript'); // Output: "Hello, World!"
+const greetMessage = greet('Typescript'); // Output: "Hello, World!"
 console.log(greetMessage);
 const helloWorld = new Challenges.HelloWorld();
 helloWorld.greet(); // Output: "Hello, World!"
