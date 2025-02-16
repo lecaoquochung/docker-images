@@ -22,6 +22,6 @@ npx playwright install
 echo $PUPPETEER_EXECUTABLE_PATH
 
 # yarn latest version
-# https://yarnpkg.com/corepack
-npm install -g corepack
+# https://github.com/lecaoquochung/docker-images/issues/48
+sudo npm install -g corepack
 corepack enable
