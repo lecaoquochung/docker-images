@@ -20,3 +20,8 @@ npx playwright install
 
 # verify env var
 echo $PUPPETEER_EXECUTABLE_PATH
+
+# yarn latest version
+# https://yarnpkg.com/corepack
+npm install -g corepack
+corepack enable
