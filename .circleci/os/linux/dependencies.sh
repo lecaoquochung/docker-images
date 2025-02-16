@@ -12,7 +12,7 @@ google-chrome --version
 # Check if corepack is available
 if ! command -v corepack &> /dev/null; then
   echo "Installing corepack..."
-  npm install -g corepack
+  sudo npm install -g corepack
 else
   echo "Corepack is already installed"
 fi
