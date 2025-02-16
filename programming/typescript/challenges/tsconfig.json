@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", // Updated to the latest version
+    "module": "ES2022", // Updated to the latest version
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true, // New recommended option
+    "moduleResolution": "node", // Ensure Node.js module resolution
+    "resolveJsonModule": true, // Allow importing .json files
+    "isolatedModules": true // Ensure Babel can safely transpile files
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

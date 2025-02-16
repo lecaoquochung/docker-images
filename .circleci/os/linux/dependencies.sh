@@ -9,8 +9,15 @@ google-chrome --version
 
 # yarn latest version
 # https://github.com/lecaoquochung/docker-images/issues/48
-sudo npm install -g corepack
+# Check if corepack is available
+if ! command -v corepack &> /dev/null; then
+  echo "Installing corepack..."
+  npm install -g corepack
+else
+  echo "Corepack is already installed"
+fi
 corepack enable
+
 yarn upgrade; yarn install
 yarn --version
 
