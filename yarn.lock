@@ -1857,9 +1857,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lehungio/typescript@npm:^1.0.0-rc.0":
-  version: 1.0.0-rc.0
-  resolution: "@lehungio/typescript@npm:1.0.0-rc.0"
+"@lehungio/typescript@npm:^1":
+  version: 1.2.1
+  resolution: "@lehungio/typescript@npm:1.2.1"
   dependencies:
     acorn: "npm:^8.14.0"
     acorn-walk: "npm:^8.3.4"
@@ -1901,7 +1901,7 @@ __metadata:
     cross-spawn: "npm:^7.0.6"
     debug: "npm:^4.4.0"
     dedent: "npm:^1.5.3"
-  checksum: 10c0/587708b8f3638af49ba68266a38cbba57d0018326b37332c293008b79637d360110326fdf4980ea6e929f8f8c9131071eb917cb74bf6f84c8b2fdb5a3262268a
+  checksum: 10c0/d5d32cf86db7618c3caa1c336f53ec6bcb7f46fc0996a408b06a44af06f38870c9ffbec212d1509ea4a0e8f9d468d69e1051cc5a4683e87fa565a892b66b300e
   languageName: node
   linkType: hard
 
@@ -3821,7 +3821,7 @@ __metadata:
   dependencies:
     "@babel/preset-env": "npm:^7.23.2"
     "@cucumber/cucumber": "npm:^10.0.1"
-    "@lehungio/typescript": "npm:^1.0.0-rc.0"
+    "@lehungio/typescript": "npm:^1"
     axios: "npm:^1.7.9"
     chai: "npm:^4.3.10"
     chalk: "npm:^5.3.0"
