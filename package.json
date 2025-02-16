@@ -27,6 +27,7 @@
         "@babel/preset-env": "^7.23.2",
         "@cucumber/cucumber": "^10.0.1",
         "@lehungio/typescript": "^1.0.0-rc.0",
+        "axios": "^1.7.9",
         "chai": "^4.3.10",
         "chalk": "^5.3.0",
         "cliui": "^8.0.1",
