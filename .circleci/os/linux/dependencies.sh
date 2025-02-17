@@ -3,7 +3,7 @@ cat /etc/os-release
 pwd;ls;whoami;date;
 
 # NPM latest version
-sudo npm install -g npm@latest
+# sudo npm install -g npm@latest
 
 # Chrome version
 google-chrome --version

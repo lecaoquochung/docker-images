@@ -177,6 +177,10 @@ jobs:
           command: |
             ./.circleci/job/shared/server-domain-info.sh
       - run:
+          name: Image check
+          command: |
+            ./.circleci/os/linux/image-check.sh
+      - run:
           name: Dependencies
           command: |
             ./.circleci/os/linux/dependencies.sh
@@ -228,7 +232,8 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
+      # - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -241,6 +246,10 @@ jobs:
           name: DOMAIN
           command: |
             ./.circleci/job/shared/server-domain-info.sh
+      - run:
+          name: Image check
+          command: |
+            ./.circleci/os/linux/image-check.sh
       - run:
           name: Dependencies
           command: |
