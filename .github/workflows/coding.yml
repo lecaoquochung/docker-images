@@ -71,7 +71,11 @@ jobs:
           cache: yarn
           node-version-file: '.nvmrc'
       - name: Install dependencies
-        run: yarn install
+        run: |
+          sudo npm install -g corepack
+          corepack enable
+          yarn install
+          yarn --version
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
           cd programming/typescript/challenges
