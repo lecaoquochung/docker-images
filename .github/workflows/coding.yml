@@ -81,6 +81,7 @@ jobs:
           yarn install
           yarn build
           yarn test
+          yarn test:jest
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         env:

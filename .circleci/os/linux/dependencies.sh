@@ -2,6 +2,9 @@ echo $SHELL
 cat /etc/os-release
 pwd;ls;whoami;date;
 
+# NPM latest version
+sudo npm install -g npm@latest
+
 # Chrome version
 google-chrome --version
 sudo apt-get upgrade google-chrome-stable -y
@@ -19,9 +22,8 @@ google-chrome --version
 sudo npm install -g corepack
 corepack enable
 
-# Upgrade Yarn and install dependencies
-echo "Upgrading Yarn and installing dependencies..."
-yarn upgrade 
+# Install Yarn dependencies
+echo "Installing Yarn dependencies..."
 yarn install
 yarn --version
 

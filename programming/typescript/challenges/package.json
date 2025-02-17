@@ -1,14 +1,15 @@
 {
   "name": "challenges",
-  "packageManager": "yarn@4.6.0",
   "version": "1.0.0",
+  "packageManager": "yarn@4.6.0",
   "main": "index.js",
   "scripts": {
     "build": "tsc index.ts",
     "start": "node index.js",
-    "test": "jest --coverage",
+    "test": "node index.js",
     "execute": "node index.js --report-compact ",
-    "test:node": "node index.js"
+    "test:node": "node index.js",
+    "test:jest": "jest --coverage"
   },
   "author": "lecaoquochung@gmail.com",
   "license": "ISC",

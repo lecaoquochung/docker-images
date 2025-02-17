@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Or import the entire module
 var Challenges = require("@lehungio/typescript");
 var helloAll = Challenges.greet('All'); // Output: "Hello, World!"
-+console.log('Greeting result:', helloAll);
+console.log('Greeting result:', helloAll);
 /**
 * Challenge 1: Hello, World!
 * Demonstrates different ways to use the greet functionality
