@@ -47,7 +47,14 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 # Install Node.js and npm
 RUN apt-get install -y nodejs npm && \
     npm install -g n && \
-    n 20
+    n 23
+
+# Upgrage yarn to latest version
+RUN npm install -g corepack
+RUN corepack enable
+RUN yarn set version latest
+RUN yarn install
+
 
 # Install Java 11 (Amazon Corretto)
 RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - && \
