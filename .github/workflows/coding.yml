@@ -69,7 +69,6 @@ jobs:
         run: |
           sudo npm install -g corepack
           corepack enable
-          yarn install
           yarn --version
       - name: Set up Node.js
         uses: actions/setup-node@v4
