@@ -1,6 +1,7 @@
 {
     "name": "docker-images",
     "version": "3.2.0",
+    "packageManager": "yarn@4.6.0",
     "private": true,
     "repository": {
         "type": "git",
