@@ -1,7 +1,7 @@
 // Or import the entire module
 import * as Challenges from '@lehungio/typescript';
 const helloAll = Challenges.greet('All'); // Output: "Hello, World!"
-+console.log('Greeting result:', helloAll);
+console.log('Greeting result:', helloAll);
 
 /**
 * Challenge 1: Hello, World!
