@@ -89,7 +89,7 @@ RUN pip3 install --break-system-packages trcli
 # Install global Node/Yarn dependencies
 # WORKDIR /home/qa/code
 RUN yarn install && \
-    yarn global add junit-report-merger
+    yarn dlx add junit-report-merger
 
 # Install Playwright and dependencies for browser testing
 RUN npm install -g playwright 
