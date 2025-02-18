@@ -1,4 +1,5 @@
-FROM node:22.13.1
+# https://hub.docker.com/_/node/tags
+FROM node:23.8.0
 
 WORKDIR /build
 
@@ -91,7 +92,8 @@ RUN npm install -g n;
 RUN pip install trcli
 
 # Install sbt
-RUN curl -L -o /root/sbt.zip https://github.com/sbt/sbt/releases/download/v1.2.8/sbt-1.2.8.zip \
+# https://github.com/sbt/sbt/releases
+RUN curl -L -o /root/sbt.zip https://github.com/sbt/sbt/releases/download/v1.10.7/sbt-1.10.7.zip \
 	&& unzip /root/sbt.zip -d /root \
 	&& rm /root/sbt.zip
 
@@ -99,14 +101,16 @@ RUN curl -L -o /root/sbt.zip https://github.com/sbt/sbt/releases/download/v1.2.8
 ENV PATH /root/.local/bin:/root/sbt/bin:/root/bin:${PATH}
 
 # sbt build
+COPY puppeteer/build-puppeteer-scala-3/* /build/
 RUN sbt sbtVersion
 
 # Init yarn dependencies with latest version
-# https://classic.yarnpkg.com/lang/en/docs/cli/self-update/
-RUN npm uninstall -g yarn
-RUN touch ~/.profile
-RUN curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+# Deprecated - https://classic.yarnpkg.com/lang/en/docs/cli/self-update/
+# https://yarnpkg.com/corepack
+RUN npm install -g corepack
+RUN corepack enable
 COPY package.json /build
+RUN yarn set version stable
 RUN yarn install
 
 # Install qa so it's available in the container.
@@ -117,7 +121,7 @@ RUN yarn add puppeteer \
     && mkdir -p /home/qa/Downloads \
     && mkdir -p /home/qa/code \
     && chown -R qa:qa /home/qa \
-    && chown -R qa:qa /build/node_modules
+    && chown -R qa:qa /build
 
 # Run everything after as non-privileged user.
 RUN adduser qa sudo
@@ -125,7 +129,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER qa
 
 # Install sbt
-RUN curl -L -o /home/qa/sbt.zip https://github.com/sbt/sbt/releases/download/v1.2.8/sbt-1.2.8.zip \
+RUN curl -L -o /home/qa/sbt.zip https://github.com/sbt/sbt/releases/download/v1.10.7/sbt-1.10.7.zip \
 	&& unzip /home/qa/sbt.zip -d /home/qa \
 	&& rm /home/qa/sbt.zip
 
