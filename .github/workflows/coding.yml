@@ -75,6 +75,10 @@ jobs:
         with:
           cache: yarn
           node-version-file: '.nvmrc'
+      - name: Install TypeScript
+        run: yarn add typescript@latest --dev
+      - name: Verify TypeScript version
+        run: yarn tsc --version
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
           cd programming/typescript/challenges
