@@ -47,7 +47,17 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 # Install Node.js and npm
 RUN apt-get install -y nodejs npm && \
     npm install -g n && \
-    n 20
+    n 23
+
+# Upgrage yarn to latest version
+# https://yarnpkg.com/corepack
+RUN npm install -g corepack
+RUN corepack enable
+RUN yarn set version latest
+RUN yarn install
+
+# Install global Node/Yarn dependencies
+RUN npm install -g junit-report-merger
 
 # Install Java 11 (Amazon Corretto)
 RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - && \
@@ -79,13 +89,12 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 # Install trcli
 RUN pip3 install --break-system-packages trcli
 
-# Install global Node/Yarn dependencies
 # WORKDIR /home/qa/code
-RUN yarn install && \
-    yarn global add junit-report-merger
+RUN yarn install
 
 # Install Playwright and dependencies for browser testing
 RUN npm install -g playwright 
+
 # Install Playwright and its dependencies
 RUN npm install -g playwright && \
     npx playwright install-deps
