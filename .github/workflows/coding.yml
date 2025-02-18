@@ -78,7 +78,7 @@ jobs:
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
           cd programming/typescript/challenges
-          yarn install
+          yarn install --immutable
           yarn build
           yarn test
           yarn test:jest
