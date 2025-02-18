@@ -101,6 +101,7 @@ RUN curl -L -o /root/sbt.zip https://github.com/sbt/sbt/releases/download/v1.10.
 ENV PATH /root/.local/bin:/root/sbt/bin:/root/bin:${PATH}
 
 # sbt build
+COPY build-puppeteer-scala-3/* /build/
 RUN sbt sbtVersion
 
 # Init yarn dependencies with latest version
