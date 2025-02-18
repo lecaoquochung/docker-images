@@ -79,6 +79,7 @@ jobs:
         run: |
           cd programming/typescript/challenges
           yarn install --immutable
+          yarn clean
           yarn build
           yarn test
           yarn test:jest
