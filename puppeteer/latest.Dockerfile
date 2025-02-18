@@ -121,7 +121,7 @@ RUN yarn add puppeteer \
     && mkdir -p /home/qa/Downloads \
     && mkdir -p /home/qa/code \
     && chown -R qa:qa /home/qa \
-    && chown -R qa:qa /build/node_modules
+    && chown -R qa:qa /build
 
 # Run everything after as non-privileged user.
 RUN adduser qa sudo
