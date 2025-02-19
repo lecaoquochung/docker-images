@@ -82,11 +82,14 @@ jobs:
         run: yarn add typescript@latest --dev
       - name: Verify TypeScript version
         run: yarn tsc --version
+      - name: Run install
+        run: |
+          cd programming/typescript/challenges
+          yarn clean
+          yarn install --immutable
       - name: Run build
         run: |
           cd programming/typescript/challenges
-          yarn install --immutable
-          yarn clean
           yarn build
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
