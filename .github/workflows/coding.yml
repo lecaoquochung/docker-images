@@ -85,7 +85,6 @@ jobs:
       - name: Run install
         run: |
           cd programming/typescript/challenges
-          yarn clean
           yarn install --immutable
       - name: Run build
         run: |
