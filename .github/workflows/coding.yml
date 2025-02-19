@@ -74,7 +74,7 @@ jobs:
       - name: Build
         run: |
           cd programming/typescript/challenges
-          npm install
+          npm install --no-save # Install dependencies for TypeScript Challenges
           npm run build
       - name: Run tests - TypeScript Challenges (NPM)
         run: |
