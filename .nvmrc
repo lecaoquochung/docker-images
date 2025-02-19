@@ -1,3 +1,3 @@
 # This version only using for package.json inspect code
 # This version will not be used in Dockerfile
-v23
+v23.7.0
