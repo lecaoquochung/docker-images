@@ -12,6 +12,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["src/**/*"],
+  "include": ["**/*.ts"], // Update this line to include all TypeScript files
   "exclude": ["node_modules", "dist"]
 }
