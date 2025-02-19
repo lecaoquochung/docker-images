@@ -89,7 +89,7 @@ jobs:
           yarn install --immutable
       - name: Run build
         run: |
-          cd programming/typescript/challenges; pwd: ls -all
+          cd programming/typescript/challenges; pwd; ls -all;
           yarn tsc --project tsconfig.json
           yarn tsc --version
           yarn build
