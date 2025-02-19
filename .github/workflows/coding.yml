@@ -78,6 +78,7 @@ jobs:
           npm run build
       - name: Run tests - TypeScript Challenges (NPM)
         run: |
+          cd programming/typescript/challenges
           npm test
           npm run test:jest
       - name: Upload coverage to Codecov
