@@ -70,10 +70,11 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Install dependencies
         run: |
-          npm install
+          npm ci
       - name: Build
         run: |
           cd programming/typescript/challenges
+          npm install
           npm run build
       - name: Run tests - TypeScript Challenges (NPM)
         run: |
