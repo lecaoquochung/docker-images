@@ -81,10 +81,19 @@ jobs:
           cd programming/typescript/challenges
           npm test
           npm run test:jest
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Reporter
+        run: |
+          cd programming/typescript/challenges
+          JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" jest --reporters=jest-junit
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      #   with:
+      #     fail_ci_if_error: true
+      #     directory: programming/typescript/challenges/coverage
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
-          fail_ci_if_error: true
-          directory: programming/typescript/challenges/coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
