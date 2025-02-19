@@ -65,10 +65,11 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          path: programming/typescript/challenges
+        # with:
+          # path: programming/typescript/challenges
       - name: Install dependencies
         run: |
+          pwd;whoami;ls -all;
           sudo npm install -g corepack
           corepack enable
           yarn --version
@@ -83,11 +84,13 @@ jobs:
         run: yarn tsc --version
       - name: Run build
         run: |
+          cd programming/typescript/challenges
           yarn install --immutable
           yarn clean
           yarn build
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
+          cd programming/typescript/challenges
           yarn test
           yarn test:jest
       - name: Upload coverage to Codecov
