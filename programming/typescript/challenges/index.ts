@@ -10,8 +10,12 @@ console.log('Greeting result:', helloAll);
 const greetMessage = Challenges.greet('Typescript'); // Output: "Hello, World!"
 console.log(greetMessage);
 
-const helloWorld = new Challenges.HelloWorld();
-helloWorld.greet(); // Output: "Hello, World!"
+try {
+  const helloWorld = new Challenges.HelloWorld();
+  helloWorld.greet(); // Output: "Hello, World!"
+} catch (error) {
+  console.error('Failed to create or use HelloWorld instance:', error);
+}
 
 /**
  * Challenge 25: Word Count

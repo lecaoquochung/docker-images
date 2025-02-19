@@ -11,7 +11,9 @@
     "moduleResolution": "node", // Use Node.js module resolution
     "resolveJsonModule": true, // Allow importing JSON files
     "isolatedModules": true, // Ensure each file can be safely transpiled without relying on other imports
-    "outDir": "./dist" // Specify output directory for compiled files
+    "outDir": "./dist", // Specify output directory for compiled files
+    "rootDir": "." // Specify the root directory of source files
+
   },
   "include": ["**/*.ts"], // Include all TypeScript files
   "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directories
