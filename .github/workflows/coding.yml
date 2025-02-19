@@ -58,7 +58,7 @@ jobs:
         with:  
           fail_ci_if_error: true
 
-  test-typescript-challenges:
+  test-typescript-challenges-yarn:
     runs-on: ubuntu-latest
     needs: inspect-code
     environment: CI
@@ -87,12 +87,12 @@ jobs:
           cd programming/typescript/challenges
           yarn cache clean
           yarn install --immutable
-      - name: Run build
+      - name: Run build (CI check purposes only - should be done in local environment)
         run: |
           cd programming/typescript/challenges; pwd; ls -all;
           yarn tsc --project tsconfig.json
           yarn tsc --version
-          yarn build
+          # yarn build # Should be done in local environment
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
           cd programming/typescript/challenges
@@ -106,7 +106,7 @@ jobs:
           fail_ci_if_error: true
           directory: programming/typescript/challenges/coverage
 
-  test-typescript-npm:
+  test-typescript-challenges-npm:
     runs-on: ubuntu-latest
     needs: inspect-code
     environment: CI
