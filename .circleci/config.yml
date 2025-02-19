@@ -88,9 +88,9 @@ jobs:
     # parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
+      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
       # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest # Latest
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.2.0 # Stable
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -157,9 +157,9 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
+      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
       # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest # Latest
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.2.0 # Stable
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -233,7 +233,8 @@ jobs:
     working_directory: /home/qa/code
     docker:
       # - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
+      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
+      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
