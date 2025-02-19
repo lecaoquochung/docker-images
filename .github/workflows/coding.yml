@@ -85,10 +85,13 @@ jobs:
       - name: Run install
         run: |
           cd programming/typescript/challenges
+          yarn cache clean
           yarn install --immutable
       - name: Run build
         run: |
           cd programming/typescript/challenges
+          yarn tsc --project tsconfig.json
+          yarn tsc --version
           yarn build
       - name: Run tests - TypeScript Challenges (Yarn)
         run: |
