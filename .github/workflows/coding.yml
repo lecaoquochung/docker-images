@@ -12,6 +12,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
+          branch: gh-pages
+          folder: programming/typescript/challenges
           fetch-depth: 2
       - name: Set up Node.js
         uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
@@ -81,10 +83,13 @@ jobs:
           cd programming/typescript/challenges
           npm test
           npm run test:jest
-      - name: Reporter
+      - name: Reporter (Verify test results)
         run: |
           cd programming/typescript/challenges
-          JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" npx jest --reporters=jest-junit
+          # JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" npx jest --reporters=jest-junit
+          pwd;
+          ls -all programming/typescript/challenges/test-results
+          ls -all programming/typescript/challenges/coverage
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
       #   env:
@@ -97,3 +102,13 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          # files: ./programming/typescript/challenges/test-results/junit/**/*.xml
+      # # Deploy to Github Pages
+      # - name: Deploy to Github Pages
+      #   if: always()
+      #   uses: JamesIves/github-pages-deploy-action@4.1.5
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH: gh-pages
+      #     FOLDER: programming/typescript/challenges/test-results
+      #     CLEAN: true
