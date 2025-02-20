@@ -1,6 +1,6 @@
 {
     "name": "docker-images",
-    "version": "3.3.0-rc.0",
+    "version": "3.3.1-rc.2",
     "packageManager": "yarn@4.6.0",
     "private": true,
     "repository": {
@@ -26,6 +26,8 @@
     "dependencies": {
         "@babel/preset-env": "^7.23.2",
         "@cucumber/cucumber": "^10.0.1",
+        "@lehungio/typescript": "^1",
+        "axios": "^1.7.9",
         "chai": "^4.3.10",
         "chalk": "^5.3.0",
         "cliui": "^8.0.1",
@@ -48,11 +50,11 @@
         "rimraf": "^5.0.7",
         "selenium-webdriver": "^4.28.1",
         "ts-jest": "^29.2.5",
-        "typescript": "^5.2.2",
         "wrap-ansi": "^9.0.0"
     },
     "devDependencies": {
-        "chromedriver": "^133"
+        "chromedriver": "^133",
+        "typescript": "^5.7.3"
     },
     "overrides": {
         "@microsoft/api-extractor": {

@@ -24,10 +24,12 @@ jobs:
           TEST: true
       - name: Check code
         run: ls -all
+      # - name: Lint code  
+      #  run: npm run lint  # Assuming you have a lint script in your package.json  
   
   # TEST
   test-scala:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
     needs: inspect-code
     environment: CI
     steps:
@@ -49,12 +51,62 @@ jobs:
         working-directory: ./scala/coding  
         run: |  
           sbt clean coverage test coverageReport
-      - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov  
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN}}
-        with:
+        with:  
           fail_ci_if_error: true
+
+  # local only
+  # yarn build error in ubuntu (?)
+  # test-typescript-challenges-yarn:
+  #   runs-on: ubuntu-latest
+  #   needs: inspect-code
+  #   environment: CI
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4
+  #       # with:
+  #         # path: programming/typescript/challenges
+  #     - name: Install dependencies
+  #       run: |
+  #         pwd;whoami;ls -all;
+  #         sudo npm install -g corepack
+  #         corepack enable
+  #         yarn --version
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         cache: yarn
+  #         node-version-file: '.nvmrc'
+  #     - name: Install TypeScript
+  #       run: yarn add typescript@latest --dev
+  #     - name: Verify TypeScript version
+  #       run: yarn tsc --version
+  #     - name: Run install
+  #       run: |
+  #         cd programming/typescript/challenges
+  #         yarn cache clean
+  #         yarn install --immutable
+  #     - name: Run build (CI check purposes only - should be done in local environment)
+  #       run: |
+  #         cd programming/typescript/challenges; pwd; ls -all;
+  #         yarn tsc --project tsconfig.json
+  #         yarn tsc --version
+  #         # yarn build # Should be done in local environment
+  #     - name: Run tests - TypeScript Challenges (Yarn)
+  #       run: |
+  #         cd programming/typescript/challenges
+  #         yarn test
+  #         yarn test:jest
+  #     - name: Upload coverage to Codecov
+  #       uses: codecov/codecov-action@v4
+  #       env:
+  #         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  #       with:
+  #         fail_ci_if_error: true
+  #         directory: programming/typescript/challenges/coverage
 
   test-typescript-challenges:
     runs-on: ubuntu-latest
@@ -69,44 +121,17 @@ jobs:
           cache: npm
           node-version-file: '.nvmrc'
       - name: Install dependencies
-        run: |
-          npm ci
-      - name: Build
-        run: |
-          cd programming/typescript/challenges
-          npm install --no-save # Install dependencies for TypeScript Challenges
-          npm run build
+        run: npm ci
       - name: Run tests - TypeScript Challenges (NPM)
         run: |
           cd programming/typescript/challenges
+          npm install
+          npm run build
           npm test
           npm run test:jest
-      - name: Reporter (Verify test results)
-        run: |
-          cd programming/typescript/challenges
-          # JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" npx jest --reporters=jest-junit
-          pwd;
-          ls -all ${{ github.workspace }}/programming/typescript/challenges/test-results
-          ls -all ${{ github.workspace }}/programming/typescript/challenges/coverage
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v4
-      #   env:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      #   with:
-      #     fail_ci_if_error: true
-      #     directory: programming/typescript/challenges/coverage
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          # files: ./programming/typescript/challenges/test-results/junit/**/*.xml
-      # # Deploy to Github Pages
-      # - name: Deploy to Github Pages
-      #   if: always()
-      #   uses: JamesIves/github-pages-deploy-action@4.1.5
-      #   with:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     BRANCH: gh-pages
-      #     FOLDER: programming/typescript/challenges/test-results
-      #     CLEAN: true
+          fail_ci_if_error: true

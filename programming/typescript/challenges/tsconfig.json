@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNEXT", // Target latest ECMAScript version
+    "module": "ESNEXT", // Use ESNext module system
+    "lib": ["esnext", "dom"], // Include latest ECMAScript and DOM library
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
+    "useDefineForClassFields": true, // Use define for class fields
+    "moduleResolution": "node", // Use Node.js module resolution
+    "resolveJsonModule": true, // Allow importing JSON files
+    "isolatedModules": true, // Ensure each file can be safely transpiled without relying on other imports
+    "outDir": "./dist", // Specify output directory for compiled files
+    "rootDir": "." // Specify the root directory of source files
+
+  },
+  "include": ["**/*.ts"], // Include all TypeScript files
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directories
+}

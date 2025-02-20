@@ -1,0 +1,6 @@
+coverage/*
+# Jest coverage reports
+coverage/
+.coverage
+*.lcov
+test-results/
