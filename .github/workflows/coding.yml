@@ -88,8 +88,8 @@ jobs:
           cd programming/typescript/challenges
           # JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" npx jest --reporters=jest-junit
           pwd;
-          ls -all programming/typescript/challenges/test-results
-          ls -all programming/typescript/challenges/coverage
+          ls -all ${{ github.workspace }}/programming/typescript/challenges/test-results
+          ls -all ${{ github.workspace }}/programming/typescript/challenges/coverage
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
       #   env:
