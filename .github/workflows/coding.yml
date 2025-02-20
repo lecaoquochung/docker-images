@@ -84,7 +84,7 @@ jobs:
       - name: Reporter
         run: |
           cd programming/typescript/challenges
-          JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" jest --reporters=jest-junit
+          JEST_JUNIT_CLASSNAME="${{ github.workspace }}/programming/typescript/challenges" npx jest --reporters=jest-junit
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
       #   env:
