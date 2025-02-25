@@ -1,7 +1,7 @@
 import * as Challenges from '@lehungio/typescript';
 import { greet, wordCount } from '@lehungio/typescript';
 
-describe('Challenges Module', () => {
+describe('Challenges output', () => {
   test('greet function should return correct greeting', () => {
     const helloAll = Challenges.greet('All');
     expect(helloAll).toBe('Hello, All!');
@@ -31,8 +31,11 @@ describe('Challenges Module', () => {
     expect(squares.difference).toBe(170);
   });
 
-  test('gigasecond function should return correct gigasecond date', () => {
+});
+
+describe('Challenge #27 - Gigasecond output test', () => {
+  test('Gigasecond function should return correct gigasecond date', () => {
     const gigasecond = new Challenges.Gigasecond(new Date('2013-01-07'));
-    expect(gigasecond.date()).toBe(new Date('2044-10-05T01:46:40Z'));
+    expect(gigasecond.date().toISOString()).toBe("2044-09-15T01:46:40.000Z");
   });
 });

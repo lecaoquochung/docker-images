@@ -35,6 +35,7 @@ console.log('Difference:', squares.difference);
  * Demonstrates the gigasecond functionality
 */
 var gigasecond = new Challenges.Gigasecond(new Date('2013-01-07'));
+console.log('Gigasecond date from 2013-01-07:', gigasecond.date());
 var target = new Date('2025-02-28');
 var seconds = Challenges.Gigasecond.secondsToDate(target);
 var days = Challenges.Gigasecond.secondsToDays(seconds); // Returns number of days from now until Dec 31, 2024
