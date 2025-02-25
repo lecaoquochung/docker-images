@@ -46,3 +46,9 @@ var target2 = new Date('2025-02-28');
 var seconds2 = gs.secondsBetweenDates(target2); // Returns seconds between Jan 1 and Feb 1
 console.log('Seconds between 2013-01-07 and 2025-02-28:', seconds2);
 console.log('Days between 2013-01-07 and 2025-02-28:', Challenges.Gigasecond.secondsToDays(seconds2));
+/**
+ * Challenge 28: Reverse String
+ * Demonstrates the reverse string functionality
+ */
+var reverseStringInput = 'hello';
+console.log("Challenge 28 - Reverse String: reverse('".concat(reverseStringInput, "') => ").concat(Challenges.reverse(reverseStringInput)));

@@ -39,3 +39,15 @@ describe('Challenge #27 - Gigasecond output test', () => {
     expect(gigasecond.date().toISOString()).toBe("2044-09-15T01:46:40.000Z");
   });
 });
+
+describe('Challenge #28 - Reverse String output test', () => {
+  test('reverse function should return correct reversed string', () => {
+    const reversed = Challenges.reverse('hello');
+    expect(reversed).toBe('olleh');
+  });
+
+  test('reverse function should return correct reversed string', () => {
+    const reversed = Challenges.reverse('aloha');
+    expect(reversed).toBe('ahola');
+  });
+});
