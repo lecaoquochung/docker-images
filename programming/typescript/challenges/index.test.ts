@@ -51,3 +51,12 @@ describe('Challenge #28 - Reverse String output test', () => {
     expect(reversed).toBe('ahola');
   });
 });
+
+describe('Challenge #29 - Triangle output test', () => {
+  test('Triangle class should return correct triangle type', () => {
+    const triangle = new Challenges.Triangle(3, 4, 5);
+    expect(triangle.isEquilateral).toBe(false);
+    expect(triangle.isIsosceles).toBe(false);
+    expect(triangle.isScalene).toBe(true);
+    });
+});

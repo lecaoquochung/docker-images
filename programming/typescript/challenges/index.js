@@ -52,3 +52,11 @@ console.log('Days between 2013-01-07 and 2025-02-28:', Challenges.Gigasecond.sec
  */
 var reverseStringInput = 'hello';
 console.log("Challenge 28 - Reverse String: reverse('".concat(reverseStringInput, "') => ").concat(Challenges.reverse(reverseStringInput)));
+/**
+ * Challenge 29: Triangle
+ * Demonstrates the triangle functionality
+ */
+var triangle = new Challenges.Triangle(3, 4, 5);
+console.log("Challenge 29 - Triangle: triangle.isEquilateral => ".concat(triangle.isEquilateral));
+console.log("Challenge 29 - Triangle: triangle.isIsosceles => ".concat(triangle.isIsosceles));
+console.log("Challenge 29 - Triangle: triangle.isScalene => ".concat(triangle.isScalene));
