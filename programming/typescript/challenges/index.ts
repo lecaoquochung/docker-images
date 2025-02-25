@@ -23,3 +23,30 @@ try {
  */
 const count = Challenges.wordCount('Hello, World!'); // Output: 2
 console.log('Word count result:', count);
+
+/**
+ * Challenge 26: Difference of Squares
+ * Demonstrates the difference of squares functionality
+ */
+const squares = new Challenges.Squares(5);
+console.log('Square of sum:', squares.squareOfSum);
+console.log('Sum of squares:', squares.sumOfSquares);
+console.log('Difference:', squares.difference);
+
+/**
+ * Challenge 27: Gigasecond
+ * Demonstrates the gigasecond functionality
+*/ 
+const gigasecond = new Challenges.Gigasecond(new Date('2013-01-07'));
+
+const target = new Date('2025-02-28');
+const seconds = Challenges.Gigasecond.secondsToDate(target);
+const days = Challenges.Gigasecond.secondsToDays(seconds); // Returns number of days from now until Dec 31, 2024
+console.log('Days from now until Feb 28, 2025:', days);
+
+const start = new Date('2013-01-07');
+const gs = new Challenges.Gigasecond(start);
+const target2 = new Date('2025-02-28');
+const seconds2 = gs.secondsBetweenDates(target2); // Returns seconds between Jan 1 and Feb 1
+console.log('Seconds between 2013-01-07 and 2025-02-28:', seconds2);
+console.log('Days between 2013-01-07 and 2025-02-28:', Challenges.Gigasecond.secondsToDays(seconds2));

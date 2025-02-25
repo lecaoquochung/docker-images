@@ -23,4 +23,16 @@ describe('Challenges Module', () => {
     const expectedCount = new Map([['hello', 1], ['world', 1]]);
     expect(count).toEqual(expectedCount);
   });
+
+  test('differenceOfSquares function should return correct difference of squares', () => {
+    const squares = new Challenges.Squares(5);
+    expect(squares.squareOfSum).toBe(225);
+    expect(squares.sumOfSquares).toBe(55);
+    expect(squares.difference).toBe(170);
+  });
+
+  test('gigasecond function should return correct gigasecond date', () => {
+    const gigasecond = new Challenges.Gigasecond(new Date('2013-01-07'));
+    expect(gigasecond.date()).toBe(new Date('2044-10-05T01:46:40Z'));
+  });
 });
