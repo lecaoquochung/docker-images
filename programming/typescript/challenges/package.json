@@ -10,7 +10,7 @@
     "test": "node index.js",
     "execute": "node index.js --report-compact ",
     "test:node": "node index.js",
-    "test:jest": "jest --coverage"
+    "test:jest": "jest"
   },
   "author": "lecaoquochung@gmail.com",
   "license": "ISC",
