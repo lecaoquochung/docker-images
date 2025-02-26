@@ -95,3 +95,16 @@ const oldSystem = {
 const newSystem = Challenges.transform(oldSystem);
 console.log(`Challenge 42 - ETL: transform(${JSON.stringify(oldSystem)}) => ${JSON.stringify(newSystem)}`);
 
+/**
+ * Challenge 43: Protein Translation
+ * Demonstrates the protein translation functionality
+ */
+console.log('Challenge #43 - Protein Translation');
+const rnaInput = 'AUGUUUUGG';
+console.log(`Challenge #43 - Protein Translation: translateRNA('${rnaInput}') => ${JSON.stringify(Challenges.translateRNA(rnaInput))}`);
+const rnaInput2 = 'AUGUUUUAA';
+console.log(`Challenge #43 - Protein Translation: translateRNA('${rnaInput2}') => ${JSON.stringify(Challenges.translateRNA(rnaInput2))}`);
+const rnaInput3 = 'AUGUUUUAG';
+console.log(`Challenge #43 - Protein Translation: translateRNA('${rnaInput3}') => ${JSON.stringify(Challenges.translateRNA(rnaInput3))}`);
+const rnaInput4 = 'AUGUUUUAGUGG';
+console.log(`Challenge #43 - Protein Translation: translateRNA('${rnaInput4}') => ${JSON.stringify(Challenges.translateRNA(rnaInput4))}`);

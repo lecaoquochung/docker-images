@@ -68,3 +68,19 @@ describe('Challenge #30 - Collatz Conjecture output test', () => {
     expect(Challenges.steps(1000000)).toBe(152);
   });
 });
+
+describe('Challenge #42 - ETL output test', () => {
+  test('transform function should return correct transformed data', () => {
+    const oldSystem = { 1: ['A'] };
+    const newSystem = Challenges.transform(oldSystem);
+    expect(newSystem).toEqual({ a: 1 });
+  });
+});
+
+describe('Challenge #43 - Protein Translation output test', () => {
+  test('translateRNA function should return correct translated RNA', () => {
+    const rnaInput = 'AUGUUUUGG';
+    const translated = Challenges.translateRNA(rnaInput);
+    expect(translated).toEqual(['Methionine', 'Phenylalanine', 'Tryptophan']);
+  });
+});
