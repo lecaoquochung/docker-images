@@ -6,10 +6,10 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc index.ts",
-    "start": "node index.js",
-    "test": "node index.js",
-    "execute": "node index.js --report-compact ",
-    "test:node": "node index.js",
+    "start": "node dist/index.js",
+    "test": "node dist/index.js",
+    "execute": "node dist/index.js --report-compact ",
+    "test:node": "node dist/index.js",
     "test:jest": "jest"
   },
   "author": "lecaoquochung@gmail.com",
