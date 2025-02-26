@@ -60,3 +60,11 @@ describe('Challenge #29 - Triangle output test', () => {
     expect(triangle.isScalene).toBe(true);
     });
 });
+
+describe('Challenge #30 - Collatz Conjecture output test', () => {
+  test('steps function should return correct number of steps', () => {
+    expect(Challenges.steps(16)).toBe(4);
+    expect(Challenges.steps(12)).toBe(9);
+    expect(Challenges.steps(1000000)).toBe(152);
+  });
+});

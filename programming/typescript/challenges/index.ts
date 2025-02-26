@@ -67,3 +67,17 @@ const triangle = new Challenges.Triangle(3, 4, 5);
 console.log(`Challenge 29 - Triangle: triangle.isEquilateral => ${triangle.isEquilateral}`);
 console.log(`Challenge 29 - Triangle: triangle.isIsosceles => ${triangle.isIsosceles}`);
 console.log(`Challenge 29 - Triangle: triangle.isScalene => ${triangle.isScalene}`);
+
+/**
+ * Challenge 30: Collatz Conjecture
+ * Demonstrates the collatz conjecture functionality
+ */
+console.log('Challenge 30 - Collatz Conjecture');
+const collatzConjectureInput = 16;
+console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput}) => ${Challenges.steps(collatzConjectureInput)}`); 
+const collatzConjectureInput2 = 12;
+console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput2}) => ${Challenges.steps(collatzConjectureInput2)}`); 
+const collatzConjectureInput3 = 1000000;
+console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput3}) => ${Challenges.steps(collatzConjectureInput3)}`); 
+const collatzConjectureInput4 = 2025;
+console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput4}) => ${Challenges.steps(collatzConjectureInput4)}`); 
