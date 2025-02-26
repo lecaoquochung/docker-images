@@ -81,3 +81,17 @@ const collatzConjectureInput3 = 1000000;
 console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput3}) => ${Challenges.steps(collatzConjectureInput3)}`); 
 const collatzConjectureInput4 = 2025;
 console.log(`Challenge 30 - Collatz Conjecture: steps(${collatzConjectureInput4}) => ${Challenges.steps(collatzConjectureInput4)}`); 
+
+/**
+ * Challenge 42: ETL
+ * Demonstrates the etl functionality
+ */
+console.log('Challenge 42 - ETL');
+const oldSystem = {
+  1: ['L'],
+  2: ['E', 'H', 'U'],
+  3: ['I', 'O']
+};
+const newSystem = Challenges.transform(oldSystem);
+console.log(`Challenge 42 - ETL: transform(${JSON.stringify(oldSystem)}) => ${JSON.stringify(newSystem)}`);
+
