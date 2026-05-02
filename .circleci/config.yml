@@ -88,9 +88,9 @@ jobs:
     # parallelism: 2
     working_directory: /home/qa/code
     docker:
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest # Latest
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
+      # - image: ghcr.io/lehungio/docker-images:puppeteer-latest-build # Dev
+      # - image: ghcr.io/lehungio/docker-images:puppeteer-latest # Latest
+      - image: ghcr.io/lehungio/docker-images:puppeteer-latest-v3.3.1 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -157,9 +157,9 @@ jobs:
     parallelism: 2
     working_directory: /home/qa/code
     docker:
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest # Latest
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
+      # - image: ghcr.io/lehungio/docker-images:puppeteer-latest-build # Dev
+      # - image: ghcr.io/lehungio/docker-images:puppeteer-latest # Latest
+      - image: ghcr.io/lehungio/docker-images:puppeteer-latest-v3.3.1 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -233,8 +233,8 @@ jobs:
     working_directory: /home/qa/code
     docker:
       # - image: lecaoquochung/docker-images:puppeteer-v1.1.0-build.1
-      # - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-build # Dev
-      - image: ghcr.io/lecaoquochung/docker-images:puppeteer-latest-v3.3.0 # Stable
+      # - image: ghcr.io/lehungio/docker-images:puppeteer-latest-build # Dev
+      - image: ghcr.io/lehungio/docker-images:puppeteer-latest-v3.3.1 # Stable
         environment:
           TZ: "Asia/Tokyo"
     steps:
@@ -304,7 +304,7 @@ jobs:
   # job test-ubuntu | job test-ubuntu-latest | job test ubuntu
   test-ubuntu:
     docker:
-      - image: ghcr.io/lecaoquochung/docker-images:ubuntu-latest
+      - image: ghcr.io/lehungio/docker-images:ubuntu-latest
     steps:
       - checkout
       - run:
@@ -329,7 +329,7 @@ jobs:
   
   test-php:
     docker:
-      - image: ghcr.io/lecaoquochung/docker-images:php-latest
+      - image: ghcr.io/lehungio/docker-images:php-latest
     steps:
       - checkout
       - run:
@@ -354,7 +354,7 @@ jobs:
 
   test-redis:
     docker:
-      - image: ghcr.io/lecaoquochung/docker-images:redis-latest
+      - image: ghcr.io/lehungio/docker-images:redis-latest
     steps:
       - checkout
       - run:

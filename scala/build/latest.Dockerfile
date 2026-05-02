@@ -123,7 +123,7 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 #     curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
 #     chmod +x /usr/local/bin/docker-compose && \
 #     rm -rf /var/lib/apt/lists/*
-# Logs: https://github.com/lecaoquochung/docker-images/pull/25#discussion_r1788462147
+# Logs: https://github.com/lehungio/docker-images/pull/25#discussion_r1788462147
 
 # RUN apt-get update && \
 #     apt-get install -y \

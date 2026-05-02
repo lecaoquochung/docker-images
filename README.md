@@ -1,5 +1,5 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lecaoquochung/docker-images/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/lecaoquochung/docker-images/tree/main)
-![Github Actions](https://github.com/lecaoquochung/docker-images/actions/workflows/release.yml/badge.svg)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lehungio/docker-images/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/lehungio/docker-images/tree/main)
+![Github Actions](https://github.com/lehungio/docker-images/actions/workflows/release.yml/badge.svg)
 
 
 # Docker Images CI

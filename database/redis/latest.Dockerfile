@@ -3,7 +3,7 @@
 FROM redis:latest
 
 LABEL org.opencontainers.image.description DESCRIPTION="Redis latest"
-LABEL org.opencontainers.image.source=https://github.com/lecaoquochung/docker-images/blob/main/ubuntu/latest.Dockerfile
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images/blob/main/ubuntu/latest.Dockerfile
 LABEL org.opencontainers.image.licenses=MIT
 
 # Update package index and install dependencies

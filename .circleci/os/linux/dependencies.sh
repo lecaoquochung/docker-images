@@ -11,7 +11,7 @@ sudo apt-get upgrade google-chrome-stable -y
 google-chrome --version
 
 # yarn latest version
-# https://github.com/lecaoquochung/docker-images/issues/48
+# https://github.com/lehungio/docker-images/issues/48
 # Check if corepack is available
 # if ! command -v corepack &> /dev/null; then # Check if corepack is not available -> Make sure this works on CircleCI
 #   echo "Installing corepack..."

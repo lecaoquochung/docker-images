@@ -141,19 +141,19 @@ jobs:
       run: |
         #docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_PAT }} ghcr.io 
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ${{ env.DOCKERFILE_UBUNTU }} --tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        docker build . --file ${{ env.DOCKERFILE_UBUNTU }} --tag "lehungio/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
-        # docker tag "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}" "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
-        # docker push "lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        # docker tag "lehungio/docker-images:ubuntu-latest-${{ env.DATETIME }}" "ghcr.io/lehungio/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        # docker push "lehungio/docker-images:ubuntu-latest-${{ env.DATETIME }}"
     - name: ubuntu-lastest
       run: |
         # docker build . --file ./ubuntu/latest.Dockerfile --tag "ubuntu-latest:$(date +%Y-%m-%d-%H:%M:%S)"
-        # docker login --username lecaoquochung --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+        # docker login --username lehungio --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
         docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io  
-        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lecaoquochung/docker-images:ubuntu-latest-${{ env.DATETIME }}"
+        docker build . --file ./ubuntu/latest.Dockerfile --tag "ghcr.io/lehungio/docker-images:ubuntu-latest-${{ env.DATETIME }}"
         docker images
         # docker push ubuntu-latest:${{ env.DATETIME }}
-        # docker push ghcr.io/lecaoquochung/ubuntu-latest:${{ env.DATETIME }}
+        # docker push ghcr.io/lehungio/ubuntu-latest:${{ env.DATETIME }}
   
   # Ubuntu - automation build and push
   # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_UBUNTU }}-,event=branch
@@ -244,7 +244,7 @@ jobs:
       run: |
         ls -all
         # swift test -v
-        # INFO: https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196802
+        # INFO: https://github.com/lehungio/docker-images/pull/5/files#r1775196802
   
   # Windows
   # https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
@@ -255,7 +255,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     # Setup Node.js
-    # https://github.com/lecaoquochung/docker-images/pull/5/files#r1775196810
+    # https://github.com/lehungio/docker-images/pull/5/files#r1775196810
     # - name: Setup Node.js
     #   uses: actions/setup-node@v3
     #   with:
@@ -676,7 +676,7 @@ jobs:
   # TEST
   # API TEST WITH POSTMAN
   # MacOS: curl -sL https://dl-cli.pstmn.io/install/osx_64.sh | bash
-  # https://cloudy-shadow-800513.postman.co/workspace/lecaoquochung~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
+  # https://cloudy-shadow-800513.postman.co/workspace/lehungio~885e6b40-0422-488c-8ab6-2f85ee3179ca/api/1512548b-2196-422a-8a3c-b8d374f227f9?action=share&creator=15804725&active-environment=15804725-addaf00d-1d92-4909-9256-0fa91ac840ac
   test-postman:
     name: '[Test] Postman'
     needs: build-ubuntu-latest
@@ -703,7 +703,7 @@ jobs:
         postman collection run "15804725-1deca745-1604-4657-9f7e-353bdf2adac7" -e "15804725-addaf00d-1d92-4909-9256-0fa91ac840ac" --integration-id "168584-${{ github.run_id }}"
 
   # API TEST WITH NEWMAN
-  # https://github.com/lecaoquochung/docker-images/issues/21
+  # https://github.com/lehungio/docker-images/issues/21
   # Test Commit
   # Config update
   test-newman:
@@ -847,7 +847,7 @@ jobs:
         # [2024-09-29 02:43:16,124][PID:1][INFO][alembic.runtime.migration] Running stamp_revision  -> 89bc7873a3e0
         # NEED REPORT - Github Action Windows latest runner not supported
         # no matching manifest for windows/amd64 10.0.20348 in the manifest list entries
-        # https://github.com/lecaoquochung/docker-images/actions/runs/11089568047/job/30810875892#step:6:25
+        # https://github.com/lehungio/docker-images/actions/runs/11089568047/job/30810875892#step:6:25
         # Start
         docker compose up -d
         docker compose ps
