@@ -25,6 +25,29 @@ env:
   DOCKERFILE_UBUNTU: ./ubuntu/latest.Dockerfile
 
 jobs:
+  # job filter release version
+  filter:
+    name: 'Filter Release Version'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      package_version: ${{ steps.version.outputs.package_version }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Determine release version
+        id: version
+        run: |
+          PACKAGE_VERSION=$(tr -d '[:space:]' < VERSION)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          VERSION="${PACKAGE_VERSION}-build.${{ github.run_number }}-${SHORT_SHA}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "package_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          echo "Package version: ${PACKAGE_VERSION}"
+          echo "Release version: ${VERSION}"
+
   # job inspect-code
   inspect-code:
     name: 'Inspect'
@@ -39,6 +62,18 @@ jobs:
         with:
           cache: npm
           node-version-file: '.nvmrc'
+      - name: Verify VERSION SSOT
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "ERROR: VERSION file not found"
+            exit 1
+          fi
+          VERSION=$(tr -d '[:space:]' < VERSION)
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: VERSION file is empty"
+            exit 1
+          fi
+          echo "VERSION: ${VERSION}"
       - name: Install dependencies
         run: npm ci
         env:
@@ -70,6 +105,7 @@ jobs:
   # job automation, workflow automation
   automation:
     name: 'Automation'
+    needs: filter
     runs-on: ubuntu-latest
     environment: CI
     steps:
@@ -163,7 +199,7 @@ jobs:
   # type=sha # TODO release only
   build-ubuntu-latest:
     name: '[Auto] Build Ubuntu latest'
-    needs: automation
+    needs: [automation, filter]
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -194,7 +230,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_UBUNTU }}-${{ needs.filter.outputs.version }}
       - name: Build and push Docker images # https://github.com/docker/build-push-action
         id: push
         # uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -321,7 +357,7 @@ jobs:
   # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP }}-,event=pr
   build-php-latest:
     name: '[Auto] Build PHP latest'
-    needs: automation
+    needs: [automation, filter]
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -349,7 +385,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_PHP }}-${{ needs.filter.outputs.version }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -405,7 +441,7 @@ jobs:
   # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_PHP_BETA }}-,event=pr
   build-php-beta:
     name: '[Auto] Build PHP beta'
-    needs: automation
+    needs: [automation, filter]
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -433,7 +469,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_PHP_BETA }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_PHP_BETA }}-${{ needs.filter.outputs.version }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -537,7 +573,7 @@ jobs:
   # type=schedule,enable=true,prefix=${{ env.IMAGE_PUPPETEER }}-,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
   build-puppeteer-latest:
     name: '[Auto] Build Puppeteer latest'
-    needs: automation
+    needs: [automation, filter]
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -565,7 +601,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}-${{ needs.filter.outputs.version }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6
@@ -628,7 +664,7 @@ jobs:
   # type=ref,enable=true,priority=600,prefix=${{ env.IMAGE_REDIS }}-,event=pr
   build-redis-latest:
     name: '[Auto] Build Redis latest'
-    needs: automation
+    needs: [automation, filter]
     runs-on: ubuntu-latest
     environment: CI
     permissions:
@@ -656,7 +692,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-build
+            type=raw,enable=true,value=${{ env.IMAGE_REDIS }}-${{ needs.filter.outputs.version }}
       - name: Build and push Docker images
         id: push
         uses: docker/build-push-action@v6

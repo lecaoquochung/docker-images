@@ -18,6 +18,21 @@ on:
     - cron: "0 20 * * 1"
 
 jobs:
+  # SSOT version from VERSION file
+  version:
+    name: 'Read VERSION'
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.version.outputs.package_version }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Read VERSION
+      id: version
+      run: |
+        PACKAGE_VERSION=$(tr -d '[:space:]' < VERSION)
+        echo "package_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+        echo "Package version: ${PACKAGE_VERSION}"
+
   build-ubuntu-qa:
     runs-on: ubuntu-latest
     steps:

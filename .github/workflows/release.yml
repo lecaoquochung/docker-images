@@ -27,6 +27,8 @@ jobs:
   automation:
     name: 'Automation'
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.version.outputs.package_version }}
     permissions:
       contents: read
       id-token: write
@@ -35,6 +37,13 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
+      -
+        name: Read VERSION
+        id: version
+        run: |
+          PACKAGE_VERSION=$(tr -d '[:space:]' < VERSION)
+          echo "package_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          echo "Package version: ${PACKAGE_VERSION}"
       -
         name: Validate
         run: 
