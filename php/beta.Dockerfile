@@ -135,44 +135,8 @@ RUN apt-get dist-upgrade -y
 # Install python3 (Trixie ships 3.12+)
 RUN apt-get update && apt-get install -y python3 && rm -rf /var/lib/apt/lists/*
 
-# Deprecated mbstring, mcrypt, zip
-RUN docker-php-ext-install bz2
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-install pgsql
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install pdo_pgsql
-RUN docker-php-ext-install soap
-
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd
-
-# exif
-RUN docker-php-ext-configure exif
-RUN docker-php-ext-install exif
-# RUN docker-php-ext-enable exif 
-# warning: exif (exif.so) is already loaded!
-
-# zip
-RUN apt-get install -y libzip-dev zip && docker-php-ext-install zip
-
-# intl
-RUN docker-php-ext-install -j$(nproc) intl \
-    && docker-php-ext-enable intl
-
-# imagick
-RUN apt-get update && apt-get upgrade -y
-# Replace the lines containing TSRMLS_SET_CTX in imagick_class.c with comments
-RUN apt-get update \
-    && apt-get install -y libmagickwand-dev \
-    && curl -L -o /tmp/imagick.tar.gz https://pecl.php.net/get/imagick-3.5.1.tgz \
-    && tar xvzf /tmp/imagick.tar.gz -C /tmp \
-    && cd /tmp/imagick-3.5.1 \
-    && phpize \
-    && ./configure --with-imagick=shared \
-    && make \
-    && make install \
-    && docker-php-ext-enable imagick \
-    && rm -rf /tmp/imagick.tar.gz /tmp/imagick-3.5.1
+# Extensions below are already installed by install-php-extensions above:
+# bz2, mysqli, pgsql, pdo_mysql, pdo_pgsql, soap, gd, exif, zip, intl, imagick
 
 # Node dependencies
 # https://github.com/nodejs/Release
