@@ -116,18 +116,15 @@ RUN apt-get update && apt-get install -y \
     zip \
     git
 
-RUN apt-get update
-RUN apt-get install -y -q --no-install-recommends \
-    apt-transport-https \
+RUN apt-get update && apt-get install -y -q --no-install-recommends \
     build-essential \
     ca-certificates \
     curl \
     rsync \
     software-properties-common \
-    devscripts \
     autoconf \
     ssl-cert \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Check for broken packages
 RUN apt-get install -f
