@@ -4,6 +4,10 @@
 # https://hub.docker.com/_/php/tags
 FROM php:8.4-fpm
 
+LABEL org.opencontainers.image.description="PHP beta"
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images
+LABEL org.opencontainers.image.licenses=MIT
+
 # https://gist.github.com/lehungio/acc2bfc681349f678965a5d677168e88#file-dockerfile-L5
 # SHELL ["/bin/bash", "-l", "-euxo", "pipefail", "-c"]
 SHELL ["/bin/bash", "--login", "-c"]

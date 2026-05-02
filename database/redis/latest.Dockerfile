@@ -2,8 +2,8 @@
 # https://hub.docker.com/_/redis/tags
 FROM redis:latest
 
-LABEL org.opencontainers.image.description DESCRIPTION="Redis latest"
-LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images/blob/main/ubuntu/latest.Dockerfile
+LABEL org.opencontainers.image.description="Redis latest"
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images
 LABEL org.opencontainers.image.licenses=MIT
 
 # Update package index and install dependencies

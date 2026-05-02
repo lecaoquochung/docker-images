@@ -2,9 +2,8 @@
 FROM ubuntu:latest
 
 # https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#labelling-container-images
-# LABEL org.opencontainers.image.description="Ubuntu latest"
-LABEL org.opencontainers.image.description DESCRIPTION="Ubuntu latest"
-LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images/blob/main/ubuntu/latest.Dockerfile
+LABEL org.opencontainers.image.description="Ubuntu latest"
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images
 LABEL org.opencontainers.image.licenses=MIT
 
 # Set environment variables for non-interactive installations

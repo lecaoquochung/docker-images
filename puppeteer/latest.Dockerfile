@@ -1,6 +1,10 @@
 # https://hub.docker.com/_/node/tags
 FROM node:23.8.0
 
+LABEL org.opencontainers.image.description="Puppeteer latest"
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images
+LABEL org.opencontainers.image.licenses=MIT
+
 WORKDIR /build
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)

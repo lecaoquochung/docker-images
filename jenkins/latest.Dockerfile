@@ -2,6 +2,10 @@
 # https://github.com/jenkinsci/docker/blob/master/alpine/hotspot/Dockerfile
 FROM jenkins/jenkins:latest
 
+LABEL org.opencontainers.image.description="Jenkins latest"
+LABEL org.opencontainers.image.source=https://github.com/lehungio/docker-images
+LABEL org.opencontainers.image.licenses=MIT
+
 # Switch to root user
 USER root
 
