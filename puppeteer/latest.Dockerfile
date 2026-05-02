@@ -28,12 +28,9 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 # Google Git release notes https://chromium.googlesource.com/chromium/src/
 RUN apt-get upgrade google-chrome-stable -y
 
-ADD https://noto-website-2.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip /tmp
-RUN unzip /tmp/NotoSansCJKjp-hinted.zip && \
-    mkdir -p /usr/share/fonts/noto && \
-    cp *.otf /usr/share/fonts/noto && \
-    chmod 644 -R /usr/share/fonts/noto/ && \
-    fc-cache -fv
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-noto-cjk && \
+    fc-cache -fv && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update -y
 
@@ -102,7 +99,7 @@ RUN curl -L -o /root/sbt.zip https://github.com/sbt/sbt/releases/download/v1.10.
 	&& rm /root/sbt.zip
 
 # Put tools like aws and sbt in the PATH
-ENV PATH /root/.local/bin:/root/sbt/bin:/root/bin:${PATH}
+ENV PATH=/root/.local/bin:/root/sbt/bin:/root/bin:${PATH}
 
 # sbt build
 COPY puppeteer/build-puppeteer-scala-3/* /build/
@@ -138,7 +135,7 @@ RUN curl -L -o /home/qa/sbt.zip https://github.com/sbt/sbt/releases/download/v1.
 	&& rm /home/qa/sbt.zip
 
 # Put tools like aws and sbt in the PATH
-ENV PATH /home/qa/.local/bin:/home/qa/sbt/bin:/home/qa/bin:${PATH}
+ENV PATH=/home/qa/.local/bin:/home/qa/sbt/bin:/home/qa/bin:${PATH}
 
 # timezone
 # Reference https://stackoverflow.com/questions/40234847/docker-timezone-in-ubuntu-16-04-image
