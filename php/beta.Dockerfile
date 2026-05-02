@@ -132,8 +132,8 @@ RUN apt-get install -f
 RUN apt-get upgrade -y
 RUN apt-get dist-upgrade -y
 
-# Install python3.11
-RUN apt-get install -y python3.11
+# Install python3 (Trixie ships 3.12+)
+RUN apt-get update && apt-get install -y python3 && rm -rf /var/lib/apt/lists/*
 
 # Deprecated mbstring, mcrypt, zip
 RUN docker-php-ext-install bz2
