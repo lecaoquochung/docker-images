@@ -49,33 +49,28 @@ RUN (seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{}) \
     && { echo '#!/bin/sh'; echo 'if [ -n "$GITHUB_WORKSPACE" ] && [ "$(id -u)" -eq 0 ]; then'; echo '    (cd / && /usr/bin/git config --global --add safe.directory "$GITHUB_WORKSPACE")'; echo 'fi'; echo '/usr/bin/git "$@"'; } > /usr/local/bin/git && chmod +x /usr/local/bin/git
 
 # install common PHP extensions
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN git clone --recurse-submodules https://github.com/phpredis/phpredis.git -b develop phpredis \
-    && cd phpredis && git reset --hard d3b2d87b10 && rm -r .git
-RUN git clone https://github.com/xdebug/xdebug.git -b master xdebug \
-    && cd xdebug && git reset --hard 12adc6394a && rm -r .git \
-    && sed 's~<max>8.4.99</max>~<max>99.99.99</max>~' -i package.xml
+COPY --from=mlocati/php-extension-installer:2.11.0 /usr/bin/install-php-extensions /usr/local/bin/
 RUN IPE_ICU_EN_ONLY=1 install-php-extensions \
     bcmath \
     exif \
     gd \
     gmp \
     igbinary \
-    Imagick/imagick@ef495c0b8f \
-    php/pecl-mail-imap@25b62dbf7b \
+    imagick \
+    imap \
     intl \
     mysqli \
-    php/pecl-database-oci8@74893c6e3d \
+    oci8 \
     opcache \
     pcntl \
     pdo_mysql \
-    php/pecl-database-pdo_oci@be8a277c27 \
+    pdo_oci \
     pdo_pgsql \
     pdo_sqlsrv \
-    $(realpath phpredis) \
+    redis \
     sockets \
     tidy \
-    $(realpath xdebug) \
+    xdebug \
     xsl \
     zip \
     # pack Oracle Instant Client libs, reduce image size by 85 MB
