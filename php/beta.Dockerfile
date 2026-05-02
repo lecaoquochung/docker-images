@@ -72,10 +72,19 @@ RUN IPE_ICU_EN_ONLY=1 install-php-extensions \
     tidy \
     xdebug \
     xsl \
-    zip \
-    # pack Oracle Instant Client libs, reduce image size by 85 MB
-    && rm /usr/lib/oracle/*/client64/lib/*.jar && tar -czvf /usr/lib/oracle-pack.tar.gz -C / /usr/lib/oracle /usr/local/etc/php/conf.d/docker-php-ext-pdo_oci.ini /usr/local/etc/php/conf.d/docker-php-ext-oci8.ini && rm -r /usr/lib/oracle/* /usr/local/etc/php/conf.d/docker-php-ext-pdo_oci.ini /usr/local/etc/php/conf.d/docker-php-ext-oci8.ini && mv /usr/lib/oracle-pack.tar.gz /usr/lib/oracle/pack.tar.gz \
-    && { echo '#!/bin/sh'; echo 'if [ ! -d /usr/lib/oracle/*/client64 ]; then'; echo '    tar -xzf /usr/lib/oracle/pack.tar.gz -C / && rm /usr/lib/oracle/pack.tar.gz'; echo 'fi'; } > /usr/lib/oracle/setup.sh && chmod +x /usr/lib/oracle/setup.sh
+    zip
+
+# Pack Oracle Instant Client libs to reduce image size
+RUN set -eux; \
+    find /usr/lib/oracle -name '*.jar' -delete 2>/dev/null || true; \
+    tar -czvf /usr/lib/oracle-pack.tar.gz -C / \
+        /usr/lib/oracle \
+        $(find /usr/local/etc/php/conf.d/ -name '*pdo_oci*' -o -name '*oci8*' 2>/dev/null) ; \
+    find /usr/local/etc/php/conf.d/ -name '*pdo_oci*' -o -name '*oci8*' | xargs rm -f; \
+    rm -rf /usr/lib/oracle/*; \
+    mv /usr/lib/oracle-pack.tar.gz /usr/lib/oracle/pack.tar.gz; \
+    { echo '#!/bin/sh'; echo 'if [ ! -d /usr/lib/oracle/*/client64 ]; then'; echo '    tar -xzf /usr/lib/oracle/pack.tar.gz -C / && rm /usr/lib/oracle/pack.tar.gz'; echo 'fi'; } > /usr/lib/oracle/setup.sh; \
+    chmod +x /usr/lib/oracle/setup.sh
 
 # TODO memcached
 # RUN apt-get update && apt-get install -y \
