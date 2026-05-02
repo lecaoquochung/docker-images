@@ -121,7 +121,6 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     ca-certificates \
     curl \
     rsync \
-    software-properties-common \
     autoconf \
     ssl-cert \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -180,8 +179,8 @@ RUN apt-get update \
 # Fix node -v command not found
 # https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 # https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a#gistcomment-3067813
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION latest
+ENV NVM_DIR=/usr/local/nvm
+ENV NODE_VERSION=latest
 
 RUN mkdir -p "$NVM_DIR"; \
     curl -o- \
@@ -212,8 +211,8 @@ RUN apt-get update && apt-get install -y \
 # ENV
 # /usr/local/nvm/versions/node/v16.13.1/bin/node
 # /usr/local/nvm/versions/node/v16.13.1/lib/node_modules/
-ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+ENV NODE_PATH=$NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # Summary installation
 # 01. PHP
