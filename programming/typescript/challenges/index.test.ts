@@ -1,7 +1,7 @@
 import * as Challenges from '@lehungio/typescript';
 import { greet, wordCount } from '@lehungio/typescript';
 
-describe('Challenges Module', () => {
+describe('Challenges output', () => {
   test('greet function should return correct greeting', () => {
     const helloAll = Challenges.greet('All');
     expect(helloAll).toBe('Hello, All!');
@@ -22,5 +22,65 @@ describe('Challenges Module', () => {
     const count = wordCount('Hello, World!');
     const expectedCount = new Map([['hello', 1], ['world', 1]]);
     expect(count).toEqual(expectedCount);
+  });
+
+  test('differenceOfSquares function should return correct difference of squares', () => {
+    const squares = new Challenges.Squares(5);
+    expect(squares.squareOfSum).toBe(225);
+    expect(squares.sumOfSquares).toBe(55);
+    expect(squares.difference).toBe(170);
+  });
+
+});
+
+describe('Challenge #27 - Gigasecond output test', () => {
+  test('Gigasecond function should return correct gigasecond date', () => {
+    const gigasecond = new Challenges.Gigasecond(new Date('2013-01-07'));
+    expect(gigasecond.date().toISOString()).toBe("2044-09-15T01:46:40.000Z");
+  });
+});
+
+describe('Challenge #28 - Reverse String output test', () => {
+  test('reverse function should return correct reversed string', () => {
+    const reversed = Challenges.reverse('hello');
+    expect(reversed).toBe('olleh');
+  });
+
+  test('reverse function should return correct reversed string', () => {
+    const reversed = Challenges.reverse('aloha');
+    expect(reversed).toBe('ahola');
+  });
+});
+
+describe('Challenge #29 - Triangle output test', () => {
+  test('Triangle class should return correct triangle type', () => {
+    const triangle = new Challenges.Triangle(3, 4, 5);
+    expect(triangle.isEquilateral).toBe(false);
+    expect(triangle.isIsosceles).toBe(false);
+    expect(triangle.isScalene).toBe(true);
+    });
+});
+
+describe('Challenge #30 - Collatz Conjecture output test', () => {
+  test('steps function should return correct number of steps', () => {
+    expect(Challenges.steps(16)).toBe(4);
+    expect(Challenges.steps(12)).toBe(9);
+    expect(Challenges.steps(1000000)).toBe(152);
+  });
+});
+
+describe('Challenge #42 - ETL output test', () => {
+  test('transform function should return correct transformed data', () => {
+    const oldSystem = { 1: ['A'] };
+    const newSystem = Challenges.transform(oldSystem);
+    expect(newSystem).toEqual({ a: 1 });
+  });
+});
+
+describe('Challenge #43 - Protein Translation output test', () => {
+  test('translateRNA function should return correct translated RNA', () => {
+    const rnaInput = 'AUGUUUUGG';
+    const translated = Challenges.translateRNA(rnaInput);
+    expect(translated).toEqual(['Methionine', 'Phenylalanine', 'Tryptophan']);
   });
 });

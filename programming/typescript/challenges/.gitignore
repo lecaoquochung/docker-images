@@ -4,3 +4,7 @@ coverage/
 .coverage
 *.lcov
 test-results/
+# typescript compiled files
+dist/
+# node_modules
+node_modules/ 

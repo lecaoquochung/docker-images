@@ -67,6 +67,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: npm
+          cache-dependency-path: package-lock.json
           node-version-file: '.nvmrc'
       - name: Install dependencies
         run: |
@@ -79,6 +80,7 @@ jobs:
       - name: Run tests - TypeScript Challenges (NPM)
         run: |
           cd programming/typescript/challenges
+          npm run build
           npm test
           npm run test:jest
       - name: Reporter (Verify test results)

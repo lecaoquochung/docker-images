@@ -1,6 +1,12 @@
 # https://wiki.ubuntu.com/Releases
 # Ubuntu 18.04 LTS (Bionic Beaver)
+# NOTE: Bionic is EOL. Using old-releases.ubuntu.com for archived packages.
 FROM ubuntu:bionic
+
+# === SWITCH TO ARCHIVE REPOS (Bionic EOL) ===
+RUN sed -i -e 's|http://archive.ubuntu.com|http://old-releases.ubuntu.com|g' \
+        -e 's|http://security.ubuntu.com|http://old-releases.ubuntu.com|g' \
+        /etc/apt/sources.list
 
 # === INSTALL BROWSER DEPENDENCIES ===
 
@@ -61,12 +67,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # === INSTALL Node.js ===
 
 # Install node
-# RUN apt-get update && apt-get install -y curl && \
-#     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-#     apt-get install -y nodejs
-RUN apt-get update && apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash -e && \
-    apt-get install -y nodejs
+# NodeSource legacy setup scripts are deprecated.
+# Install Node.js 16.x via binary archive (last LTS supporting Bionic glibc 2.27).
+RUN apt-get update && apt-get install -y curl xz-utils && \
+    curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
 
 # Feature-parity with node.js base images.
 RUN apt-get update && apt-get install -y --no-install-recommends git ssh && \
@@ -114,19 +118,9 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     python3-distutils
 
-# Install python
-# Add the repository for newer Python versions
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt-get install -y python3.8 python3.8-venv python3.8-dev
-
-# Update alternatives to use Python 3.8
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
-
-# Install pip for Python 3.8
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+# Install pip for the system Python 3.6 (Bionic default)
+# get-pip.py no longer supports Python 3.6; use the archived version.
+RUN curl -O https://bootstrap.pypa.io/pip/3.6/get-pip.py && \
     python3 get-pip.py --user && \
     rm get-pip.py
 
@@ -197,8 +191,8 @@ RUN mkdir -p /home/qa/Downloads /app && \
 # 1. Add tip-of-tree Playwright package to install its browsers.
 #    The package should be built beforehand from tip-of-tree Playwright.
 # COPY ./playwright.tar.gz /tmp/playwright.tar.gz
-# Playwright fixed version
-RUN wget https://github.com/microsoft/playwright/archive/refs/tags/v1.44.0.tar.gz -O /tmp/playwright.tar.gz
+# Playwright v1.30.0 is the last version supporting glibc 2.27 (Bionic)
+RUN wget https://github.com/microsoft/playwright/archive/refs/tags/v1.30.0.tar.gz -O /tmp/playwright.tar.gz
 
 # 2. Install playwright and then delete the installation.
 #    Browsers will remain downloaded in `/home/qa/.cache/ms-playwright`.
