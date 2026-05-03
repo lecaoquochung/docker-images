@@ -64,7 +64,8 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.tag }}
-          generate_release_notes: true
+          body_path: CHANGELOG.md
+          generate_release_notes: false
       - name: Set created output
         id: result
         run: |
