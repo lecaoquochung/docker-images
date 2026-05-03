@@ -64,37 +64,37 @@ Defined in `.github/workflows/coding.yml`. Triggered on push to `coding*`, `prog
 
 ### PHP
 
-| Image | Dockerfile |
-|---|---|
-| `php-latest` | `./php/latest.Dockerfile` |
-| `php-beta` | `./php/beta.Dockerfile` |
+| Image | Dockerfile | Base | PHP | Node |
+|---|---|---|---|---|
+| `php-latest` | `./php/latest.Dockerfile` | `php:8.3.7-fpm` | 8.3.7 | LTS (via nvm) |
+| `php-beta` | `./php/beta.Dockerfile` | `php:8.4-fpm` | 8.4 | LTS (via nvm) |
 
 ### Scala
 
-| Image | Dockerfile | Base | Notes |
-|---|---|---|---|
-| `scala-latest` | `./scala/build/latest.Dockerfile` | `ubuntu:24.10` | |
-| `scala-bionic` | `./scala/build/bionic.Dockerfile` | `ubuntu:bionic` | EOL — uses archive repos |
-| `scala-maintenance` | `./scala/build/maintenance.Dockerfile` | `ubuntu:24.04` | |
-| `scala-mantic` | — | — | Deprecated (v2024.4.1) |
+| Image | Dockerfile | Base | Java | sbt | Node | Playwright | Notes |
+|---|---|---|---|---|---|---|---|
+| `scala-latest` | `./scala/build/latest.Dockerfile` | `ubuntu:24.10` | 11 | 1.10.2 | 22.9.0 | 1.47.2 | |
+| `scala-bionic` | `./scala/build/bionic.Dockerfile` | `ubuntu:bionic` | 8 | 1.2.8 | 16.20.2 | 1.30.0 | EOL — uses archive repos |
+| `scala-maintenance` | `./scala/build/maintenance.Dockerfile` | `ubuntu:24.04` | 11 | 1.10.2 | 20.x | 1.47.2 | |
+| `scala-mantic` | — | — | — | — | — | — | Deprecated (v2024.4.1) |
 
 ### Puppeteer
 
-| Image | Dockerfile |
-|---|---|
-| `puppeteer-latest` | `./puppeteer/latest.Dockerfile` |
+| Image | Dockerfile | Base | Node | Chrome |
+|---|---|---|---|---|
+| `puppeteer-latest` | `./puppeteer/latest.Dockerfile` | `node:23.8.0` | 23.8.0 | google-chrome-stable |
 
 ### Redis
 
-| Image | Dockerfile |
-|---|---|
-| `redis-latest` | `./database/redis/latest.Dockerfile` |
+| Image | Dockerfile | Base |
+|---|---|---|
+| `redis-latest` | `./database/redis/latest.Dockerfile` | `redis:latest` |
 
 ### Jenkins
 
-| Image | Dockerfile |
-|---|---|
-| `jenkins-latest` | `./jenkins/latest.Dockerfile` |
+| Image | Dockerfile | Base |
+|---|---|---|
+| `jenkins-latest` | `./jenkins/latest.Dockerfile` | `jenkins/jenkins:latest` |
 
 ## Usage
 
