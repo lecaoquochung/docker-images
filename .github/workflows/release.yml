@@ -17,7 +17,6 @@ env:
   DATETIME: $(TZ='Asia/Tokyo' date '+%Y-%m-%d-%H-%M-%S')
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  IMAGE_AUTOMATION_TEST: automation-test
   IMAGE_PHP: php-latest
   IMAGE_PHP_BETA: php-beta
   IMAGE_PUPPETEER: puppeteer-latest
@@ -36,9 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    outputs:
-      tag: ${{ steps.version.outputs.tag }}
-      created: ${{ steps.create.outputs.created }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -59,7 +55,6 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: Create GitHub Release
-        id: create
         if: steps.check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
@@ -67,17 +62,9 @@ jobs:
           name: ${{ steps.version.outputs.tag }}
           body_path: CHANGELOG.md
           generate_release_notes: false
-      - name: Set created output
-        id: result
-        run: |
-          echo "created=${{ steps.check.outputs.exists == 'false' }}" >> $GITHUB_OUTPUT
 
   automation:
     name: 'Automation'
-    if: |
-      always() &&
-      (needs.auto-release.result == 'success' || needs.auto-release.result == 'skipped')
-    needs: auto-release
     runs-on: ubuntu-latest
     permissions:
       contents: read
