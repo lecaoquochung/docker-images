@@ -26,15 +26,42 @@ This repository contains Docker images for various environments including Ubuntu
 
 ### Release
 
-Defined in `.github/workflows/release.yml`. Triggered on **GitHub Release published**. Builds and pushes images to `ghcr.io/lehungio/docker-images`.
+Defined in `.github/workflows/release.yml`. Builds and pushes images to `ghcr.io/lehungio/docker-images`.
+
+**Triggers:**
+
+| Trigger | Description |
+|---|---|
+| `VERSION` file change on `main` | Auto-creates GitHub Release + builds all images |
+| GitHub Release published | Manual release from GitHub UI |
+| Tag push `v*` | Direct tag push (e.g. `git tag v3.3.2 && git push --tags`) |
+| `workflow_dispatch` | Manual trigger via GitHub UI or CLI |
+
+**Manual trigger:**
+
+```bash
+# Via GitHub CLI
+gh workflow run release.yml --ref main
+
+# Trigger from a specific tag
+gh workflow run release.yml --ref v3.3.2
+```
+
+Or from GitHub UI: Actions → Release → "Run workflow" → select branch/tag.
+
+**Auto-release flow:**
+
+```
+Bump VERSION file → push to main → auto-creates GitHub Release → builds & pushes all images
+```
 
 | Job | Dockerfile | Tags |
 |---|---|---|
-| `release-ubuntu-latest` | `./ubuntu/latest.Dockerfile` | `ubuntu-latest-v3.3.1`, `ubuntu-latest-sha-<short>` |
-| `release-php-latest` | `./php/latest.Dockerfile` | `php-latest-v3.3.1`, `php-latest-sha-<short>` |
-| `release-php-beta` | `./php/beta.Dockerfile` | `php-beta-v3.3.1`, `php-beta-sha-<short>` |
-| `release-redis-latest` | `./database/redis/latest.Dockerfile` | `redis-latest-v3.3.1`, `redis-latest-sha-<short>` |
-| `release-puppeteer-latest` | `./puppeteer/latest.Dockerfile` | `puppeteer-latest`, `puppeteer-latest-v3.3.1` |
+| `release-ubuntu-latest` | `./ubuntu/latest.Dockerfile` | `ubuntu-latest-v3.3.2`, `ubuntu-latest-sha-<short>` |
+| `release-php-latest` | `./php/latest.Dockerfile` | `php-latest-v3.3.2`, `php-latest-sha-<short>` |
+| `release-php-beta` | `./php/beta.Dockerfile` | `php-beta-v3.3.2`, `php-beta-sha-<short>` |
+| `release-redis-latest` | `./database/redis/latest.Dockerfile` | `redis-latest-v3.3.2`, `redis-latest-sha-<short>` |
+| `release-puppeteer-latest` | `./puppeteer/latest.Dockerfile` | `puppeteer-latest`, `puppeteer-latest-v3.3.2` |
 
 ### CI
 
@@ -108,10 +135,10 @@ Examples:
 
 ```bash
 # Release images (stable)
-docker pull ghcr.io/lehungio/docker-images:ubuntu-latest-v3.3.1
-docker pull ghcr.io/lehungio/docker-images:php-latest-v3.3.1
-docker pull ghcr.io/lehungio/docker-images:puppeteer-latest-v3.3.1
-docker pull ghcr.io/lehungio/docker-images:redis-latest-v3.3.1
+docker pull ghcr.io/lehungio/docker-images:ubuntu-latest-v3.3.2
+docker pull ghcr.io/lehungio/docker-images:php-latest-v3.3.2
+docker pull ghcr.io/lehungio/docker-images:puppeteer-latest-v3.3.2
+docker pull ghcr.io/lehungio/docker-images:redis-latest-v3.3.2
 
 # Rolling latest (puppeteer only)
 docker pull ghcr.io/lehungio/docker-images:puppeteer-latest
