@@ -68,6 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       packages: write
     steps:
       - name: Checkout
@@ -84,6 +85,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+      attestations: write
+      id-token: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -108,6 +111,7 @@ jobs:
             type=semver,enable=true,priority=900,prefix=${{ env.IMAGE_UBUNTU }}-,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=${{ env.IMAGE_UBUNTU }}-sha-,suffix=,format=short
       - name: Build and push Docker images
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -115,6 +119,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
 
   release-php-beta:
     name: '[Auto] Release PHP beta'
@@ -124,6 +134,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+      attestations: write
+      id-token: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -148,6 +160,7 @@ jobs:
             type=semver,enable=true,priority=900,prefix=${{ env.IMAGE_PHP_BETA }}-,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=${{ env.IMAGE_PHP_BETA }}-sha-,suffix=,format=short
       - name: Build and push Docker images
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -155,6 +168,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
 
   release-php-latest:
     name: '[Auto] Release PHP latest'
@@ -164,6 +183,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+      attestations: write
+      id-token: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -188,6 +209,7 @@ jobs:
             type=semver,enable=true,priority=900,prefix=${{ env.IMAGE_PHP }}-,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=${{ env.IMAGE_PHP }}-sha-,suffix=,format=short
       - name: Build and push Docker images
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -195,6 +217,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
 
   release-redis-latest:
     name: '[Auto] Release Redis latest'
@@ -204,6 +232,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+      attestations: write
+      id-token: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -228,6 +258,7 @@ jobs:
             type=semver,enable=true,priority=900,prefix=${{ env.IMAGE_REDIS }}-,pattern={{raw}}
             type=sha,enable=true,priority=100,prefix=${{ env.IMAGE_REDIS }}-sha-,suffix=,format=short
       - name: Build and push Docker images
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -235,6 +266,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
 
   release-puppeteer-latest:
     name: '[Auto] Release Puppeteer latest'
@@ -244,6 +281,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+      attestations: write
+      id-token: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -267,6 +306,7 @@ jobs:
             type=raw,enable=true,value=${{ env.IMAGE_PUPPETEER }}
             type=semver,enable=true,priority=900,prefix=${{ env.IMAGE_PUPPETEER }}-,pattern={{raw}}
       - name: Build and push Docker images
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -274,3 +314,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
